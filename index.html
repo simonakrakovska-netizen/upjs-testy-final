@@ -4,14 +4,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPJŠ – Biológia</title>
+<title>UPJŠ – Testy</title>
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #f2f6fb;
   margin: 0;
-  padding: 0;
+  background: #f2f6fb;
   color: #003366;
 }
 
@@ -37,6 +36,10 @@ header {
   cursor: pointer;
 }
 
+.card:hover {
+  background: #e3f2fd;
+}
+
 button {
   padding: 10px 15px;
   background: #1e88e5;
@@ -53,21 +56,27 @@ button {
 
 <body>
 
-<header>Biológia – Bunka a mikroorganizmy</header>
+<header>UPJŠ – Testy</header>
 
 <div class="container" id="menu">
-  <div class="card" onclick="startTest()">Spustiť test (116–152)</div>
+  <h2>📘 Biológia</h2>
+  <div class="card" onclick="openTopic('bio1')">Štruktúra a delenie bunky</div>
+  <div class="card" onclick="openTopic('bio2')">Bunka a mikroorganizmy</div>
+
+  <h2>🧪 Chémia</h2>
+  <div class="card" onclick="comingSoon()">Základné pojmy</div>
+  <div class="card" onclick="comingSoon()">Stavba atómu</div>
 </div>
 
 <div class="container hidden" id="test">
-  <h3 id="qnum"></h3>
+  <h3 id="title"></h3>
   <p id="question"></p>
   <div id="answers"></div>
   <button onclick="next()">Ďalej</button>
 </div>
 
 <script>
-const questions = [
+const bio2 = [
 {
 q: "116. Z chemického hľadiska sú nukleové kyseliny:",
 a: ["polypeptidy","estery mastných kyselín","polynukleotidy","makromolekuly","biopolyméry","pentózy","monoméry","aminokyseliny"]
@@ -75,56 +84,46 @@ a: ["polypeptidy","estery mastných kyselín","polynukleotidy","makromolekuly","
 {
 q: "117. Lipidy:",
 a: ["sú súčasťou vitamínov","sú súčasťou hormónov","katalyzujú reakcie","tvoria protilátky","majú regulačnú funkciu","sú zdroj energie","sú súčasťou biomembrán","majú ochrannú funkciu"]
-},
-{
-q: "118. Mikroorganizmy:",
-a: ["sú archeóny","sú všetky baktérie","študuje ich mikrobiológia","majú mikroskopické rozmery","sú onkogénne vírusy","sú len eukaryotické","sú jednobunkové","sú viditeľné okom"]
-},
-{
-q: "119. Medzi prokaryotá patria:",
-a: ["riasy","baktérie","niektoré mikroorganizmy","bakteriofágy","bičíkovce","archeóny","vírusy","jednobunkové rastliny"]
-},
-{
-q: "120. Medzi nebunkové organizmy patria:",
-a: ["sinice","onkovírusy","spirily","erytrocyty","bakteriofágy","spirochéty","vírusy","vnútrobunkové parazity"]
-},
-{
-q: "121. Vírusy sú:",
-a: ["vnútrobunkové parazity","nebunkové organizmy","mimobunkové parazity","nukleoproteíny","majú metabolizmus","nemajú vlastný metabolizmus","prokaryotá","spôsobujú infekcie"]
-},
-{
-q: "122. Vírusy spôsobujú:",
-a: ["besnotu","žltačku","chrípku","slintačku","kiahne","tuberkulózu","kvapavku","Downov syndróm"]
-},
-{
-q: "123. Rozmnožovanie vírusov:",
-a: ["prebieha mitózou","má tri fázy","prebieha len v bunke","prebieha delením","prebieha mimo bunky","prebieha v kultúrach","má fázy","neprebieha samostatne"]
 }
 ];
 
+let current = [];
 let index = 0;
 
-function startTest() {
+function openTopic(t) {
+  if (t === "bio2") {
+    current = bio2;
+    start();
+  } else {
+    alert("Táto téma sa ešte pripravuje 😊");
+  }
+}
+
+function comingSoon() {
+  alert("Táto téma sa ešte pripravuje 😊");
+}
+
+function start() {
   document.getElementById("menu").classList.add("hidden");
   document.getElementById("test").classList.remove("hidden");
+  index = 0;
   show();
 }
 
 function show() {
-  document.getElementById("qnum").innerText = "Otázka " + (index+1);
-  document.getElementById("question").innerText = questions[index].q;
+  document.getElementById("title").innerText = "Otázka " + (index+1);
+  document.getElementById("question").innerText = current[index].q;
 
   let html = "";
-  questions[index].a.forEach((x,i)=>{
+  current[index].a.forEach((x,i)=>{
     html += `<label><input type="checkbox"> ${String.fromCharCode(65+i)}) ${x}</label><br>`;
   });
-
   document.getElementById("answers").innerHTML = html;
 }
 
 function next() {
   index++;
-  if(index < questions.length) show();
+  if(index < current.length) show();
   else alert("Hotovo 🎉");
 }
 </script>
