@@ -7,39 +7,13 @@
 <title>UPJŠ – Testy</title>
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #f2f6fb;
-  margin: 0;
-  color: #003366;
-}
-header {
-  background: #1e88e5;
-  color: white;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
-}
-.container { padding: 20px; }
-.card {
-  background: white;
-  padding: 15px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  cursor: pointer;
-}
-.card:hover { background: #e3f2fd; }
-button {
-  padding: 10px 15px;
-  background: #1e88e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  margin-top: 10px;
-}
-.hidden { display: none; }
+body { font-family: Arial; background:#f2f6fb; margin:0; color:#003366; }
+header { background:#1e88e5; color:white; padding:15px; text-align:center; font-size:22px; }
+.container { padding:20px; }
+.card { background:white; padding:15px; margin-bottom:12px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,.1); cursor:pointer; }
+.card:hover { background:#e3f2fd; }
+button { padding:10px 15px; background:#1e88e5; color:white; border:none; border-radius:6px; margin-top:10px; }
+.hidden { display:none; }
 </style>
 </head>
 
@@ -49,10 +23,7 @@ button {
 
 <div class="container" id="menu">
   <h2>📘 Biológia</h2>
-  <div class="card" onclick="openTopic()">Bunka a mikroorganizmy</div>
-
-  <h2>🧪 Chémia</h2>
-  <div class="card" onclick="alert('Čoskoro 😊')">Základné pojmy</div>
+  <div class="card" onclick="openBio()">Bunka a mikroorganizmy</div>
 </div>
 
 <div class="container hidden" id="test">
@@ -64,129 +35,41 @@ button {
 
 <script>
 const questions = [
-{q:"116. Z chemického hľadiska sú nukleové kyseliny:",
-a:["polypeptidy","estery mastných kyselín","polynukleotidy","makromolekuly","biopolyméry","pentózy","monoméry","aminokyseliny"]},
-
-{q:"117. Lipidy:",
-a:["sú súčasťou vitamínov","sú súčasťou hormónov","katalyzujú reakcie","tvoria protilátky","majú regulačnú funkciu","sú zdrojom energie","sú súčasťou biomembrán","majú ochrannú funkciu"]},
-
-{q:"118. Mikroorganizmy:",
-a:["sú archeóny","sú všetky baktérie","študuje ich mikrobiológia","majú mikroskopické rozmery","sú onkogénne vírusy","sú len eukaryotické","sú jednobunkové","sú viditeľné voľným okom"]},
-
-{q:"119. Medzi prokaryotá patria:",
-a:["riasy","baktérie","niektoré mikroorganizmy","bakteriofágy","bičíkovce","archeóny","vírusy","jednobunkové rastliny"]},
-
-{q:"120. Medzi nebunkové organizmy patria:",
-a:["sinice","onkovírusy","spirily","erytrocyty","bakteriofágy","spirochéty","vírusy","vnútrobunkové parazity"]},
-
-{q:"121. Vírusy sú:",
-a:["vnútrobunkové parazity","nebunkové organizmy","mimobunkové parazity","nukleoproteínové častice","majú metabolizmus","nemajú vlastný metabolizmus","prokaryoty","spôsobujú infekcie"]},
-
-{q:"122. Vírusy spôsobujú:",
-a:["besnotu","žltačku","chrípku","slintačku","kiahne","tuberkulózu","kvapavku","Downov syndróm"]},
-
-{q:"123. Rozmnožovanie vírusov:",
-a:["prebieha mitózou","má tri fázy","prebieha len v bunke","prebieha delením","prebieha mimo bunky","prebieha v kultúrach","má fázy","neprebieha samostatne"]},
-
-{q:"124. Pôvodcom detskej obrny je:",
-a:["vírus","bakteriofág","nukleoproteín","baktéria","bacil","Salmonella","Shigella","streptokok"]},
-
-{q:"125. Bielkovinový obal vírusu sa nazýva:",
-a:["kapsid","cysta","puzdro","virión","bielkovinový plášť","spóra","nukleoid","kapsid"]},
-
-{q:"126. Vírusy spôsobujú u človeka:",
-a:["syfilis","osýpky","infekčné ochorenia","nádchu","herpes simplex","zhubné nádory","mozaikovú chorobu","AIDS"]},
-
-{q:"127. Vírusy sa rozmnožujú:",
-a:["meiózou","mitózou","amitózou","pinocytózou","pučaním","nepriamym delením","v hostiteľskej bunke","replikáciou genetickej informácie"]},
-
-{q:"128. Vírusy sa odlišujú tým, že:",
-a:["majú jednu NK","sú prokaryoty","sú najmenšie infekčné častice","majú 15–300 nm","sú nebunkové","spôsobujú infekcie","majú bičíky","nemajú genetickú informáciu"]},
-
-{q:"129. Bakteriofág je:",
-a:["baktéria","makrofág","bakteriálny vírus","druh baktérie","pohlcuje vírusy","druh vírusu","napáda baktérie","je viazaný na eukaryoty"]},
-
-{q:"130. Každý virión obsahuje:",
-a:["kapsid","DNA alebo RNA","nukleovú kyselinu a bielkoviny","tukový obal","tukový kapsid","hlavičku","bielkovinový plášť","oba typy NK"]},
-
-{q:"131. Vírusy:",
-a:["majú bunku","sú jednobunkové","sú parazity","majú lipidový kapsid","študuje ich mikrobiológia","študuje ich virológia","sú nebunkové","majú rezervoár"]},
-
-{q:"132. Vírus chrípky:",
-a:["má 50–80 nm","viditeľný EM","má bielkovinový kapsid","viditeľný LM","má 15–300 nm","má tukový obal","má nukleoid","má nukleokapsid"]},
-
-{q:"133. Medzi vírusové ochorenia patrí:",
-a:["angína","žltačka","zápal príušníc","meningitída","tuberkulóza","malária","mor hydiny","tabaková mozaika"]},
-
-{q:"134. Rastlinné vírusy:",
-a:["obsahujú RNA","sú cyanofágy","obsahujú DNA","nie sú infekčné","rozmnožujú sa v siniciach","majú dsRNA","spôsobujú virózy","rozmnožujú sa v rastlinách"]},
-
-{q:"135. Baktérie:",
-a:["sú autotrofné","majú rýchle delenie","sú cyanobaktérie","delia sa mitózou","žijú ako saprofyty","žijú v symbióze","majú peptidoglykán","sú mikroskopické"]}
+  {q:"116. Z chemického hľadiska sú nukleové kyseliny:",a:["polypeptidy","estery MK","polynukleotidy","makromolekuly","biopolyméry","pentózy","monoméry","aminokyseliny"]},
+  {q:"117. Lipidy:",a:["sú vitamíny","sú hormóny","katalyzujú","tvoria protilátky","regulačné","zdroj energie","sú v membránach","ochranné"]},
+  {q:"118. Mikroorganizmy:",a:["archeóny","všetky baktérie","študuje mikrobiológia","mikroskopické","onkogénne vírusy","eukaryotické","jednobunkové","viditeľné okom"]},
+  {q:"119. Medzi prokaryotá patria:",a:["riasy","baktérie","mikroorganizmy","bakteriofágy","bičíkovce","archeóny","vírusy","rastliny"]},
+  {q:"120. Nebunkové organizmy:",a:["sinice","onkovírusy","spirily","erytrocyty","bakteriofágy","spirochéty","vírusy","parazity"]},
+  {q:"121. Vírusy sú:",a:["parazity","nebunkové","mimobunkové","nukleoproteíny","majú metabolizmus","nemajú metabolizmus","prokaryoty","infekčné"]},
+  {q:"122. Vírusy spôsobujú:",a:["besnotu","žltačku","chrípku","slintačku","kiahne","TBC","kvapavku","Downov syndróm"]},
+  {q:"123. Rozmnožovanie vírusov:",a:["mitóza","3 fázy","v bunke","delením","mimo bunky","v kultúrach","má fázy","samostatne"]},
+  {q:"124. Pôvodca detskej obrny:",a:["vírus","fág","nukleoproteín","baktéria","bacil","Salmonella","Shigella","streptokok"]},
+  {q:"125. Obal vírusu:",a:["kapsid","cysta","puzdro","virión","plášť","spóra","nukleoid","obal"]},
+  {q:"126. Vírusy spôsobujú:",a:["syfilis","osýpky","infekcie","nádchu","herpes","nádory","mozaiku","AIDS"]},
+  {q:"127. Vírusy sa rozmnožujú:",a:["meióza","mitóza","amitóza","pinocytóza","pučanie","delenie","v bunke","replikáciou"]},
+  {q:"128. Vírusy:",a:["1 NK","prokaryoty","najmenšie","15–300nm","nebunkové","infekčné","majú bičíky","bez DNA"]},
+  {q:"129. Bakteriofág:",a:["baktéria","makrofág","vírus baktérií","druh baktérie","pohlcuje","vírus","napáda baktérie","eukaryot"]},
+  {q:"130. Virión obsahuje:",a:["kapsid","DNA/RNA","NK + bielk.","tukový obal","tukový kapsid","hlavičku","plášť","2 NK"]},
+  {q:"131. Vírusy:",a:["majú bunku","jednobunkové","parazity","lipidový obal","mikrobiológia","virológia","nebunkové","rezervoár"]},
+  {q:"132. Vírus chrípky:",a:["50–80nm","viditeľný EM","kapsid","LM","15–300nm","tukový obal","nukleoid","nukleokapsid"]},
+  {q:"133. Vírusové choroby:",a:["angína","žltačka","príušnice","meningitída","TBC","malária","mor hydiny","tabak"]},
+  {q:"134. Rastlinné vírusy:",a:["RNA","cyanofágy","DNA","neinfekčné","sinice","dsRNA","virózy","rastliny"]},
+  {q:"135. Baktérie:",a:["autotrofné","rýchle delenie","cyanobaktérie","mitóza","saprofyty","symbióza","peptidoglykán","mikroskopické"]}
 ];
-,
-{q:"136. Kokovité baktérie:",
-a:["majú bičíky","nemajú bičíky","nevykonávajú pohyb","vykonávajú pohyb bičíkom","tvoria strapce","tvoria reťazce","spôsobujú tuberkulózu","rozmnožujú sa delením"]},
 
-{q:"137. Streptokoky vytvárajú:",
-a:["strapce","dvojice","špirály","paličky","reťazce","rozvetvené vlákna","tvoria spóry","produkujú toxíny"]},
-
-{q:"138. Stafylokoky vytvárajú:",
-a:["strapce","dvojice","špirály","paličky","reťazce","vlákna","tvoria spóry","chemosyntézu"]},
-
-{q:"139. Baktérie sa rozmnožujú:",
-a:["priečnym delením","priamym delením","replikáciou","pozdĺžnym delením","nepohlavne","nepriamym delením","výmenou DNA","rozpadom vlákien"]},
-
-{q:"140. Každá bakteriálna bunka má:",
-a:["bičík","ribozómy","cytoplazmu","nukleoid","puzdro","chloroplasty","bunkovú stenu","kruhový chromozóm"]},
-
-{q:"141. Špirálovité bunky majú:",
-a:["aktinomycéty","streptokoky","stafylokoky","bacily","spirily","spirochéty","Rhodospirillum","virióny"]},
-
-{q:"142. Bakteriálny chromozóm:",
-a:["je lineárny","je ohraničený membránou","nie je ohraničený","je chromatín","je pripojený k membráne","má kruhový tvar","je dvojvláknová DNA","je v jadre"]},
-
-{q:"143. Medzi živočíšne vírusy patria:",
-a:["bakteriofágy","vírus mozaiky zemiakov","onkovírusy","vírus slintačky","ľudské vírusy","onkogénne vírusy","vírus E. coli","fág gama"]},
-
-{q:"144. V prostredí s vysokým NaCl žijú:",
-a:["patogény","Halobacterium","Halococcus","termoarcheóny","metanogény","Pseudomonas","Thermoproteus","haloarcheóny"]},
-
-{q:"145. Archeóny sa líšia od baktérií:",
-a:["majú mikroskopické rozmery","majú jadro","rozmnožujú sa delením","nemajú peptidoglykán","žijú v extrémoch","sú jednobunkové","sú patogénne","nie sú patogénne"]},
-
-{q:"146. Význam baktérií:",
-a:["produkujú kyslík","spôsobujú choroby","žijú v extrémoch","rozkladajú organické látky","obohacujú pôdu","zúčastňujú sa kolobehu látok","mineralizujú hmotu","čistia vodu"]},
-
-{q:"147. Chemoautotrofné baktérie:",
-a:["používajú chlorofyl","využívajú CO2","sú fotosyntetické","sú heterotrofné","sú saprofyty","oxidujú anorganické látky","sú autotrofné","získavajú energiu z glukózy"]},
-
-{q:"148. Fototrofné prokaryotá:",
-a:["predchodcovia chloroplastov","využívajú organické látky","sú sinice","sú cyanobaktérie","sú saprofyty","sú rastliny","fotosyntetizujú","využívajú sa v mliekarstve"]},
-
-{q:"149. Patogénne baktérie:",
-a:["rozmnožujú sa mitózou","spôsobujú choroby","žijú v extrémoch","spôsobujú choroby rastlín","spôsobujú choroby živočíchov","rozmnožujú sa delením","používajú sa v mliekarstve","spôsobujú pohlavné choroby"]},
-
-{q:"150. Baktérie spôsobujú:",
-a:["kvapavku","vírusové choroby","kiahne","besnotu","slintačku","respiračné infekcie","hnačky","tuberkulózu"]},
-
-{q:"151. Ktoré ochorenie nie je vírusové:",
-a:["encefalitída","detská obrna","tuberkulóza","kvapavka","syfilis","chrípka","opar","besnota"]},
-
-{q:"152. Pozitívny význam baktérií:",
-a:["spôsobujú choroby","výroba syrov","rozklad látok","fotosyntéza","farmácia","kvasenie","ekologické čistenie","chemosyntéza"]}
 let index = 0;
 
-function openTopic(){
+function openBio() {
   document.getElementById("menu").classList.add("hidden");
   document.getElementById("test").classList.remove("hidden");
   index = 0;
   show();
 }
 
-function show(){
+function show() {
   document.getElementById("title").innerText = "Otázka " + (index+1);
   document.getElementById("question").innerText = questions[index].q;
+
   let html = "";
   questions[index].a.forEach((x,i)=>{
     html += `<label><input type="checkbox"> ${String.fromCharCode(65+i)}) ${x}</label><br>`;
@@ -194,7 +77,7 @@ function show(){
   document.getElementById("answers").innerHTML = html;
 }
 
-function next(){
+function next() {
   index++;
   if(index < questions.length) show();
   else alert("Hotovo 🎉");
