@@ -1,0 +1,122 @@
+# upjs-testy-final
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPJŠ – Biológia & Chémia</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f2f6fb;
+    color: #003366;
+}
+
+header {
+    background: #1e88e5;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.card:hover {
+    background: #e3f2fd;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    padding: 10px 15px;
+    background: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>UPJŠ – Biológia & Chémia</header>
+
+<div class="container" id="menu">
+    <h2>📘 Biológia</h2>
+    <div class="card" onclick="openTopic('bio1')">Štruktúra a delenie bunky</div>
+    <div class="card" onclick="openTopic('bio2')">Bunka a mikroorganizmy</div>
+
+    <h2>🧪 Chémia</h2>
+    <div class="card" onclick="openTopic('chem1')">Základné pojmy</div>
+</div>
+
+<div class="container hidden" id="test">
+    <h2 id="title"></h2>
+    <p id="question"></p>
+
+    <div id="answers"></div>
+
+    <button onclick="next()">Ďalej</button>
+</div>
+
+<script>
+let data = {
+    bio1: [
+        {
+            q: "Bunka je:",
+            a: ["základná stavebná jednotka", "tkanivo", "orgán", "sústava"],
+        }
+    ]
+};
+
+let current = [];
+let index = 0;
+
+function openTopic(topic) {
+    current = data[topic];
+    index = 0;
+    document.getElementById("menu").classList.add("hidden");
+    document.getElementById("test").classList.remove("hidden");
+    show();
+}
+
+function show() {
+    document.getElementById("title").innerText = "Otázka " + (index + 1);
+    document.getElementById("question").innerText = current[index].q;
+
+    let html = "";
+    current[index].a.forEach(a => {
+        html += `<label><input type="checkbox"> ${a}</label><br>`;
+    });
+
+    document.getElementById("answers").innerHTML = html;
+}
+
+function next() {
+    index++;
+    if (index < current.length) show();
+    else alert("Hotovo 🙂");
+}
+</script>
+
+</body>
+</html>

@@ -1,1 +1,0 @@
-# upjs-testy-final
