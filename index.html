@@ -4,117 +4,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UPJŠ – Biológia & Chémia</title>
+<title>UPJŠ – Biológia</title>
 
 <style>
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f2f6fb;
-    color: #003366;
+  font-family: Arial, sans-serif;
+  background: #f2f6fb;
+  margin: 0;
+  padding: 0;
+  color: #003366;
 }
 
 header {
-    background: #1e88e5;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
+  background: #1e88e5;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .card {
-    background: white;
-    padding: 15px;
-    margin-bottom: 12px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    cursor: pointer;
-}
-
-.card:hover {
-    background: #e3f2fd;
-}
-
-.hidden {
-    display: none;
+  background: white;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
 }
 
 button {
-    padding: 10px 15px;
-    background: #1e88e5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    margin-top: 10px;
+  padding: 10px 15px;
+  background: #1e88e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  margin-top: 10px;
 }
+
+.hidden { display: none; }
 </style>
 </head>
 
 <body>
 
-<header>UPJŠ – Biológia & Chémia</header>
+<header>Biológia – Bunka a mikroorganizmy</header>
 
 <div class="container" id="menu">
-    <h2>📘 Biológia</h2>
-    <div class="card" onclick="openTopic('bio1')">Štruktúra a delenie bunky</div>
-    <div class="card" onclick="openTopic('bio2')">Bunka a mikroorganizmy</div>
-
-    <h2>🧪 Chémia</h2>
-    <div class="card" onclick="openTopic('chem1')">Základné pojmy</div>
+  <div class="card" onclick="startTest()">Spustiť test (116–152)</div>
 </div>
 
 <div class="container hidden" id="test">
-    <h2 id="title"></h2>
-    <p id="question"></p>
-
-    <div id="answers"></div>
-
-    <button onclick="next()">Ďalej</button>
+  <h3 id="qnum"></h3>
+  <p id="question"></p>
+  <div id="answers"></div>
+  <button onclick="next()">Ďalej</button>
 </div>
 
 <script>
-let data = {
-    bio1: [
-        {
-            q: "Bunka je:",
-            a: ["základná stavebná jednotka", "tkanivo", "orgán", "sústava"],
-        }
-    ]
-};
+const questions = [
+{
+q: "116. Z chemického hľadiska sú nukleové kyseliny:",
+a: ["polypeptidy","estery mastných kyselín","polynukleotidy","makromolekuly","biopolyméry","pentózy","monoméry","aminokyseliny"]
+},
+{
+q: "117. Lipidy:",
+a: ["sú súčasťou vitamínov","sú súčasťou hormónov","katalyzujú reakcie","tvoria protilátky","majú regulačnú funkciu","sú zdroj energie","sú súčasťou biomembrán","majú ochrannú funkciu"]
+},
+{
+q: "118. Mikroorganizmy:",
+a: ["sú archeóny","sú všetky baktérie","študuje ich mikrobiológia","majú mikroskopické rozmery","sú onkogénne vírusy","sú len eukaryotické","sú jednobunkové","sú viditeľné okom"]
+},
+{
+q: "119. Medzi prokaryotá patria:",
+a: ["riasy","baktérie","niektoré mikroorganizmy","bakteriofágy","bičíkovce","archeóny","vírusy","jednobunkové rastliny"]
+},
+{
+q: "120. Medzi nebunkové organizmy patria:",
+a: ["sinice","onkovírusy","spirily","erytrocyty","bakteriofágy","spirochéty","vírusy","vnútrobunkové parazity"]
+},
+{
+q: "121. Vírusy sú:",
+a: ["vnútrobunkové parazity","nebunkové organizmy","mimobunkové parazity","nukleoproteíny","majú metabolizmus","nemajú vlastný metabolizmus","prokaryotá","spôsobujú infekcie"]
+},
+{
+q: "122. Vírusy spôsobujú:",
+a: ["besnotu","žltačku","chrípku","slintačku","kiahne","tuberkulózu","kvapavku","Downov syndróm"]
+},
+{
+q: "123. Rozmnožovanie vírusov:",
+a: ["prebieha mitózou","má tri fázy","prebieha len v bunke","prebieha delením","prebieha mimo bunky","prebieha v kultúrach","má fázy","neprebieha samostatne"]
+}
+];
 
-let current = [];
 let index = 0;
 
-function openTopic(topic) {
-    current = data[topic];
-    index = 0;
-    document.getElementById("menu").classList.add("hidden");
-    document.getElementById("test").classList.remove("hidden");
-    show();
+function startTest() {
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("test").classList.remove("hidden");
+  show();
 }
 
 function show() {
-    document.getElementById("title").innerText = "Otázka " + (index + 1);
-    document.getElementById("question").innerText = current[index].q;
+  document.getElementById("qnum").innerText = "Otázka " + (index+1);
+  document.getElementById("question").innerText = questions[index].q;
 
-    let html = "";
-    current[index].a.forEach(a => {
-        html += `<label><input type="checkbox"> ${a}</label><br>`;
-    });
+  let html = "";
+  questions[index].a.forEach((x,i)=>{
+    html += `<label><input type="checkbox"> ${String.fromCharCode(65+i)}) ${x}</label><br>`;
+  });
 
-    document.getElementById("answers").innerHTML = html;
+  document.getElementById("answers").innerHTML = html;
 }
 
 function next() {
-    index++;
-    if (index < current.length) show();
-    else alert("Hotovo 🙂");
+  index++;
+  if(index < questions.length) show();
+  else alert("Hotovo 🎉");
 }
 </script>
 
