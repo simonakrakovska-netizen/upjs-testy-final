@@ -9,8 +9,8 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
   background: #f2f6fb;
+  margin: 0;
   color: #003366;
 }
 
@@ -20,7 +20,6 @@ header {
   padding: 15px;
   text-align: center;
   font-size: 22px;
-  font-weight: bold;
 }
 
 .container {
@@ -36,9 +35,7 @@ header {
   cursor: pointer;
 }
 
-.card:hover {
-  background: #e3f2fd;
-}
+.card:hover { background: #e3f2fd; }
 
 button {
   padding: 10px 15px;
@@ -60,12 +57,10 @@ button {
 
 <div class="container" id="menu">
   <h2>📘 Biológia</h2>
-  <div class="card" onclick="openTopic('bio1')">Štruktúra a delenie bunky</div>
   <div class="card" onclick="openTopic('bio2')">Bunka a mikroorganizmy</div>
 
   <h2>🧪 Chémia</h2>
-  <div class="card" onclick="comingSoon()">Základné pojmy</div>
-  <div class="card" onclick="comingSoon()">Stavba atómu</div>
+  <div class="card" onclick="alert('Čoskoro doplníme 😊')">Základné pojmy</div>
 </div>
 
 <div class="container hidden" id="test">
@@ -83,41 +78,62 @@ a: ["polypeptidy","estery mastných kyselín","polynukleotidy","makromolekuly","
 },
 {
 q: "117. Lipidy:",
-a: ["sú súčasťou vitamínov","sú súčasťou hormónov","katalyzujú reakcie","tvoria protilátky","majú regulačnú funkciu","sú zdroj energie","sú súčasťou biomembrán","majú ochrannú funkciu"]
+a: ["sú súčasťou vitamínov","sú súčasťou hormónov","katalyzujú reakcie","tvoria protilátky","majú regulačnú funkciu","sú zdrojom energie","sú súčasťou biomembrán","majú ochrannú funkciu"]
+},
+{
+q: "118. Mikroorganizmy:",
+a: ["sú archeóny","sú všetky baktérie","študuje ich mikrobiológia","majú mikroskopické rozmery","sú onkogénne vírusy","sú len eukaryotické","sú jednobunkové","sú viditeľné voľným okom"]
+},
+{
+q: "119. Medzi prokaryotá patria:",
+a: ["riasy","baktérie","niektoré mikroorganizmy","bakteriofágy","bičíkovce","archeóny","vírusy","jednobunkové rastliny"]
+},
+{
+q: "120. Medzi nebunkové organizmy patria:",
+a: ["sinice","onkovírusy","spirily","erytrocyty","bakteriofágy","spirochéty","vírusy","vnútrobunkové parazity"]
+},
+{
+q: "121. Vírusy sú:",
+a: ["vnútrobunkové parazity","nebunkové organizmy","mimobunkové parazity","nukleoproteínové častice","majú metabolizmus","nemajú vlastný metabolizmus","prokaryoty","spôsobujú infekcie"]
+},
+{
+q: "122. Vírusy spôsobujú:",
+a: ["besnotu","žltačku","chrípku","slintačku","kiahne","tuberkulózu","kvapavku","Downov syndróm"]
+},
+{
+q: "123. Rozmnožovanie vírusov:",
+a: ["prebieha mitózou","má tri fázy","prebieha len v bunke","prebieha delením","prebieha mimo bunky","prebieha v kultúrach","má fázy","neprebieha samostatne"]
+},
+{
+q: "124. Pôvodcom detskej obrny je:",
+a: ["vírus","bakteriofág","nukleoproteín","baktéria","bacil","Salmonella","Shigella","streptokok"]
+},
+{
+q: "125. Bielkovinový obal vírusu sa nazýva:",
+a: ["kapsid","cysta","puzdro","virión","bielkovinový plášť","spóra","nukleoid","kapsid"]
 }
 ];
 
 let current = [];
 let index = 0;
 
-function openTopic(t) {
-  if (t === "bio2") {
-    current = bio2;
-    start();
-  } else {
-    alert("Táto téma sa ešte pripravuje 😊");
-  }
-}
-
-function comingSoon() {
-  alert("Táto téma sa ešte pripravuje 😊");
-}
-
-function start() {
+function openTopic(topic) {
+  current = bio2;
+  index = 0;
   document.getElementById("menu").classList.add("hidden");
   document.getElementById("test").classList.remove("hidden");
-  index = 0;
   show();
 }
 
 function show() {
-  document.getElementById("title").innerText = "Otázka " + (index+1);
+  document.getElementById("title").innerText = "Otázka " + (index + 1);
   document.getElementById("question").innerText = current[index].q;
 
   let html = "";
   current[index].a.forEach((x,i)=>{
     html += `<label><input type="checkbox"> ${String.fromCharCode(65+i)}) ${x}</label><br>`;
   });
+
   document.getElementById("answers").innerHTML = html;
 }
 
