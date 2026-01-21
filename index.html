@@ -2,249 +2,252 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>UPJŠ – Biológia & Chémia</title>
+<title>UPJŠ Testy</title>
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #eef2ff;
+  background: #eef3ff;
+  margin: 0;
   padding: 20px;
 }
-h1, h2 {
-  text-align: center;
-}
-button {
-  width: 100%;
-  padding: 12px;
-  margin: 6px 0;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  background: #4a6cf7;
-  color: white;
-}
-button:hover {
-  background: #3a58d6;
-}
+
 .box {
   background: white;
-  padding: 15px;
+  padding: 20px;
   border-radius: 10px;
-  margin-top: 10px;
+  max-width: 900px;
+  margin: auto;
+}
+
+button {
+  margin: 6px;
+  padding: 10px 15px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+.answers label {
+  display: block;
+  margin: 5px 0;
+}
+
+.hidden {
+  display: none;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📘 UPJŠ – Testová aplikácia</h1>
+<!-- MENU -->
+<div class="box" id="menu">
+  <h2>📘 UPJŠ Testy</h2>
 
-<!-- HLAVNÉ MENU -->
-<div id="mainMenu" class="box">
-  <h2>Vyber predmet</h2>
-  <button onclick="openBio()">Biológia</button>
-  <button onclick="openChem()">Chémia</button>
-</div>
+  <h3>🧬 Biológia</h3>
+  <button onclick="openTheme('bunka')">1️⃣ Štruktúra a delenie bunky</button>
+  <button onclick="openTheme('mikro')">2️⃣ Bunka a mikroorganizmy</button>
+  <button onclick="openTheme('rastliny')">3️⃣ Fyziológia rastlín</button>
+  <button onclick="openTheme('zivocichy1')">4️⃣ Fyziológia živočíchov I</button>
+  <button onclick="openTheme('zivocichy2')">5️⃣ Fyziológia živočíchov II</button>
+  <button onclick="openTheme('sustavy1')">6️⃣ Sústavy človeka I</button>
+  <button onclick="openTheme('sustavy2')">7️⃣ Sústavy človeka II</button>
+  <button onclick="openTheme('sustavy3')">8️⃣ Sústavy človeka III</button>
+  <button onclick="openTheme('gen1')">9️⃣ Genetika I</button>
+  <button onclick="openTheme('gen2')">🔟 Genetika II</button>
+  <button onclick="openTheme('gen3')">1️⃣1️⃣ Genetika III</button>
+  <button onclick="openTheme('system')">1️⃣2️⃣ Systém rastlín a živočíchov</button>
+  <button onclick="openTheme('opakovanie')">🔁 OPAKOVANIE</button>
 
-<!-- BIO MENU -->
-<div id="bioMenu" class="box" style="display:none;">
-  <h2>Biológia – témy</h2>
-
-  <button onclick="openTema('bunka')">Štruktúra a delenie bunky</button>
-  <button onclick="openTema('mikro')">Bunka a mikroorganizmy</button>
-  <button onclick="openTema('rastliny')">Fyziológia rastlín</button>
-  <button onclick="openTema('zivocichy1')">Fyziológia živočíchov I.</button>
-  <button onclick="openTema('zivocichy2')">Fyziológia živočíchov II.</button>
-  <button onclick="openTema('sustavy1')">Sústavy človeka I.</button>
-  <button onclick="openTema('sustavy2')">Sústavy človeka II.</button>
-  <button onclick="openTema('sustavy3')">Sústavy človeka III.</button>
-  <button onclick="openTema('gen1')">Genetika I.</button>
-  <button onclick="openTema('gen2')">Genetika II.</button>
-  <button onclick="openTema('gen3')">Genetika III.</button>
-  <button onclick="openTema('opakovanie')">OPAKOVANIE</button>
-
-  <button onclick="back()">⬅ Späť</button>
-</div>
-
-<!-- CHEMIA MENU -->
-<div id="chemMenu" class="box" style="display:none;">
-  <h2>Chémia – témy</h2>
-
-  <button>Základné pojmy</button>
-  <button>Stavba atómu</button>
-  <button>Chemické väzby</button>
-  <button>Fyzikálna chémia</button>
-  <button>Kyseliny a zásady</button>
-  <button>Anorganická chémia</button>
-  <button>Organická chémia</button>
-
-  <button onclick="back()">⬅ Späť</button>
+  <h3>⚗️ Chémia</h3>
+  <button onclick="openTheme('chemia1')">Základy chémie</button>
+  <button onclick="openTheme('chemia2')">Stavba atómu</button>
+  <button onclick="openTheme('chemia3')">Chemické väzby</button>
+  <button onclick="openTheme('chemia4')">Fyzikálna chémia</button>
+  <button onclick="openTheme('chemia5')">Kyseliny a zásady</button>
+  <button onclick="openTheme('chemia6')">Reakcie</button>
+  <button onclick="openTheme('chemia7')">Anorganická chémia</button>
+  <button onclick="openTheme('chemia8')">Uhľovodíky</button>
+  <button onclick="openTheme('chemia9')">Deriváty</button>
+  <button onclick="openTheme('chemia10')">Biomolekuly</button>
 </div>
 
 <!-- TEST -->
-<<div id="test" class="box" style="display:none;">
+<div class="box hidden" id="test">
   <h2 id="temaNazov"></h2>
 
   <div id="questionBox"></div>
 
   <button onclick="nextQuestion()">Ďalšia otázka</button>
-  <button onclick="vyhodnotTest()">Vyhodnotiť test</button>
+  <button onclick="vyhodnotTest()">Vyhodnotiť</button>
   <button onclick="back()">⬅ Späť</button>
 
   <div id="vysledok"></div>
 </div>
 
 <script>
+// ==========================
+// DÁTA – TU BUDEŠ DÁVAŤ OTÁZKY
+// ==========================
 
-const otazky = {
-  bunka: [const strukturaBunky = [
-  {
-    question: "1. Prokaryotická bunka:",
-    answers: [
-      "a) môže obsahovať tylakoidy",
-      "b) môže obsahovať chloroplasty, napr. sinice",
-      "c) obsahuje prokaryotické ribozómy",
-      "d) má cytoplazmatickú membránu",
-      "e) má nukleoid",
-      "f) má lineárne molekuly DNA uložené v cytoplazme",
-      "g) má vnútorný priestor rozčlenený membránami",
-      "h) má homologické kruhové chromozómy"
-    ],
-    correct: ["A","C","D","E"]
-  },
-  {
-    question: "2. Prokaryotické bunky nemajú:",
-    answers: [
-      "a) plastidy",
-      "b) vnútorný priestor rozčlenený membránami",
-      "c) ribozómy",
-      "d) diktyozómy",
-      "e) cytoplazmatickú membránu",
-      "f) centriol",
-      "g) jadierko",
-      "h) mitochondrie"
-    ],
-    correct: ["A","B","D","F","G","H"]
-  },
-  {
-    question: "3. Ktoré štruktúry sú zodpovedné za uvoľňovanie energie:",
-    answers: [
-      "a) tylakoidy",
-      "b) bičíky",
-      "c) ribozómy",
-      "d) mitochondrie",
-      "e) plazmatická membrána",
-      "f) jadro",
-      "g) diktyozómy",
-      "h) vakuoly"
-    ],
-    correct: ["E"]
-  },
-  {
-    question: "4. Cytológia sa zaoberá štúdiom:",
-    answers: [
-      "a) živých sústav na úrovni molekúl",
-      "b) mikroskopickej stavby tkanív",
-      "c) javov na úrovni bunky",
-      "d) živých mikroorganizmov",
-      "e) základnej štruktúrnej jednotky",
-      "f) vírusov",
-      "g) tvaru a štruktúry buniek",
-      "h) makromolekúl"
-    ],
-    correct: ["C","E","G"]
-  },
-  {
-    question: "5. Najmenší systém schopný samostatného života je:",
-    answers: [
-      "a) vírus",
-      "b) bunka",
-      "c) kolónia",
-      "d) biopolymér",
-      "e) mnohobunkový organizmus",
-      "f) populácia",
-      "g) nukleoproteín",
-      "h) indivíduum vyššieho rádu"
-    ],
-    correct: ["B"]
-  },
+const themes = {
 
-  {
-    question: "6. Vírusy sú:",
-    answers: [
-      "a) extracelulárne parazity",
-      "b) schopné uchovávať genetickú informáciu",
-      "c) nebunkové organizmy",
-      "d) jednobunkové organizmy",
-      "e) najjednoduchšie živé sústavy",
-      "f) schopné autoreprodukcie",
-      "g) viazané na bunky",
-      "h) rozmnožujú sa len v bunkách"
-    ],
-    correct: ["B","C","E","G","H"]
-  },
+  bunka: { name: "Štruktúra a delenie bunky", questions: [{
+  question: "1. Prokaryotická bunka:",
+  answers: [
+    "A) môže obsahovať tylakoidy",
+    "B) môže obsahovať chloroplasty",
+    "C) obsahuje prokaryotické ribozómy",
+    "D) má cytoplazmatickú membránu",
+    "E) má nukleoid",
+    "F) má lineárne molekuly DNA",
+    "G) má vnútorné membrány",
+    "H) má kruhové chromozómy"
+  ],
+  correct: ["A","C","D","E"]
+},
 
-  {
-    question: "7. Podľa štruktúry rozlišujeme bunky:",
-    answers: [
-      "a) rastlinné a živočíšne",
-      "b) jadrové a bezjadrové",
-      "c) diferencované a nediferencované",
-      "d) prokaryotické a eukaryotické",
-      "e) mikroskopické",
-      "f) jednoduché",
-      "g) membránové",
-      "h) telové"
-    ],
-    correct: ["D"]
-  },
+{
+  question: "2. Prokaryotické bunky nemajú:",
+  answers: [
+    "A) plastidy",
+    "B) vnútorný membránový systém",
+    "C) ribozómy",
+    "D) diktyozómy",
+    "E) cytoplazmatickú membránu",
+    "F) centriol",
+    "G) jadierko",
+    "H) mitochondrie"
+  ],
+  correct: ["A","B","D","F","G","H"]
+},
 
-  {
-    question: "8. Pravé individuá vyššieho rádu:",
-    answers: [
-      "a) sú spoločenstvá hmyzu",
-      "b) sú svorky zvierat",
-      "c) môžu existovať samostatne",
-      "d) sú obligátne spoločenstvá",
-      "e) majú trvalú funkčnú diferenciáciu",
-      "f) majú zameniteľné funkcie",
-      "g) majú nezameniteľné funkcie",
-      "h) majú prechodnú diferenciáciu"
-    ],
-    correct: ["A","D","E","G"]
-  },
+{
+  question: "3. Ktoré štruktúry prokaryotickej bunky zabezpečujú uvoľňovanie energie:",
+  answers: [
+    "A) tylakoidy",
+    "B) bičíky",
+    "C) ribozómy",
+    "D) mitochondrie",
+    "E) plazmatická membrána",
+    "F) jadro",
+    "G) diktyozómy",
+    "H) vakuoly"
+  ],
+  correct: ["E"]
+},
 
-  {
-    question: "9. Bunky rovnakého typu sa spájajú do:",
-    answers: [
-      "a) orgánov",
-      "b) špecializovaných buniek",
-      "c) pletív",
-      "d) organizmov",
-      "e) indivíduí",
-      "f) tkanív",
-      "g) kultúr",
-      "h) organel"
-    ],
-    correct: ["C","F"]
-  },
+{
+  question: "4. Cytológia sa zaoberá štúdiom:",
+  answers: [
+    "A) živých sústav na molekulovej úrovni",
+    "B) mikroskopickej stavby tkanív",
+    "C) javov na úrovni bunky",
+    "D) živých mikroorganizmov",
+    "E) základnej stavebnej jednotky života",
+    "F) vírusov",
+    "G) tvaru a štruktúry buniek a organel",
+    "H) makromolekúl"
+  ],
+  correct: ["C","E","G"]
+},
 
-  {
-    question: "10. Základom cytoplazmatickej membrány je:",
-    answers: [
-      "a) bielkovinová dvojvrstva",
-      "b) celulóza",
-      "c) fosfolipidová dvojvrstva",
-      "d) cytosol",
-      "e) matrix",
-      "f) fosfolipidy s bielkovinami",
-      "g) plazmaléma",
-      "h) bielkoviny"
-    ],
-    correct: ["C","F"]
-  }
-];{
-        {
+{
+  question: "5. Najmenší systém schopný samostatného života je:",
+  answers: [
+    "A) vírus",
+    "B) bunka",
+    "C) kolónia",
+    "D) biopolymér",
+    "E) mnohobunkový organizmus",
+    "F) populácia",
+    "G) nukleoproteínová častica",
+    "H) indivíduum vyššieho rádu"
+  ],
+  correct: ["B"]
+},
+
+{
+  question: "6. Vírusy sú:",
+  answers: [
+    "A) extracelulárne parazity",
+    "B) schopné uchovávať genetickú informáciu",
+    "C) nebunkové organizmy",
+    "D) najjednoduchšie prokaryotické organizmy",
+    "E) najjednoduchšie živé sústavy",
+    "F) schopné autoreprodukcie",
+    "G) schopné existovať len ako parazity buniek",
+    "H) rozmnožujú sa len v živých bunkách"
+  ],
+  correct: ["B","C","G","H"]
+},
+
+{
+  question: "7. Podľa všeobecnej stavby rozlišujeme bunky:",
+  answers: [
+    "A) rastlinné a živočíšne",
+    "B) jadrové a bezjadrové",
+    "C) diferencované a nediferencované",
+    "D) prokaryotické a eukaryotické",
+    "E) mikroskopické a submikroskopické",
+    "F) jednoduché a zložené",
+    "G) membránové a nemembránové",
+    "H) telové a pohlavné"
+  ],
+  correct: ["D"]
+},
+
+{
+  question: "8. Pravé individuá vyššieho rádu:",
+  answers: [
+    "A) sú spoločenstvá sociálneho hmyzu",
+    "B) sú svorky vlkov",
+    "C) sú samostatne existujúce jedince",
+    "D) sú obligátne spoločenstvá organizmov",
+    "E) majú trvalo diferencovaných jedincov",
+    "F) majú zameniteľné funkcie",
+    "G) majú nezameniteľnú funkciu jedincov",
+    "H) sú dočasné spoločenstvá"
+  ],
+  correct: ["D","G"]
+},
+
+{
+  question: "9. Bunky rovnakého typu sa spájajú do:",
+  answers: [
+    "A) orgánov",
+    "B) špecializovaných buniek",
+    "C) pletív",
+    "D) organizmov",
+    "E) indivíduí vyššieho rádu",
+    "F) tkanív",
+    "G) tkanivových kultúr",
+    "H) organel"
+  ],
+  correct: ["C","F"]
+},
+
+{
+  question: "10. Základom cytoplazmatickej membrány je:",
+  answers: [
+    "A) bielkovinová dvojvrstva",
+    "B) celulózová dvojvrstva",
+    "C) dvojvrstva lipidov s bielkovinami",
+    "D) cytosol",
+    "E) cytoplazmatická matrix",
+    "F) fosfolipidová dvojvrstva",
+    "G) plazmaléma",
+    "H) bielkovinová vrstva s fosfolipidmi"
+  ],
+  correct: ["C","F"]
+}{
   question: "11. K základným bunkovým povrchom eukaryotickej bunky patrí:",
   answers: [
     "A) plazmaléma",
@@ -540,7 +543,7 @@ const otazky = {
     "H) vezikuly"
   ],
   correct: ["C","F"]
-} {
+}{
   question: "31. Medzi membránové organely nepatria:",
   answers: [
     "A) ribozómy",
@@ -984,7 +987,7 @@ const otazky = {
     "H) na tvorbu plazmatickej platničky"
   ],
   correct: ["B","D","E"]
-} {
+}{
   question: "61. Kľúčovým procesom S-fázy je:",
   answers: [
     "A) syntéza DNA",
@@ -1799,96 +1802,639 @@ const otazky = {
     "H) deoxyribonukleotidy"
   ],
   correct: ["C","G","H"]
+}] },
+  mikro: { name: "Bunka a mikroorganizmy", questions: [{
+  question: "116. Z chemického hľadiska sú nukleové kyseliny:",
+  answers: {
+    A: "polypeptidy",
+    B: "estery mastných kyselín",
+    C: "polynukleotidy",
+    D: "makromolekulové látky",
+    E: "biopolyméry",
+    F: "pentózy",
+    G: "monoméry",
+    H: "aminokyselinové reťazce"
+  },
+  correct: ["C","D","E"]
+},
+
+{
+  question: "117. Lipidy:",
+  answers: {
+    A: "sú súčasťou vitamínov",
+    B: "sú súčasťou niektorých hormónov",
+    C: "katalyzujú chemické reakcie",
+    D: "tvoria protilátky",
+    E: "podieľajú sa na regulácii",
+    F: "sú najhospodárnejším zdrojom energie",
+    G: "sú súčasťou biomembrán",
+    H: "majú ochrannú funkciu"
+  },
+  correct: ["A","B","E","F","G","H"]
+},
+
+{
+  question: "118. Mikroorganizmy:",
+  answers: {
+    A: "sú archeóny",
+    B: "sú všetky baktérie",
+    C: "študuje ich mikrobiológia",
+    D: "majú mikroskopické rozmery",
+    E: "sú onkogénne vírusy",
+    F: "sú len eukaryotické",
+    G: "sú jednobunkové organizmy",
+    H: "sú viditeľné voľným okom"
+  },
+  correct: ["A","B","C","D","G"]
+},
+
+{
+  question: "119. Medzi prokaryotá patria:",
+  answers: {
+    A: "jednobunkové riasy",
+    B: "baktérie",
+    C: "niektoré mikroorganizmy",
+    D: "bakteriofágy",
+    E: "bičíkovce",
+    F: "archeóny",
+    G: "vírusy",
+    H: "jednobunkové rastliny"
+  },
+  correct: ["B","C","F"]
+},
+
+{
+  question: "120. Medzi nebunkové organizmy patria:",
+  answers: {
+    A: "sinice",
+    B: "onkovírusy",
+    C: "spirily",
+    D: "červené krvinky",
+    E: "bakteriofágy",
+    F: "spirochéty",
+    G: "vírusy",
+    H: "molekulárne vnútrobunkové parazity"
+  },
+  correct: ["B","E","G","H"]
+},
+
+{
+  question: "121. Vírusy sú:",
+  answers: {
+    A: "vnútrobunkové parazity",
+    B: "nebunkové organizmy",
+    C: "mimobunkové parazity",
+    D: "nukleoproteínové častice",
+    E: "organizmy s metabolizmom",
+    F: "bez vlastného metabolizmu",
+    G: "prokaryotické organizmy",
+    H: "schopné vyvolať infekcie"
+  },
+  correct: ["A","B","D","F","H"]
+},
+
+{
+  question: "122. Vírusy spôsobujú:",
+  answers: {
+    A: "besnotu",
+    B: "žltačku",
+    C: "chrípku",
+    D: "slintačku a krívačku",
+    E: "kiahne",
+    F: "tuberkulózu",
+    G: "kvapavku",
+    H: "Downov syndróm"
+  },
+  correct: ["A","B","C","D","E"]
+},
+
+{
+  question: "123. Rozmnožovanie vírusov:",
+  answers: {
+    A: "má fázy mitózy",
+    B: "má tri fázy",
+    C: "prebieha amitózou",
+    D: "prebieha len v živých bunkách",
+    E: "prebieha len v eukaryotických bunkách",
+    F: "prebieha delením",
+    G: "prebieha aj mimo bunky",
+    H: "prebieha v bunkových kultúrach"
+  },
+  correct: ["B","D","H"]
+},
+
+{
+  question: "124. Pôvodcom detskej obrny je:",
+  answers: {
+    A: "vírus",
+    B: "bakteriofág",
+    C: "nukleoproteínová častica",
+    D: "baktéria",
+    E: "bacil",
+    F: "Salmonella",
+    G: "Shigella",
+    H: "streptokok"
+  },
+  correct: ["A","C"]
+},
+
+{
+  question: "125. Bielkovinový obal vírusu:",
+  answers: {
+    A: "kapsid",
+    B: "cysta",
+    C: "puzdro",
+    D: "virión",
+    E: "bielkovinový plášť",
+    F: "spóra",
+    G: "nukleoid",
+    H: "kapsid"
+  },
+  correct: ["A","E","H"]
+}{
+  question: "126. Vírusy spôsobujú u človeka:",
+  answers: {
+    A: "syfilis",
+    B: "osýpky",
+    C: "infekčné ochorenia",
+    D: "nádchu",
+    E: "herpes simplex",
+    F: "zhubné nádory",
+    G: "mozaikovú chorobu",
+    H: "AIDS"
+  },
+  correct: ["B","C","D","E","F","H"]
+},
+
+{
+  question: "127. Vírusy sa rozmnožujú:",
+  answers: {
+    A: "meiózou",
+    B: "mitózou",
+    C: "amitózou",
+    D: "prenikaním do bunky",
+    E: "pučaním",
+    F: "nepriamym delením",
+    G: "v hostiteľskej bunke",
+    H: "replikáciou genetickej informácie"
+  },
+  correct: ["D","G","H"]
+},
+
+{
+  question: "128. Vírusy sa odlišujú tým, že:",
+  answers: {
+    A: "majú len jeden typ nukleovej kyseliny",
+    B: "sú prokaryotické",
+    C: "sú najmenšie infekčné častice",
+    D: "majú rozmery v mikrometroch",
+    E: "sú nebunkové organizmy",
+    F: "spôsobujú infekčné ochorenia",
+    G: "majú bičíky",
+    H: "nemajú vlastný metabolizmus"
+  },
+  correct: ["A","C","E","F","H"]
+},
+
+{
+  question: "129. Bakteriofág je:",
+  answers: {
+    A: "baktéria",
+    B: "makrofág",
+    C: "bakteriálny vírus",
+    D: "druh baktérie",
+    E: "baktéria pohlcujúca vírusy",
+    F: "druh vírusu",
+    G: "vírus napádajúci baktérie",
+    H: "vírus eukaryotov"
+  },
+  correct: ["C","F","G"]
+},
+
+{
+  question: "130. Každý virión obsahuje:",
+  answers: {
+    A: "bielkovinový kapsid",
+    B: "DNA alebo RNA",
+    C: "nukleovú kyselinu a bielkoviny",
+    D: "tukový obal",
+    E: "tukový kapsid",
+    F: "hlavičku a bičík",
+    G: "bielkovinový plášť",
+    H: "obe nukleové kyseliny"
+  },
+  correct: ["A","B","C","G"]
+},
+
+{
+  question: "131. Vírusy:",
+  answers: {
+    A: "majú jednoduchú bunku",
+    B: "sú jednobunkové organizmy",
+    C: "sú vnútrobunkové parazity",
+    D: "sú tvorené nukleovou kyselinou a obalom",
+    E: "študuje ich mikrobiológia",
+    F: "študuje ich virológia",
+    G: "sú nebunkové organizmy",
+    H: "majú ako rezervoár bezstavovce"
+  },
+  correct: ["C","D","F","G"]
+},
+
+{
+  question: "132. Vírus chrípky:",
+  answers: {
+    A: "má veľkosť 50–80 nm",
+    B: "pozorujeme len elektrónovým mikroskopom",
+    C: "má kapsid z bielkovín",
+    D: "vidíme ho optickým mikroskopom",
+    E: "má veľkosť 15–300 nm",
+    F: "má tukový obal",
+    G: "má bielkovinový nukleoid",
+    H: "má nukleokapsid v tukovom obale"
+  },
+  correct: ["A","B","C","F","H"]
+},
+
+{
+  question: "133. Medzi vírusové ochorenia patria:",
+  answers: {
+    A: "angína",
+    B: "žltačka",
+    C: "zápal príušných žliaz",
+    D: "zápal mozgových blán",
+    E: "tuberkulóza",
+    F: "malária",
+    G: "mor hydiny",
+    H: "mozaika tabaku"
+  },
+  correct: ["B","C","D","G","H"]
+},
+
+{
+  question: "134. Rastlinné vírusy:",
+  answers: {
+    A: "obsahujú RNA",
+    B: "nazývajú sa cyanofágy",
+    C: "obsahujú DNA",
+    D: "nie sú infekčné",
+    E: "rozmnožujú sa v siniciach",
+    F: "vírus tabakovej mozaiky má RNA",
+    G: "spôsobujú rastlinné virózy",
+    H: "rozmnožujú sa v rastlinných bunkách"
+  },
+  correct: ["A","F","G","H"]
+},
+
+{
+  question: "135. Baktérie:",
+  answers: {
+    A: "sú autotrofné alebo heterotrofné",
+    B: "majú generačný čas 15–30 min",
+    C: "fototrofné sú cyanobaktérie",
+    D: "rozmnožujú sa nepriamym delením",
+    E: "môžu byť saprofyty",
+    F: "môžu žiť v symbióze",
+    G: "majú v stene peptidoglykan",
+    H: "sú submikroskopické"
+  },
+  correct: ["A","B","C","E","F","G"]
+},
+
+{
+  question: "136. Kokovité baktérie:",
+  answers: {
+    A: "majú bičíky",
+    B: "nemajú bičíky",
+    C: "nevykonávajú aktívny pohyb",
+    D: "vykonávajú pohyb bičíkom",
+    E: "tvoria strapce",
+    F: "tvoria reťazce",
+    G: "spôsobujú tuberkulózu",
+    H: "rozmnožujú sa delením"
+  },
+  correct: ["B","C","E","F","H"]
+}{
+  question: "137. Streptokoky vytvárajú:",
+  answers: {
+    A: "strapce",
+    B: "dvojice",
+    C: "špirály",
+    D: "paličky",
+    E: "reťazce",
+    F: "rozvetvené vlákna",
+    G: "organické látky chemosyntézou",
+    H: "spóry"
+  },
+  correct: ["E"]
+},
+
+{
+  question: "138. Stafylokoky vytvárajú:",
+  answers: {
+    A: "strapce",
+    B: "dvojice",
+    C: "špirály",
+    D: "paličky",
+    E: "reťazce",
+    F: "vlákna",
+    G: "organické látky",
+    H: "spóry"
+  },
+  correct: ["A"]
+},
+
+{
+  question: "139. Baktérie sa rozmnožujú:",
+  answers: {
+    A: "priečnym delením",
+    B: "priamym delením",
+    C: "replikáciou",
+    D: "pozdĺžnym delením",
+    E: "nepohlavne",
+    F: "nepriamym delením",
+    G: "výmenou chromozómov",
+    H: "rozpadom vláken"
+  },
+  correct: ["A","E","H"]
+},
+
+{
+  question: "140. Každá bakteriálna bunka má:",
+  answers: {
+    A: "bičík",
+    B: "ribozómy",
+    C: "cytoplazmu",
+    D: "nukleoid",
+    E: "puzdro",
+    F: "fotosyntézu",
+    G: "bunkovú stenu",
+    H: "kruhový chromozóm"
+  },
+  correct: ["B","C","D","G","H"]
+},
+
+{
+  question: "141. Špirálovité bunky majú:",
+  answers: {
+    A: "aktinomycéty",
+    B: "streptokoky",
+    C: "stafylokoky",
+    D: "bacily",
+    E: "spirily",
+    F: "spirochéty",
+    G: "Rhodospirillum",
+    H: "virióny"
+  },
+  correct: ["E","F","G"]
+},
+
+{
+  question: "142. Bakteriálny chromozóm:",
+  answers: {
+    A: "je lineárny",
+    B: "je ohraničený membránou",
+    C: "nie je ohraničený membránou",
+    D: "je z chromatínu",
+    E: "je pripojený k membráne",
+    F: "má kruhový tvar",
+    G: "je dvojvláknová DNA",
+    H: "je v jadre"
+  },
+  correct: ["C","E","F","G"]
+},
+
+{
+  question: "143. Medzi živočíšne vírusy patria:",
+  answers: {
+    A: "bakteriofágy",
+    B: "vírus mozaiky zemiakov",
+    C: "onkovírusy",
+    D: "vírus slintačky",
+    E: "vírusy človeka",
+    F: "onkogénne vírusy",
+    G: "vírusy E. coli",
+    H: "fág gama"
+  },
+  correct: ["C","D","E","F"]
+},
+
+{
+  question: "144. V prostredí s vysokým obsahom soli žijú:",
+  answers: {
+    A: "patogénne baktérie",
+    B: "Halobacterium",
+    C: "Halococcus",
+    D: "termoarcheóny",
+    E: "metanoarcheóny",
+    F: "Pseudomonas",
+    G: "Thermoproteus",
+    H: "haloarcheóny"
+  },
+  correct: ["B","C","H"]
+},
+
+{
+  question: "145. Archeóny sa odlišujú tým, že:",
+  answers: {
+    A: "majú mikroskopické rozmery",
+    B: "majú jadro",
+    C: "rozmnožujú sa delením",
+    D: "nemajú peptidoglykan",
+    E: "žijú v extrémnych podmienkach",
+    F: "sú jednobunkové",
+    G: "sú patogénne",
+    H: "nie sú patogénne"
+  },
+  correct: ["D","E","F","H"]
+},
+
+{
+  question: "146. Význam baktérií v prírode:",
+  answers: {
+    A: "produkujú kyslík",
+    B: "spôsobujú choroby",
+    C: "žijú v extrémnych podmienkach",
+    D: "rozkladajú odumreté organizmy",
+    E: "obohacujú pôdu",
+    F: "zabezpečujú kolobeh látok",
+    G: "mineralizujú organickú hmotu",
+    H: "čistia vodu"
+  },
+  correct: ["D","F","G","H"]
+},
+
+{
+  question: "147. Chemoautotrofné baktérie:",
+  answers: {
+    A: "využívajú chlorofyl",
+    B: "využívajú CO₂",
+    C: "sú fotosyntetické",
+    D: "sú heterotrofné",
+    E: "sú saprofyty",
+    F: "získavajú energiu oxidáciou",
+    G: "sú autotrofné bez pigmentov",
+    H: "rozkladajú glukózu"
+  },
+  correct: ["B","F","G"]
+},
+
+{
+  question: "148. Fototrofné prokaryotá:",
+  answers: {
+    A: "sú predchodcami chloroplastov",
+    B: "využívajú organické látky",
+    C: "sú sinice",
+    D: "sú cyanobaktérie",
+    E: "sú saprofyty",
+    F: "sú jednobunkové rastliny",
+    G: "využívajú chlorofyl",
+    H: "používajú sa v mliekárstve"
+  },
+  correct: ["A","C","D","G"]
+},
+
+{
+  question: "149. Patogénne baktérie:",
+  answers: {
+    A: "rozmnožujú sa nepriamo",
+    B: "spôsobujú choroby",
+    C: "žijú v extrémoch",
+    D: "spôsobujú choroby rastlín",
+    E: "spôsobujú choroby živočíchov",
+    F: "rozmnožujú sa delením",
+    G: "používajú sa v jogurtoch",
+    H: "spôsobujú pohlavné choroby"
+  },
+  correct: ["B","D","E","F","H"]
+},
+
+{
+  question: "150. Baktérie spôsobujú:",
+  answers: {
+    A: "kvapavku",
+    B: "vírusové choroby",
+    C: "kiahne",
+    D: "besnotu",
+    E: "slintačku",
+    F: "respiračné infekcie",
+    G: "hnačky",
+    H: "tuberkulózu"
+  },
+  correct: ["A","F","G","H"]
+},
+
+{
+  question: "151. Ktoré ochorenia NIE sú vírusové:",
+  answers: {
+    A: "encefalitída",
+    B: "detská obrna",
+    C: "tuberkulóza",
+    D: "kvapavka",
+    E: "syfilis",
+    F: "chrípka",
+    G: "opar",
+    H: "besnota"
+  },
+  correct: ["C","D","E"]
+},
+
+{
+  question: "152. Pozitívne využitie baktérií:",
+  answers: {
+    A: "pri infekciách",
+    B: "v mliekárstve",
+    C: "pri rozklade látok",
+    D: "pri fotosyntéze",
+    E: "vo farmácii",
+    F: "v kvasnom priemysle",
+    G: "pri ekologickej sanácii",
+    H: "pri chemosyntéze"
+  },
+  correct: ["B","C","E","F","G","H"]
 }
-  
-  ]
-}],
-  mikro: [],
-  rastliny: [],
-  zivocichy1: [],
-  zivocichy2: [],
-  sustavy1: [],
-  sustavy2: [],
-  sustavy3: [],
-  gen1: [],
-  gen2: [],
-  gen3: [],
-  opakovanie: []
+}
+
+];] },
+  rastliny: { name: "Fyziológia rastlín", questions: [] },
+  zivocichy1: { name: "Fyziológia živočíchov I", questions: [] },
+  zivocichy2: { name: "Fyziológia živočíchov II", questions: [] },
+  sustavy1: { name: "Sústavy človeka I", questions: [] },
+  sustavy2: { name: "Sústavy človeka II", questions: [] },
+  sustavy3: { name: "Sústavy človeka III", questions: [] },
+  gen1: { name: "Genetika I", questions: [] },
+  gen2: { name: "Genetika II", questions: [] },
+  gen3: { name: "Genetika III", questions: [] },
+  system: { name: "Systém rastlín a živočíchov", questions: [] },
+  opakovanie: { name: "Opakovanie", questions: [] },
+
+  chemia1: { name: "Základy chémie", questions: [] },
+  chemia2: { name: "Stavba atómu", questions: [] },
+  chemia3: { name: "Chemické väzby", questions: [] },
+  chemia4: { name: "Fyzikálna chémia", questions: [] },
+  chemia5: { name: "Kyseliny a zásady", questions: [] },
+  chemia6: { name: "Chemické reakcie", questions: [] },
+  chemia7: { name: "Anorganická chémia", questions: [] },
+  chemia8: { name: "Uhľovodíky", questions: [] },
+  chemia9: { name: "Deriváty", questions: [] },
+  chemia10: { name: "Biomolekuly", questions: [] }
 };
 
-/* ========================= */
+// ==========================
+// LOGIKA
+// ==========================
 
-let currentTema = "";
-let currentIndex = 0;
+let currentTheme = null;
+let currentQuestion = 0;
 
-function openBio() {
-  hideAll();
-  document.getElementById("bioMenu").style.display = "block";
-}
+function openTheme(key) {
+  currentTheme = themes[key];
+  currentQuestion = 0;
 
-function openChem() {
-  hideAll();
-  document.getElementById("chemMenu").style.display = "block";
-}
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("test").classList.remove("hidden");
 
-function openTema(tema) {
-  currentTema = tema;
-  currentIndex = 0;
-  hideAll();
-  document.getElementById("test").style.display = "block";
-  document.getElementById("temaNazov").innerText = tema;
+  document.getElementById("temaNazov").innerText = currentTheme.name;
   showQuestion();
 }
 
 function showQuestion() {
-  const list = otazky[currentTema];
-  if (!list.length) {
+  const q = currentTheme.questions[currentQuestion];
+
+  if (!q) {
     document.getElementById("questionBox").innerHTML =
       "<p>⚠️ Táto téma zatiaľ nemá otázky.</p>";
     return;
   }
 
-  const q = list[currentIndex];
-  let html = `<h3>${q.question}</h3>`;
-  q.answers.forEach(a => {
-    html += `<div><input type="checkbox"> ${a}</div>`;
-  });
+  let html = `<b>${q.question}</b><div class="answers">`;
+
+  for (let k in q.answers) {
+    html += `
+      <label>
+        <input type="checkbox" name="q${currentQuestion}" value="${k}">
+        ${k}) ${q.answers[k]}
+      </label>
+    `;
+  }
+
+  html += "</div>";
   document.getElementById("questionBox").innerHTML = html;
 }
 
 function nextQuestion() {
-  const list = otazky[currentTema];
-  currentIndex++;
-  if (currentIndex < list.length) {
+  if (currentQuestion < currentTheme.questions.length - 1) {
+    currentQuestion++;
     showQuestion();
-  } else {
-    document.getElementById("questionBox").innerHTML =
-      "<h3>Hotovo 🎉</h3><p>Prešla si celú tému.</p>";
   }
 }
 
-function back() {
-  hideAll();
-  document.getElementById("mainMenu").style.display = "block";
-}
-
-function hideAll() {
-  document.getElementById("mainMenu").style.display = "none";
-  document.getElementById("bioMenu").style.display = "none";
-  document.getElementById("chemMenu").style.display = "none";
-  document.getElementById("test").style.display = "none";
-}
-</script>
-  function vyhodnotTest() {
+function vyhodnotTest() {
   let spravne = 0;
-  let spolu = questions.length;
 
-  questions.forEach((q, index) => {
-    const checked = document.querySelectorAll(
-      `input[name="q${index}"]:checked`
-    );
-
-    const vybrane = Array.from(checked).map(cb => cb.value);
+  currentTheme.questions.forEach((q, i) => {
+    const checked = document.querySelectorAll(`input[name="q${i}"]:checked`);
+    const vybrane = Array.from(checked).map(x => x.value);
 
     if (
       vybrane.length === q.correct.length &&
@@ -1898,17 +2444,19 @@ function hideAll() {
     }
   });
 
-  let percenta = Math.round((spravne / spolu) * 100);
+  let percenta = Math.round((spravne / currentTheme.questions.length) * 100);
 
   document.getElementById("vysledok").innerHTML = `
     <h3>Výsledok</h3>
-    <p>Správne: <b>${spravne} / ${spolu}</b></p>
-    <p>Úspešnosť: <b>${percenta}%</b></p>
-    ${percenta >= 60 
-      ? "<p style='color:green'>✅ Test zvládnutý</p>"
-      : "<p style='color:red'>❌ Skús znova</p>"}
+    <p>Správne: ${spravne} / ${currentTheme.questions.length}</p>
+    <p>Úspešnosť: ${percenta}%</p>
   `;
 }
+
+function back() {
+  location.reload();
+}
+</script>
 
 </body>
 </html>
