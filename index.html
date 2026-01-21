@@ -19,12 +19,9 @@ header {
   padding: 18px;
   text-align: center;
   font-size: 22px;
-  font-weight: bold;
 }
 
-.container {
-  padding: 20px;
-}
+.container { padding: 20px; }
 
 .card {
   background: white;
@@ -35,9 +32,7 @@ header {
   cursor: pointer;
 }
 
-.card:hover {
-  background: #e3f2fd;
-}
+.card:hover { background: #e3f2fd; }
 
 button {
   background: #1565c0;
@@ -50,9 +45,7 @@ button {
   font-size: 16px;
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 </style>
 </head>
 
@@ -60,13 +53,31 @@ button {
 
 <header>UPJŠ – Príprava na prijímačky</header>
 
-<!-- MENU -->
-<div class="container" id="menu">
-  <h2>📘 BIOLÓGIA</h2>
-  <div class="card" onclick="openBio()">Bunka a mikroorganizmy</div>
+<!-- HLAVNÉ MENU -->
+<div class="container" id="mainMenu">
+  <div class="card" onclick="openBioMenu()">📘 Biológia</div>
+  <div class="card" onclick="alert('Chémia bude doplnená')">🧪 Chémia</div>
+</div>
 
-  <h2>🧪 CHÉMIA</h2>
-  <div class="card" onclick="alert('Chémia sa pripravuje')">Základy chémie</div>
+<!-- BIO MENU -->
+<div class="container hidden" id="bioMenu">
+  <h3>📘 Biológia</h3>
+
+  <div class="card">Štruktúra a delenie bunky</div>
+  <div class="card" onclick="openTest()">Bunka a mikroorganizmy</div>
+  <div class="card">Fyziológia rastlín</div>
+  <div class="card">Fyziológia živočíchov I.</div>
+  <div class="card">Fyziológia živočíchov II.</div>
+  <div class="card">Sústavy človeka I.</div>
+  <div class="card">Sústavy človeka II.</div>
+  <div class="card">Sústavy človeka III.</div>
+  <div class="card">Genetika I.</div>
+  <div class="card">Genetika II.</div>
+  <div class="card">Genetika III.</div>
+  <div class="card">Systém rastlín a živočíchov</div>
+  <div class="card">OPAKOVANIE</div>
+
+  <button onclick="backToMain()">⬅ Späť</button>
 </div>
 
 <!-- TEST -->
@@ -76,7 +87,7 @@ button {
   <div id="answers"></div>
 
   <button onclick="nextQuestion()">Ďalšia otázka</button>
-  <button onclick="goBack()">⬅ Späť do menu</button>
+  <button onclick="backToBio()">⬅ Späť na témy</button>
 </div>
 
 <script>
@@ -156,51 +167,45 @@ const questions = [
 {q:"152. Pozitívny význam baktérií:",a:["spôsobujú choroby","výroba syrov","rozklad látok","fotosyntéza","farmácia","kvasenie","čistenie prostredia","chemosyntéza"]}
 ];
 
-// index otázky
 let index = 0;
 
-// otvorenie testu
-function openBio() {
-  document.getElementById("menu").classList.add("hidden");
+function openBioMenu(){
+  document.getElementById("mainMenu").classList.add("hidden");
+  document.getElementById("bioMenu").classList.remove("hidden");
+}
+
+function backToMain(){
+  document.getElementById("bioMenu").classList.add("hidden");
+  document.getElementById("mainMenu").classList.remove("hidden");
+}
+
+function openTest(){
+  document.getElementById("bioMenu").classList.add("hidden");
   document.getElementById("test").classList.remove("hidden");
   index = 0;
   showQuestion();
 }
 
-// zobrazenie otázky
-function showQuestion() {
-  if (questions.length === 0) {
-    document.getElementById("title").innerText = "Zatiaľ žiadne otázky";
-    document.getElementById("question").innerText = "Sem vložíš svoje otázky 🙂";
-    document.getElementById("answers").innerHTML = "";
-    return;
-  }
-
-  document.getElementById("title").innerText = "Otázka " + (index + 1);
+function showQuestion(){
+  document.getElementById("title").innerText = "Otázka " + (index+1);
   document.getElementById("question").innerText = questions[index].q;
 
   let html = "";
-  questions[index].a.forEach((x, i) => {
+  questions[index].a.forEach((x,i)=>{
     html += `<label><input type="checkbox"> ${String.fromCharCode(65+i)}) ${x}</label><br>`;
   });
-
   document.getElementById("answers").innerHTML = html;
 }
 
-// ďalšia otázka
-function nextQuestion() {
+function nextQuestion(){
   index++;
-  if (index < questions.length) {
-    showQuestion();
-  } else {
-    alert("Test dokončený 🎉");
-  }
+  if(index < questions.length) showQuestion();
+  else alert("Hotovo 🎉");
 }
 
-// návrat do menu
-function goBack() {
+function backToBio(){
   document.getElementById("test").classList.add("hidden");
-  document.getElementById("menu").classList.remove("hidden");
+  document.getElementById("bioMenu").classList.remove("hidden");
 }
 </script>
 
