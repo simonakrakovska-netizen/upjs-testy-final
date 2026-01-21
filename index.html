@@ -1,4 +1,3 @@
-# upjs-testy-final
 <!DOCTYPE html>
 <html lang="sk">
 <head>
@@ -7,19 +6,61 @@
 <title>UPJŠ – Testy</title>
 
 <style>
-body { font-family: Arial; background:#f2f6fb; margin:0; color:#003366; }
-header { background:#1e88e5; color:white; padding:15px; text-align:center; font-size:22px; }
-.container { padding:20px; }
-.card { background:white; padding:15px; margin-bottom:12px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,.1); cursor:pointer; }
-.card:hover { background:#e3f2fd; }
-button { padding:10px 15px; background:#1e88e5; color:white; border:none; border-radius:6px; margin-top:10px; }
-.hidden { display:none; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f6fb;
+  margin: 0;
+  color: #003366;
+}
+
+header {
+  background: #1565c0;
+  color: white;
+  padding: 18px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.container {
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+.card:hover {
+  background: #e3f2fd;
+}
+
+button {
+  background: #1565c0;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.hidden {
+  display: none;
+}
 </style>
 </head>
 
 <body>
+
 <header>UPJŠ – Príprava na prijímačky</header>
 
+<!-- MENU -->
 <div class="container" id="menu">
   <h2>📘 BIOLÓGIA</h2>
   <div class="card" onclick="openBio()">Bunka a mikroorganizmy</div>
@@ -27,129 +68,68 @@ button { padding:10px 15px; background:#1e88e5; color:white; border:none; border
   <h2>🧪 CHÉMIA</h2>
   <div class="card" onclick="alert('Chémia sa pripravuje')">Základy chémie</div>
 </div>
+
+<!-- TEST -->
 <div class="container hidden" id="test">
   <h3 id="title"></h3>
   <p id="question"></p>
   <div id="answers"></div>
-  <button onclick="next()">Ďalej</button>
+
+  <button onclick="nextQuestion()">Ďalšia otázka</button>
+  <button onclick="goBack()">⬅ Späť do menu</button>
 </div>
 
 <script>
-const questions = [
-  {q:"116. Z chemického hľadiska sú nukleové kyseliny:",a:["polypeptidy","estery MK","polynukleotidy","makromolekuly","biopolyméry","pentózy","monoméry","aminokyseliny"]},
-  {q:"117. Lipidy:",a:["sú vitamíny","sú hormóny","katalyzujú","tvoria protilátky","regulačné","zdroj energie","sú v membránach","ochranné"]},
-  {q:"118. Mikroorganizmy:",a:["archeóny","všetky baktérie","študuje mikrobiológia","mikroskopické","onkogénne vírusy","eukaryotické","jednobunkové","viditeľné okom"]},
-  {q:"119. Medzi prokaryotá patria:",a:["riasy","baktérie","mikroorganizmy","bakteriofágy","bičíkovce","archeóny","vírusy","rastliny"]},
-  {q:"120. Nebunkové organizmy:",a:["sinice","onkovírusy","spirily","erytrocyty","bakteriofágy","spirochéty","vírusy","parazity"]},
-  {q:"121. Vírusy sú:",a:["parazity","nebunkové","mimobunkové","nukleoproteíny","majú metabolizmus","nemajú metabolizmus","prokaryoty","infekčné"]},
-  {q:"122. Vírusy spôsobujú:",a:["besnotu","žltačku","chrípku","slintačku","kiahne","TBC","kvapavku","Downov syndróm"]},
-  {q:"123. Rozmnožovanie vírusov:",a:["mitóza","3 fázy","v bunke","delením","mimo bunky","v kultúrach","má fázy","samostatne"]},
-  {q:"124. Pôvodca detskej obrny:",a:["vírus","fág","nukleoproteín","baktéria","bacil","Salmonella","Shigella","streptokok"]},
-  {q:"125. Obal vírusu:",a:["kapsid","cysta","puzdro","virión","plášť","spóra","nukleoid","obal"]},
-  {q:"126. Vírusy spôsobujú:",a:["syfilis","osýpky","infekcie","nádchu","herpes","nádory","mozaiku","AIDS"]},
-  {q:"127. Vírusy sa rozmnožujú:",a:["meióza","mitóza","amitóza","pinocytóza","pučanie","delenie","v bunke","replikáciou"]},
-  {q:"128. Vírusy:",a:["1 NK","prokaryoty","najmenšie","15–300nm","nebunkové","infekčné","majú bičíky","bez DNA"]},
-  {q:"129. Bakteriofág:",a:["baktéria","makrofág","vírus baktérií","druh baktérie","pohlcuje","vírus","napáda baktérie","eukaryot"]},
-  {q:"130. Virión obsahuje:",a:["kapsid","DNA/RNA","NK + bielk.","tukový obal","tukový kapsid","hlavičku","plášť","2 NK"]},
-  {q:"131. Vírusy:",a:["majú bunku","jednobunkové","parazity","lipidový obal","mikrobiológia","virológia","nebunkové","rezervoár"]},
-  {q:"132. Vírus chrípky:",a:["50–80nm","viditeľný EM","kapsid","LM","15–300nm","tukový obal","nukleoid","nukleokapsid"]},
-  {q:"133. Vírusové choroby:",a:["angína","žltačka","príušnice","meningitída","TBC","malária","mor hydiny","tabak"]},
-  {q:"134. Rastlinné vírusy:",a:["RNA","cyanofágy","DNA","neinfekčné","sinice","dsRNA","virózy","rastliny"]},
-  {q:"135. Baktérie:",a:["autotrofné","rýchle delenie","cyanobaktérie","mitóza","saprofyty","symbióza","peptidoglykán","mikroskopické"]},
-{q:"136. Kokovité baktérie:",
-a:["majú bičíky","nemajú bičíky","nepohybujú sa","pohybujú sa bičíkom","tvoria strapce","tvoria reťazce","spôsobujú TBC","rozmnožujú sa delením"]},
+// TU SI POTOM VLOŽÍŠ OTÁZKY
+const questions = [];
 
-{q:"137. Streptokoky vytvárajú:",
-a:["strapce","dvojice","špirály","paličky","reťazce","vláknité útvary","spóry","toxíny"]},
-
-{q:"138. Stafylokoky vytvárajú:",
-a:["strapce","dvojice","špirály","paličky","reťazce","vlákna","spóry","chemosyntézu"]},
-
-{q:"139. Baktérie sa rozmnožujú:",
-a:["priečnym delením","priamym delením","replikáciou","pozdĺžnym delením","nepohlavne","nepriamym delením","výmenou DNA","rozpadom vlákien"]},
-
-{q:"140. Každá bakteriálna bunka má:",
-a:["bičík","ribozómy","cytoplazmu","nukleoid","puzdro","chloroplasty","bunkovú stenu","kruhový chromozóm"]},
-
-{q:"141. Špirálovité bunky majú:",
-a:["aktinomycéty","streptokoky","stafylokoky","bacily","spirily","spirochéty","Rhodospirillum","virióny"]},
-
-{q:"142. Bakteriálny chromozóm:",
-a:["je lineárny","je ohraničený membránou","nie je ohraničený","je chromatín","je pripojený k membráne","má kruhový tvar","je dvojvláknová DNA","je v jadre"]},
-
-{q:"143. Medzi živočíšne vírusy patria:",
-a:["bakteriofágy","vírus zemiakov","onkovírusy","slintačka","ľudské vírusy","onkogénne vírusy","vírus E.coli","fág gama"]},
-
-{q:"144. V prostredí s vysokým NaCl žijú:",
-a:["patogény","Halobacterium","Halococcus","termoarcheóny","metanogény","Pseudomonas","Thermoproteus","haloarcheóny"]},
-
-{q:"145. Archeóny sa líšia od baktérií:",
-a:["majú mikroskopické rozmery","majú jadro","rozmnožujú sa delením","nemajú peptidoglykán","žijú v extrémoch","sú jednobunkové","sú patogénne","nie sú patogénne"]},
-
-{q:"146. Význam baktérií:",
-a:["produkujú kyslík","spôsobujú choroby","žijú v extrémoch","rozkladajú látky","obohacujú pôdu","kolobeh látok","mineralizácia","čistenie vody"]},
-
-{q:"147. Chemoautotrofné baktérie:",
-a:["majú chlorofyl","využívajú CO2","sú fotosyntetické","sú heterotrofné","sú saprofyty","oxidujú anorganické látky","sú autotrofné","využívajú glukózu"]},
-
-{q:"148. Fototrofné prokaryotá:",
-a:["predchodcovia chloroplastov","využívajú organické látky","sú sinice","sú cyanobaktérie","sú saprofyty","sú rastliny","fotosyntetizujú","používajú sa v mliekarstve"]},
-
-{q:"149. Patogénne baktérie:",
-a:["rozmnožujú sa mitózou","spôsobujú choroby","žijú v extrémoch","spôsobujú choroby rastlín","spôsobujú choroby živočíchov","rozmnožujú sa delením","využívajú sa v mliekarstve","spôsobujú pohlavné choroby"]},
-
-{q:"150. Baktérie spôsobujú:",
-a:["kvapavku","vírusové choroby","kiahne","besnotu","slintačku","respiračné infekcie","hnačky","tuberkulózu"]},
-
-{q:"151. Ktoré ochorenie nie je vírusové:",
-a:["encefalitída","detská obrna","tuberkulóza","kvapavka","syfilis","chrípka","opar","besnota"]},
-
-{q:"152. Pozitívny význam baktérií:",
-a:["spôsobujú choroby","výroba syrov","rozklad látok","fotosyntéza","farmácia","kvasenie","čistenie prostredia","chemosyntéza"]}
-];
-
+// index otázky
 let index = 0;
 
+// otvorenie testu
 function openBio() {
   document.getElementById("menu").classList.add("hidden");
   document.getElementById("test").classList.remove("hidden");
   index = 0;
-  show();
+  showQuestion();
 }
 
-function show() {
-  document.getElementById("title").innerText = "Otázka " + (index+1);
+// zobrazenie otázky
+function showQuestion() {
+  if (questions.length === 0) {
+    document.getElementById("title").innerText = "Zatiaľ žiadne otázky";
+    document.getElementById("question").innerText = "Sem vložíš svoje otázky 🙂";
+    document.getElementById("answers").innerHTML = "";
+    return;
+  }
+
+  document.getElementById("title").innerText = "Otázka " + (index + 1);
   document.getElementById("question").innerText = questions[index].q;
 
   let html = "";
-  questions[index].a.forEach((x,i)=>{
+  questions[index].a.forEach((x, i) => {
     html += `<label><input type="checkbox"> ${String.fromCharCode(65+i)}) ${x}</label><br>`;
   });
+
   document.getElementById("answers").innerHTML = html;
 }
 
-function next() {
+// ďalšia otázka
+function nextQuestion() {
   index++;
-  if(index < questions.length) show();
-  else alert("Hotovo 🎉");
-function openBio() {
-  document.getElementById("menu").classList.add("hidden");
-  document.getElementById("test").classList.remove("hidden");
-  index = 0;
-  show();
+  if (index < questions.length) {
+    showQuestion();
+  } else {
+    alert("Test dokončený 🎉");
+  }
 }
 
+// návrat do menu
 function goBack() {
   document.getElementById("test").classList.add("hidden");
   document.getElementById("menu").classList.remove("hidden");
 }
 </script>
-  function openBio() {
-  document.getElementById("menu").classList.add("hidden");
-  document.getElementById("test").classList.remove("hidden");
-  index = 0;
-  show();
-</script> 
 
 </body>
 </html>
