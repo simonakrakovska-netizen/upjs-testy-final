@@ -2,76 +2,60 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>Testy – Biológia & Chémia</title>
+<title>Testy</title>
+
 <style>
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: #eef3ff;
-    margin: 0;
-    padding: 0;
+    padding: 20px;
 }
 .box {
-    max-width: 900px;
-    margin: 20px auto;
     background: white;
     padding: 20px;
     border-radius: 10px;
+    max-width: 900px;
+    margin: auto;
 }
 button {
-    padding: 10px 15px;
+    padding: 10px;
     margin: 5px;
+    background: #2563eb;
+    color: white;
     border: none;
     border-radius: 6px;
-    background: #3b82f6;
-    color: white;
-    cursor: pointer;
-}
-button:hover {
-    background: #2563eb;
-}
-.answer {
-    margin: 6px 0;
 }
 </style>
 </head>
 
 <body>
 
-<!-- MENU -->
-<div class="box" id="menu">
-    <h2>📘 Výber predmetu</h2>
-    <button onclick="openSubject('bio')">Biológia</button>
-    <button onclick="openSubject('chem')">Chémia</button>
+<div id="menu" class="box">
+    <h2>Vyber predmet</h2>
+    <button onclick="openBio()">Biológia</button>
+    <button onclick="openChem()">Chémia</button>
 </div>
 
-<!-- TÉMY -->
-<div class="box" id="themes" style="display:none;">
+<div id="themes" class="box" style="display:none;">
     <h2 id="subjectTitle"></h2>
-    <div id="themeButtons"></div>
-    <button onclick="goHome()">⬅ Späť</button>
+    <div id="themeList"></div>
+    <button onclick="backToMenu()">⬅ Späť</button>
 </div>
 
-<!-- TEST -->
-<div class="box" id="test" style="display:none;">
+<div id="test" class="box" style="display:none;">
     <h2 id="themeTitle"></h2>
     <div id="questionBox"></div>
-
     <button onclick="nextQuestion()">Ďalšia otázka</button>
-    <button onclick="finishTest()">Vyhodnotiť</button>
-    <button onclick="goBackToThemes()">⬅ Späť</button>
-
-    <div id="result"></div>
+    <button onclick="backToThemes()">⬅ Späť</button>
 </div>
 
 <script>
-const data = {
-  bio: {
-    name: "Biológia",
-    themes: {
+let currentTheme = [];
+let index = 0;
 
-      struktura: {
-        name: "Štruktúra a delenie bunky",
-        questions: [{
+// ====== BIO ======
+const bioThemes = {
+    "Štruktúra a delenie bunky": [{
   question: "1. Prokaryotická bunka:",
   answers: [
     "A) môže obsahovať tylakoidy",
@@ -1774,13 +1758,8 @@ const data = {
     "H) deoxyribonukleotidy"
   ],
   correct: ["C","G","H"]
-}
-        ]
-      },
-
-      mikro: {
-        name: "Bunka a mikroorganizmy",
-        questions: [{
+}],
+    "Bunka a mikroorganizmy": [{
   question: "116. Z chemického hľadiska sú nukleové kyseliny:",
   answers: {
     A: "polypeptidy",
@@ -2328,118 +2307,96 @@ const data = {
     G: "pri ekologickej sanácii",
     H: "pri chemosyntéze"
   },
-  correct: ["B","C","E","F","G","H"]
-        ]
-      },
-
-      fyzioRastlin: { name: "Fyziológia rastlín", questions: [] },
-      fyzioZivocich1: { name: "Fyziológia živočíchov I", questions: [] },
-      fyzioZivocich2: { name: "Fyziológia živočíchov II", questions: [] },
-
-      sustavy1: { name: "Sústavy človeka I", questions: [] },
-      sustavy2: { name: "Sústavy človeka II", questions: [] },
-      sustavy3: { name: "Sústavy človeka III", questions: [] },
-
-      genetika1: { name: "Genetika I", questions: [] },
-      genetika2: { name: "Genetika II", questions: [] },
-      genetika3: { name: "Genetika III", questions: [] },
-
-      system: { name: "Systém rastlín a živočíchov, ekológia, evolúcia", questions: [] },
-
-      opakovanie: { name: "OPAKOVANIE 1–1500", questions: [] }
-    }
-  },
-
-  chem: {
-    name: "Chémia",
-    themes: {
-      zaklady: { name: "Základné pojmy", questions: [] },
-      atom: { name: "Stavba atómu", questions: [] },
-      vazby: { name: "Chemické väzby", questions: [] },
-      fyzika: { name: "Fyzikálna chémia", questions: [] },
-      kyseliny: { name: "Kyseliny a zásady", questions: [] },
-      reakcie: { name: "Chemické reakcie", questions: [] },
-      anorganika: { name: "Anorganická chémia", questions: [] },
-      organika: { name: "Organická chémia", questions: [] },
-      bioch: { name: "Biochémia", questions: [] },
-      opakovanie: { name: "OPAKOVANIE", questions: [] }
-    }
-  }
+  correct: ["B","C","E","F","G","H"]],
+    "Fyziológia rastlín": [],
+    "Fyziológia živočíchov I": [],
+    "Fyziológia živočíchov II": [],
+    "Sústavy človeka I": [],
+    "Sústavy človeka II": [],
+    "Sústavy človeka III": [],
+    "Genetika I": [],
+    "Genetika II": [],
+    "Genetika III": [],
+    "Opakovanie": []
 };
 
-let currentSubject = null;
-let currentTheme = null;
-let index = 0;
-
-function openSubject(key) {
-  currentSubject = data[key];
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("themes").style.display = "block";
-
-  document.getElementById("subjectTitle").innerText = currentSubject.name;
-
-  let html = "";
-  for (let t in currentSubject.themes) {
-    html += `<button onclick="openTheme('${t}')">${currentSubject.themes[t].name}</button><br>`;
-  }
-  document.getElementById("themeButtons").innerHTML = html;
+// ====== OTVÁRANIE ======
+function openBio() {
+    showThemes("Biológia", bioThemes);
 }
 
-function openTheme(key) {
-  currentTheme = currentSubject.themes[key];
-  index = 0;
+function openChem() {
+    showThemes("Chémia", {
+        "Základy": [],
+        "Atóm": [],
+        "Väzby": [],
+        "Reakcie": [],
+        "Organická chémia": [],
+        "Opakovanie": []
+    });
+}
 
-  document.getElementById("themes").style.display = "none";
-  document.getElementById("test").style.display = "block";
-  document.getElementById("themeTitle").innerText = currentTheme.name;
+function showThemes(title, themes) {
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("themes").style.display = "block";
 
-  showQuestion();
+    document.getElementById("subjectTitle").innerText = title;
+
+    let html = "";
+    for (let t in themes) {
+        html += `<button onclick="openTheme('${t}')">${t}</button><br>`;
+    }
+
+    document.getElementById("themeList").innerHTML = html;
+    window.themes = themes;
+}
+
+// ====== TEST ======
+function openTheme(name) {
+    currentTheme = window.themes[name];
+    index = 0;
+
+    document.getElementById("themes").style.display = "none";
+    document.getElementById("test").style.display = "block";
+    document.getElementById("themeTitle").innerText = name;
+
+    showQuestion();
 }
 
 function showQuestion() {
-  if (!currentTheme.questions.length) {
-    document.getElementById("questionBox").innerHTML =
-      "<p>⚠️ Táto téma zatiaľ nemá otázky.</p>";
-    return;
-  }
+    if (currentTheme.length === 0) {
+        document.getElementById("questionBox").innerHTML =
+            "<p>Táto téma zatiaľ nemá otázky.</p>";
+        return;
+    }
 
-  const q = currentTheme.questions[index];
-  let html = `<h3>${q.question}</h3>`;
+    let q = currentTheme[index];
+    let html = `<h3>${q.question}</h3>`;
 
-  for (let key in q.answers) {
-    html += `
-      <div class="answer">
-        <label>
-          <input type="checkbox"> ${key}) ${q.answers[key]}
-        </label>
-      </div>`;
-  }
+    for (let key in q.answers) {
+        html += `<div><label><input type="checkbox"> ${key}) ${q.answers[key]}</label></div>`;
+    }
 
-  document.getElementById("questionBox").innerHTML = html;
+    document.getElementById("questionBox").innerHTML = html;
 }
 
 function nextQuestion() {
-  index++;
-  if (index >= currentTheme.questions.length) {
-    finishTest();
-    return;
-  }
-  showQuestion();
+    index++;
+    if (index >= currentTheme.length) {
+        document.getElementById("questionBox").innerHTML = "<h3>Koniec testu ✅</h3>";
+    } else {
+        showQuestion();
+    }
 }
 
-function finishTest() {
-  document.getElementById("result").innerHTML =
-    "<h3>✔ Test dokončený</h3>";
+function backToThemes() {
+    document.getElementById("test").style.display = "none";
+    document.getElementById("themes").style.display = "block";
 }
 
-function goBackToThemes() {
-  document.getElementById("test").style.display = "none";
-  document.getElementById("themes").style.display = "block";
-}
-
-function goHome() {
-  document.getElementById("themes").style.display = "none";
-  document.getElementById("menu").style.display = "block";
+function backToMenu() {
+    document.getElementById("themes").style.display = "none";
+    document.getElementById("menu").style.display = "block";
 }
 </script>
 
