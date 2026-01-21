@@ -2,45 +2,35 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>UPJŠ Testy</title>
-
+<title>Testy – Biológia & Chémia</title>
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: #eef3ff;
-  margin: 0;
-  padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #eef3ff;
+    margin: 0;
+    padding: 0;
 }
-
 .box {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 900px;
-  margin: auto;
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
 }
-
 button {
-  margin: 6px;
-  padding: 10px 15px;
-  border: none;
-  background: #3b82f6;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 6px;
+    background: #3b82f6;
+    color: white;
+    cursor: pointer;
 }
-
 button:hover {
-  background: #2563eb;
+    background: #2563eb;
 }
-
-.answers label {
-  display: block;
-  margin: 5px 0;
-}
-
-.hidden {
-  display: none;
+.answer {
+    margin: 6px 0;
 }
 </style>
 </head>
@@ -49,57 +39,39 @@ button:hover {
 
 <!-- MENU -->
 <div class="box" id="menu">
-  <h2>📘 UPJŠ Testy</h2>
+    <h2>📘 Výber predmetu</h2>
+    <button onclick="openSubject('bio')">Biológia</button>
+    <button onclick="openSubject('chem')">Chémia</button>
+</div>
 
-  <h3>🧬 Biológia</h3>
-  <button onclick="openTheme('bunka')">1️⃣ Štruktúra a delenie bunky</button>
-  <button onclick="openTheme('mikro')">2️⃣ Bunka a mikroorganizmy</button>
-  <button onclick="openTheme('rastliny')">3️⃣ Fyziológia rastlín</button>
-  <button onclick="openTheme('zivocichy1')">4️⃣ Fyziológia živočíchov I</button>
-  <button onclick="openTheme('zivocichy2')">5️⃣ Fyziológia živočíchov II</button>
-  <button onclick="openTheme('sustavy1')">6️⃣ Sústavy človeka I</button>
-  <button onclick="openTheme('sustavy2')">7️⃣ Sústavy človeka II</button>
-  <button onclick="openTheme('sustavy3')">8️⃣ Sústavy človeka III</button>
-  <button onclick="openTheme('gen1')">9️⃣ Genetika I</button>
-  <button onclick="openTheme('gen2')">🔟 Genetika II</button>
-  <button onclick="openTheme('gen3')">1️⃣1️⃣ Genetika III</button>
-  <button onclick="openTheme('system')">1️⃣2️⃣ Systém rastlín a živočíchov</button>
-  <button onclick="openTheme('opakovanie')">🔁 OPAKOVANIE</button>
-
-  <h3>⚗️ Chémia</h3>
-  <button onclick="openTheme('chemia1')">Základy chémie</button>
-  <button onclick="openTheme('chemia2')">Stavba atómu</button>
-  <button onclick="openTheme('chemia3')">Chemické väzby</button>
-  <button onclick="openTheme('chemia4')">Fyzikálna chémia</button>
-  <button onclick="openTheme('chemia5')">Kyseliny a zásady</button>
-  <button onclick="openTheme('chemia6')">Reakcie</button>
-  <button onclick="openTheme('chemia7')">Anorganická chémia</button>
-  <button onclick="openTheme('chemia8')">Uhľovodíky</button>
-  <button onclick="openTheme('chemia9')">Deriváty</button>
-  <button onclick="openTheme('chemia10')">Biomolekuly</button>
+<!-- TÉMY -->
+<div class="box" id="themes" style="display:none;">
+    <h2 id="subjectTitle"></h2>
+    <div id="themeButtons"></div>
+    <button onclick="goHome()">⬅ Späť</button>
 </div>
 
 <!-- TEST -->
-<div class="box hidden" id="test">
-  <h2 id="temaNazov"></h2>
+<div class="box" id="test" style="display:none;">
+    <h2 id="themeTitle"></h2>
+    <div id="questionBox"></div>
 
-  <div id="questionBox"></div>
+    <button onclick="nextQuestion()">Ďalšia otázka</button>
+    <button onclick="finishTest()">Vyhodnotiť</button>
+    <button onclick="goBackToThemes()">⬅ Späť</button>
 
-  <button onclick="nextQuestion()">Ďalšia otázka</button>
-  <button onclick="vyhodnotTest()">Vyhodnotiť</button>
-  <button onclick="back()">⬅ Späť</button>
-
-  <div id="vysledok"></div>
+    <div id="result"></div>
 </div>
 
 <script>
-// ==========================
-// DÁTA – TU BUDEŠ DÁVAŤ OTÁZKY
-// ==========================
+const data = {
+  bio: {
+    name: "Biológia",
+    themes: {
 
-const themes = {
-
-  bunka: { name: "Štruktúra a delenie bunky", questions: [{
+      struktura: {
+        name: "Štruktúra a delenie bunky",
+        questions: [{
   question: "1. Prokaryotická bunka:",
   answers: [
     "A) môže obsahovať tylakoidy",
@@ -1802,8 +1774,13 @@ const themes = {
     "H) deoxyribonukleotidy"
   ],
   correct: ["C","G","H"]
-}] },
-  mikro: { name: "Bunka a mikroorganizmy", questions: [{
+}
+        ]
+      },
+
+      mikro: {
+        name: "Bunka a mikroorganizmy",
+        questions: [{
   question: "116. Z chemického hľadiska sú nukleové kyseliny:",
   answers: {
     A: "polypeptidy",
@@ -2352,109 +2329,117 @@ const themes = {
     H: "pri chemosyntéze"
   },
   correct: ["B","C","E","F","G","H"]
-}
-}
+        ]
+      },
 
-];] },
-  rastliny: { name: "Fyziológia rastlín", questions: [] },
-  zivocichy1: { name: "Fyziológia živočíchov I", questions: [] },
-  zivocichy2: { name: "Fyziológia živočíchov II", questions: [] },
-  sustavy1: { name: "Sústavy človeka I", questions: [] },
-  sustavy2: { name: "Sústavy človeka II", questions: [] },
-  sustavy3: { name: "Sústavy človeka III", questions: [] },
-  gen1: { name: "Genetika I", questions: [] },
-  gen2: { name: "Genetika II", questions: [] },
-  gen3: { name: "Genetika III", questions: [] },
-  system: { name: "Systém rastlín a živočíchov", questions: [] },
-  opakovanie: { name: "Opakovanie", questions: [] },
+      fyzioRastlin: { name: "Fyziológia rastlín", questions: [] },
+      fyzioZivocich1: { name: "Fyziológia živočíchov I", questions: [] },
+      fyzioZivocich2: { name: "Fyziológia živočíchov II", questions: [] },
 
-  chemia1: { name: "Základy chémie", questions: [] },
-  chemia2: { name: "Stavba atómu", questions: [] },
-  chemia3: { name: "Chemické väzby", questions: [] },
-  chemia4: { name: "Fyzikálna chémia", questions: [] },
-  chemia5: { name: "Kyseliny a zásady", questions: [] },
-  chemia6: { name: "Chemické reakcie", questions: [] },
-  chemia7: { name: "Anorganická chémia", questions: [] },
-  chemia8: { name: "Uhľovodíky", questions: [] },
-  chemia9: { name: "Deriváty", questions: [] },
-  chemia10: { name: "Biomolekuly", questions: [] }
+      sustavy1: { name: "Sústavy človeka I", questions: [] },
+      sustavy2: { name: "Sústavy človeka II", questions: [] },
+      sustavy3: { name: "Sústavy človeka III", questions: [] },
+
+      genetika1: { name: "Genetika I", questions: [] },
+      genetika2: { name: "Genetika II", questions: [] },
+      genetika3: { name: "Genetika III", questions: [] },
+
+      system: { name: "Systém rastlín a živočíchov, ekológia, evolúcia", questions: [] },
+
+      opakovanie: { name: "OPAKOVANIE 1–1500", questions: [] }
+    }
+  },
+
+  chem: {
+    name: "Chémia",
+    themes: {
+      zaklady: { name: "Základné pojmy", questions: [] },
+      atom: { name: "Stavba atómu", questions: [] },
+      vazby: { name: "Chemické väzby", questions: [] },
+      fyzika: { name: "Fyzikálna chémia", questions: [] },
+      kyseliny: { name: "Kyseliny a zásady", questions: [] },
+      reakcie: { name: "Chemické reakcie", questions: [] },
+      anorganika: { name: "Anorganická chémia", questions: [] },
+      organika: { name: "Organická chémia", questions: [] },
+      bioch: { name: "Biochémia", questions: [] },
+      opakovanie: { name: "OPAKOVANIE", questions: [] }
+    }
+  }
 };
 
-// ==========================
-// LOGIKA
-// ==========================
-
+let currentSubject = null;
 let currentTheme = null;
-let currentQuestion = 0;
+let index = 0;
+
+function openSubject(key) {
+  currentSubject = data[key];
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("themes").style.display = "block";
+
+  document.getElementById("subjectTitle").innerText = currentSubject.name;
+
+  let html = "";
+  for (let t in currentSubject.themes) {
+    html += `<button onclick="openTheme('${t}')">${currentSubject.themes[t].name}</button><br>`;
+  }
+  document.getElementById("themeButtons").innerHTML = html;
+}
 
 function openTheme(key) {
-  currentTheme = themes[key];
-  currentQuestion = 0;
+  currentTheme = currentSubject.themes[key];
+  index = 0;
 
-  document.getElementById("menu").classList.add("hidden");
-  document.getElementById("test").classList.remove("hidden");
+  document.getElementById("themes").style.display = "none";
+  document.getElementById("test").style.display = "block";
+  document.getElementById("themeTitle").innerText = currentTheme.name;
 
-  document.getElementById("temaNazov").innerText = currentTheme.name;
   showQuestion();
 }
 
 function showQuestion() {
-  const q = currentTheme.questions[currentQuestion];
-
-  if (!q) {
+  if (!currentTheme.questions.length) {
     document.getElementById("questionBox").innerHTML =
       "<p>⚠️ Táto téma zatiaľ nemá otázky.</p>";
     return;
   }
 
-  let html = `<b>${q.question}</b><div class="answers">`;
+  const q = currentTheme.questions[index];
+  let html = `<h3>${q.question}</h3>`;
 
-  for (let k in q.answers) {
+  for (let key in q.answers) {
     html += `
-      <label>
-        <input type="checkbox" name="q${currentQuestion}" value="${k}">
-        ${k}) ${q.answers[k]}
-      </label>
-    `;
+      <div class="answer">
+        <label>
+          <input type="checkbox"> ${key}) ${q.answers[key]}
+        </label>
+      </div>`;
   }
 
-  html += "</div>";
   document.getElementById("questionBox").innerHTML = html;
 }
 
 function nextQuestion() {
-  if (currentQuestion < currentTheme.questions.length - 1) {
-    currentQuestion++;
-    showQuestion();
+  index++;
+  if (index >= currentTheme.questions.length) {
+    finishTest();
+    return;
   }
+  showQuestion();
 }
 
-function vyhodnotTest() {
-  let spravne = 0;
-
-  currentTheme.questions.forEach((q, i) => {
-    const checked = document.querySelectorAll(`input[name="q${i}"]:checked`);
-    const vybrane = Array.from(checked).map(x => x.value);
-
-    if (
-      vybrane.length === q.correct.length &&
-      vybrane.every(v => q.correct.includes(v))
-    ) {
-      spravne++;
-    }
-  });
-
-  let percenta = Math.round((spravne / currentTheme.questions.length) * 100);
-
-  document.getElementById("vysledok").innerHTML = `
-    <h3>Výsledok</h3>
-    <p>Správne: ${spravne} / ${currentTheme.questions.length}</p>
-    <p>Úspešnosť: ${percenta}%</p>
-  `;
+function finishTest() {
+  document.getElementById("result").innerHTML =
+    "<h3>✔ Test dokončený</h3>";
 }
 
-function back() {
-  location.reload();
+function goBackToThemes() {
+  document.getElementById("test").style.display = "none";
+  document.getElementById("themes").style.display = "block";
+}
+
+function goHome() {
+  document.getElementById("themes").style.display = "none";
+  document.getElementById("menu").style.display = "block";
 }
 </script>
 
