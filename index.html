@@ -18,7 +18,15 @@ button { padding:10px 15px; background:#1e88e5; color:white; border:none; border
 </head>
 
 <body>
+<header>UPJŠ – Príprava na prijímačky</header>
 
+<div class="container" id="menu">
+  <h2>📘 BIOLÓGIA</h2>
+  <div class="card" onclick="openBio()">Bunka a mikroorganizmy</div>
+
+  <h2>🧪 CHÉMIA</h2>
+  <div class="card" onclick="alert('Pripravuje sa')">Základy chémie</div>
+</div>
 <header>UPJŠ – Testy</header>
 
 <div class="container" id="menu">
@@ -131,6 +139,16 @@ function next() {
   index++;
   if(index < questions.length) show();
   else alert("Hotovo 🎉");
+function openBio() {
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("test").classList.remove("hidden");
+  index = 0;
+  show();
+}
+
+function goBack() {
+  document.getElementById("test").classList.add("hidden");
+  document.getElementById("menu").classList.remove("hidden");
 }
 </script>
 
