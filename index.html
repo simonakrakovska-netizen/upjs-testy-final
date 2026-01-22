@@ -8,7 +8,7 @@ body{font-family:Arial;background:#0f172a;color:white;padding:20px}
 button{padding:10px 15px;margin:5px;border-radius:8px;border:none;background:#3b82f6;color:white;cursor:pointer}
 button:hover{background:#2563eb}
 .box{max-width:700px;margin:auto}
-.choice{margin:5px 0}
+.choice{margin:6px 0}
 </style>
 </head>
 <body>
@@ -21,7 +21,7 @@ button:hover{background:#2563eb}
 
 <div class="box" id="themes" style="display:none">
   <h2 id="themeTitle"></h2>
-  <div id="themeButtons"></div>
+  <button onclick="startTest('bio')">Bunka a mikroorganizmy</button>
   <button onclick="backToMenu()">⬅ Späť</button>
 </div>
 
@@ -31,64 +31,52 @@ button:hover{background:#2563eb}
   <button onclick="next()">Ďalej</button>
 </div>
 
+<div class="box" id="result" style="display:none">
+  <h2>Výsledok</h2>
+  <p id="scoreText"></p>
+  <button onclick="location.reload()">Znova</button>
+</div>
+
 <script>
 let index = 0;
+let score = 0;
 let current = [];
 
 const bioQuestions = [
-  {
-    q: "1. Prokaryotická bunka:",
-    a: {
-      A:"Má jadro",
-      B:"Nemá jadro",
-      C:"Má mitochondrie",
-      D:"Má ribozómy"
-    },
-    c:["B","D"]
+{
+  q: "1. Prokaryotická bunka:",
+  a: {
+    A:"má jadro",
+    B:"nemá jadro",
+    C:"má mitochondrie",
+    D:"má ribozómy",
+    E:"má jadierko",
+    F:"má bunkovú stenu",
+    G:"má chloroplasty",
+    H:"má kruhovú DNA"
   },
-  {
-    q: "2. Cytoplazmatická membrána:",
-    a:{
-      A:"Je semipermeabilná",
-      B:"Je z celulózy",
-      C:"Je z fosfolipidov",
-      D:"Nemá funkciu"
-    },
-    c:["A","C"]
-  }
+  c:["B","D","F","H"]
+},
+{
+  q: "2. Cytoplazmatická membrána:",
+  a: {
+    A:"je semipermeabilná",
+    B:"je z celulózy",
+    C:"je z fosfolipidov",
+    D:"nemá funkciu",
+    E:"obsahuje bielkoviny",
+    F:"je len u rastlín",
+    G:"riadi transport",
+    H:"je pevná"
+  },
+  c:["A","C","E","G"]
+}
 ];
 
-const chemQuestions = [
-  {
-    q:"1. Atóm sa skladá z:",
-    a:{
-      A:"protónov",
-      B:"elektrónov",
-      C:"neurónov",
-      D:"neutrónov"
-    },
-    c:["A","B","D"]
-  }
-];
-
-function openSubject(s){
+function openSubject(){
   document.getElementById("menu").style.display="none";
   document.getElementById("themes").style.display="block";
-
-  const t = document.getElementById("themeTitle");
-  const b = document.getElementById("themeButtons");
-
-  b.innerHTML = "";
-
-  if(s==="bio"){
-    t.innerText="Biológia";
-    b.innerHTML = `<button onclick="startTest('bio')">Štruktúra bunky</button>`;
-  }
-
-  if(s==="chem"){
-    t.innerText="Chémia";
-    b.innerHTML = `<button onclick="startTest('chem')">Základy chémie</button>`;
-  }
+  document.getElementById("themeTitle").innerText = "Biológia";
 }
 
 function backToMenu(){
@@ -96,17 +84,16 @@ function backToMenu(){
   document.getElementById("menu").style.display="block";
 }
 
-function startTest(type){
+function startTest(){
+  index = 0;
+  score = 0;
+  current = bioQuestions;
   document.getElementById("themes").style.display="none";
   document.getElementById("test").style.display="block";
-
-  index = 0;
-  current = type==="bio" ? bioQuestions : chemQuestions;
-
-  show();
+  showQuestion();
 }
 
-function show(){
+function showQuestion(){
   const q = current[index];
   document.getElementById("question").innerText = q.q;
 
@@ -117,21 +104,41 @@ function show(){
     box.innerHTML += `
       <div class="choice">
         <label>
-          <input type="checkbox" value="${k}"> ${k}) ${q.a[k]}
+          <input type="checkbox" value="${k}">
+          ${k}) ${q.a[k]}
         </label>
       </div>`;
   }
 }
 
 function next(){
+  const selected = [...document.querySelectorAll("input:checked")]
+                  .map(x => x.value);
+
+  const correct = current[index].c;
+
+  selected.forEach(x=>{
+    if(correct.includes(x)) score++;
+  });
+
   index++;
+
   if(index >= current.length){
-    alert("Hotovo 🎉");
-    location.reload();
+    document.getElementById("test").style.display="none";
+    document.getElementById("result").style.display="block";
+    document.getElementById("scoreText").innerText =
+      `Získal/a si ${score} bodov z ${countMax()} možných`;
   } else {
-    show();
+    showQuestion();
   }
 }
+
+function countMax(){
+  let sum = 0;
+  current.forEach(q => sum += q.c.length);
+  return sum;
+}
 </script>
+
 </body>
 </html>
