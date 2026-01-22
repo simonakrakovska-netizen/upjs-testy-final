@@ -1,693 +1,137 @@
 <!DOCTYPE html>
-<div id="menu" class="box">
-  <h2>Vyber predmet</h2>
-  <button onclick="openSubject('bio')">🧬 Biológia</button>
-  <button onclick="openSubject('chem')">⚗️ Chémia</button>
-</div>
-
-<div id="themes" class="box" style="display:none;">
-  <h2 id="subjectTitle"></h2>
-  <div id="themeList"></div>
-  <button onclick="backToMenu()">⬅ Späť</button>
-</div>
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>Biológia – Bunka (1–115)</title>
+<title>Testy</title>
 <style>
-body{font-family:Arial;background:#0f172a;color:#fff;margin:0;padding:20px}
-h1{text-align:center}
-.box{max-width:900px;margin:auto;background:#111827;padding:20px;border-radius:10px}
-button{padding:10px 15px;border:none;border-radius:6px;background:#3b82f6;color:white;cursor:pointer}
+body{font-family:Arial;background:#0f172a;color:white;padding:20px}
+button{padding:10px 15px;margin:5px;border-radius:8px;border:none;background:#3b82f6;color:white;cursor:pointer}
 button:hover{background:#2563eb}
-.choice{margin:6px 0}
-.hidden{display:none}
+.box{max-width:700px;margin:auto}
+.choice{margin:5px 0}
 </style>
 </head>
 <body>
 
-<h1>🧬 Biológia – Bunka (1–115)</h1>
-
 <div class="box" id="menu">
-  <button onclick="startTest()">Spustiť test</button>
+  <h2>Vyber predmet</h2>
+  <button onclick="openSubject('bio')">Biológia</button>
+  <button onclick="openSubject('chem')">Chémia</button>
 </div>
 
-<div class="box hidden" id="quiz">
-  <h3 id="qText"></h3>
-  <div id="choices"></div>
-  <br>
+<div class="box" id="themes" style="display:none">
+  <h2 id="themeTitle"></h2>
+  <div id="themeButtons"></div>
+  <button onclick="backToMenu()">⬅ Späť</button>
+</div>
+
+<div class="box" id="test" style="display:none">
+  <h3 id="question"></h3>
+  <div id="answers"></div>
   <button onclick="next()">Ďalej</button>
 </div>
 
-<div class="box hidden" id="result">
-  <h2>Výsledok</h2>
-  <p id="score"></p>
-  <button onclick="location.reload()">Znova</button>
-</div>
-
 <script>
-const questions = [
-{
-text:"1. Prokaryotická bunka:",
-choices:{A:"má jadro",B:"má mitochondrie",C:"má ribozómy",D:"má bunkovú membránu",E:"má chloroplasty",F:"má nukleoid",G:"má Golgiho aparát",H:"má kruhovú DNA"},
-correct:["C","D","F","H"]
-},
-{
-text:"2. Prokaryoty nemajú:",
-choices:{A:"ribozómy",B:"mitochondrie",C:"jadro",D:"cytoplazmu",E:"DNA",F:"bunkovú membránu",G:"enzýmy",H:"ATP"},
-correct:["B","C"]
-},
-{
-text:"3. Cytológia skúma:",
-choices:{A:"tkanivá",B:"bunky",C:"orgány",D:"organizmy",E:"biochemické deje",F:"dedivosť",G:"evolúciu",H:"ekológiu"},
-correct:["B"]
-},
-{
-text:"4. Najmenšia živá jednotka je:",
-choices:{A:"vírus",B:"bielkovina",C:"bunka",D:"ribozóm",E:"orgán",F:"pletivo",G:"orgánová sústava",H:"enzým"},
-correct:["C"]
-},
-{
-text:"5. Vírusy:",
-choices:{A:"sú bunky",B:"majú DNA alebo RNA",C:"sú parazity",D:"rozmnožujú sa sami",E:"nemajú bunkovú stavbu",F:"majú metabolizmus",G:"potrebujú hostiteľa",H:"sú prokaryoty"},
-correct:["B","C","E","G"]
-},
-{
-text:"6. Bunková membrána:",
-choices:{A:"je fosfolipidová dvojvrstva",B:"je selektívne priepustná",C:"je pevná",D:"obsahuje bielkoviny",E:"neprepúšťa nič",F:"je len u živočíchov",G:"reguluje transport",H:"je len u rastlín"},
-correct:["A","B","D","G"]
-},
-{
-text:"7. Ribozómy:",
-choices:{A:"tvoria bielkoviny",B:"sú membránové",C:"sú v cytoplazme",D:"sú v jadre",E:"sú z RNA a bielkovín",F:"tvoria tuky",G:"sú len v rastlinách",H:"sú len v živočíchoch"},
-correct:["A","C","E"]
-},
-{
-text:"8. Mitochondrie:",
-choices:{A:"tvoria ATP",B:"majú DNA",C:"majú dvojitú membránu",D:"sú len v rastlinách",E:"prebieha v nich dýchanie",F:"sú bez enzýmov",G:"sú len v baktériách",H:"tvoria energiu"},
-correct:["A","B","C","E","H"]
-},
-{
-text:"9. Golgiho aparát:",
-choices:{A:"triedi bielkoviny",B:"tvorí ribozómy",C:"tvorí lyzozómy",D:"je v jadre",E:"upravuje bielkoviny",F:"tvorí DNA",G:"má membrány",H:"tvorí ATP"},
-correct:["A","C","E","G"]
-},
-{
-text:"10. Lyzozómy:",
-choices:{A:"obsahujú enzýmy",B:"rozkladajú látky",C:"sú len v rastlinách",D:"sú v živočíšnych bunkách",E:"majú tráviacu funkciu",F:"tvoria energiu",G:"obsahujú chlorofyl",H:"tvoria proteíny"},
-correct:["A","B","D","E"]
-},
-{
-text:"11. Bunková stena:",
-choices:{A:"je len u živočíchov",B:"je z celulózy",C:"udržiava tvar bunky",D:"je semipermeabilná",E:"chráni bunku",F:"je u rastlín",G:"je z chitínu",H:"je len u húb"},
-correct:["B","C","E","F"]
-},
-{
-text:"12. Cytoplazma:",
-choices:{A:"je tekuté prostredie bunky",B:"obsahuje organely",C:"je mimo bunky",D:"obsahuje enzýmy",E:"je bez vody",F:"je miestom metabolizmu",G:"je len u rastlín",H:"je nemenná"},
-correct:["A","B","D","F"]
-},
-{
-text:"13. Endoplazmatické retikulum:",
-choices:{A:"má hladkú a drsnú časť",B:"syntetizuje bielkoviny",C:"syntetizuje lipidy",D:"je bez membrány",E:"transportuje látky",F:"je v jadre",G:"má ribozómy",H:"tvorí ATP"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"14. Drsné ER:",
-choices:{A:"má ribozómy",B:"syntetizuje bielkoviny",C:"syntetizuje lipidy",D:"nemá membránu",E:"je súčasť cytoskeletu",F:"transportuje bielkoviny",G:"je v jadre",H:"tvorí ATP"},
-correct:["A","B","F"]
-},
-{
-text:"15. Hladké ER:",
-choices:{A:"syntetizuje lipidy",B:"detoxikuje",C:"má ribozómy",D:"syntetizuje steroidy",E:"tvorí bielkoviny",F:"je bez membrány",G:"ukladá Ca2+",H:"tvorí ATP"},
-correct:["A","B","D","G"]
-},
-{
-text:"16. Jadierko:",
-choices:{A:"je v jadre",B:"syntetizuje rRNA",C:"zaniká pri delení",D:"má membránu",E:"tvorí ribozómy",F:"je v cytoplazme",G:"je len u rastlín",H:"je stále prítomné"},
-correct:["A","B","C","E"]
-},
-{
-text:"17. Jadro:",
-choices:{A:"riadi bunku",B:"obsahuje DNA",C:"má dvojitú membránu",D:"je bez pórov",E:"obsahuje jadierko",F:"je len u prokaryotov",G:"je riadiace centrum",H:"nemá chromozómy"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"18. Chromozómy:",
-choices:{A:"sú z DNA a bielkovín",B:"sú stále viditeľné",C:"sú v jadre",D:"sú jednochromatídové v interfáze",E:"sú dvojchromatídové po replikácii",F:"sú len u baktérií",G:"nesú gény",H:"sú z RNA"},
-correct:["A","C","D","E","G"]
-},
-{
-text:"19. Cytoskelet:",
-choices:{A:"udržiava tvar bunky",B:"umožňuje pohyb",C:"tvorí ho aktín",D:"je len u rastlín",E:"zabezpečuje transport",F:"je statický",G:"tvorí deliace vretienko",H:"je bez funkcie"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"20. Centrosóm:",
-choices:{A:"je u živočíchov",B:"obsahuje centrioly",C:"riadi delenie bunky",D:"je v jadre",E:"tvorí deliace vretienko",F:"je len u rastlín",G:"má mikrotubuly",H:"je bez funkcie"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"21. Mitóza:",
-choices:{A:"je delenie jadra",B:"je delenie bunky",C:"zabezpečuje rast",D:"vznikajú 4 bunky",E:"vznikajú 2 bunky",F:"je redukčné delenie",G:"zabezpečuje obnovu",H:"prebieha v telových bunkách"},
-correct:["A","B","C","E","G","H"]
-},
-{
-text:"22. Fázy mitózy:",
-choices:{A:"profáza",B:"metafáza",C:"anafáza",D:"telofáza",E:"interfáza",F:"meióza",G:"cytokinéza",H:"replikácia"},
-correct:["A","B","C","D"]
-},
-{
-text:"23. Profáza:",
-choices:{A:"chromozómy sa skracujú",B:"rozpadá sa jadrový obal",C:"chromozómy sa zoradia",D:"vzniká deliace vretienko",E:"rozchádzajú sa chromatídy",F:"začína delenie",G:"zaniká jadierko",H:"vznikajú bivalentné chromozómy"},
-correct:["A","B","D","F","G"]
-},
-{
-text:"24. Metafáza:",
-choices:{A:"chromozómy sú v rovníku",B:"rozchádzajú sa chromatídy",C:"vrcholí špiralizácia",D:"zaniká jadro",E:"vzniká vretienko",F:"chromozómy sú najviditeľnejšie",G:"prebieha crossing-over",H:"prebieha cytokinéza"},
-correct:["A","C","F"]
-},
-{
-text:"25. Anafáza:",
-choices:{A:"rozchádzajú sa chromatídy",B:"rozpadá sa jadro",C:"vznikajú dcérske bunky",D:"chromozómy putujú k pólom",E:"zaniká vretienko",F:"prebieha syntéza DNA",G:"nastáva pohyb",H:"je koniec mitózy"},
-correct:["A","D","G"]
-},
-{
-text:"26. Telofáza:",
-choices:{A:"obnovuje sa jadro",B:"zaniká deliace vretienko",C:"chromozómy sa despiralizujú",D:"vznikajú 2 jadrá",E:"prebieha cytokinéza",F:"prebieha replikácia",G:"zaniká cytoplazma",H:"vznikajú chromozómy"},
-correct:["A","B","C","D","E"]
-},
-{
-text:"27. Cytokinéza:",
-choices:{A:"je delenie cytoplazmy",B:"nasleduje po mitóze",C:"je delenie jadra",D:"vedie k 2 bunkám",E:"prebieha súčasne s mitózou",F:"je len u rastlín",G:"je len u živočíchov",H:"je súčasť bunkového cyklu"},
-correct:["A","B","D","H"]
-},
-{
-text:"28. Bunkový cyklus:",
-choices:{A:"má G1,S,G2,M",B:"zahŕňa len mitózu",C:"je riadený enzýmami",D:"má kontrolné body",E:"je rovnaký u všetkých buniek",F:"umožňuje rast",G:"umožňuje obnovu",H:"nemá fázy"},
-correct:["A","C","D","F","G"]
-},
-{
-text:"29. Meióza:",
-choices:{A:"je redukčné delenie",B:"vznikajú 4 bunky",C:"vznikajú haploidné bunky",D:"je len u somatických buniek",E:"zabezpečuje variabilitu",F:"má 2 delenia",G:"vznikajú diploidné bunky",H:"je mitóza"},
-correct:["A","B","C","E","F"]
-},
-{
-text:"30. Crossing-over:",
-choices:{A:"prebieha v profáze I",B:"je výmena úsekov chromatíd",C:"zvyšuje variabilitu",D:"prebieha v mitóze",E:"prebieha medzi homologickými chromozómami",F:"prebieha v metafáze",G:"je náhodný proces",H:"nemá význam"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"31. Interfáza:",
-choices:{A:"je medzi dvoma deleniami",B:"zahŕňa G1,S,G2",C:"je pokojové štádium",D:"prebieha v nej syntéza DNA",E:"prebieha mitóza",F:"je najdlhšia fáza",G:"neprebieha metabolizmus",H:"bunka rastie"},
-correct:["A","B","D","F","H"]
-},
-{
-text:"32. G1 fáza:",
-choices:{A:"je pred mitózou",B:"prebieha rast bunky",C:"prebieha replikácia DNA",D:"je kontrolný bod",E:"prebieha syntéza bielkovín",F:"je najkratšia fáza",G:"bunka sa pripravuje na delenie",H:"je po mitóze"},
-correct:["A","B","D","E","H"]
-},
-{
-text:"33. S fáza:",
-choices:{A:"prebieha syntéza DNA",B:"zdvojujú sa chromozómy",C:"prebieha rast bunky",D:"prebieha replikácia",E:"vznikajú sestrské chromatídy",F:"prebieha mitóza",G:"neprebieha syntéza",H:"je medzi G1 a G2"},
-correct:["A","B","D","E","H"]
-},
-{
-text:"34. G2 fáza:",
-choices:{A:"nasleduje po S fáze",B:"bunka sa pripravuje na delenie",C:"prebieha syntéza DNA",D:"prebieha kontrola DNA",E:"vzniká deliace vretienko",F:"je kontrolný bod",G:"je pred mitózou",H:"je po mitóze"},
-correct:["A","B","D","F","G"]
-},
-{
-text:"35. Meióza:",
-choices:{A:"prebieha v pohlavných bunkách",B:"má dve delenia",C:"vznikajú 4 bunky",D:"vznikajú diploidné bunky",E:"zabezpečuje variabilitu",F:"je redukčné delenie",G:"prebieha len raz",H:"je rovnaká ako mitóza"},
-correct:["A","B","C","E","F"]
-},
-{
-text:"36. Meióza I:",
-choices:{A:"je redukčné delenie",B:"rozchádzajú sa homologické chromozómy",C:"prebieha crossing-over",D:"je rovnaká ako mitóza",E:"vznikajú haploidné bunky",F:"prebieha v profáze II",G:"zachováva počet chromozómov",H:"má profázu I"},
-correct:["A","B","C","E","H"]
-},
-{
-text:"37. Meióza II:",
-choices:{A:"je podobná mitóze",B:"rozchádzajú sa chromatídy",C:"je redukčné delenie",D:"vznikajú 4 bunky",E:"nasleduje po meióze I",F:"prebieha bez replikácie DNA",G:"zvyšuje počet chromozómov",H:"má profázu II"},
-correct:["A","B","D","E","F","H"]
-},
-{
-text:"38. Homologické chromozómy:",
-choices:{A:"sú rovnaké veľkosťou",B:"nesú rovnaké gény",C:"sú identické",D:"pochádzajú od rodičov",E:"tvoria bivalenty",F:"sú len v mitóze",G:"sú geneticky odlišné",H:"sú rovnaké funkčne"},
-correct:["A","B","D","E","H"]
-},
-{
-text:"39. Crossing-over:",
-choices:{A:"prebieha v profáze I",B:"je výmena úsekov chromatíd",C:"zvyšuje genetickú variabilitu",D:"prebieha v mitóze",E:"prebieha medzi sestrami",F:"prebieha medzi homologickými chromozómami",G:"je náhodný proces",H:"nemá význam"},
-correct:["A","B","C","F","G"]
-},
-{
-text:"40. Gaméty:",
-choices:{A:"sú pohlavné bunky",B:"sú haploidné",C:"vznikajú meiózou",D:"sú diploidné",E:"tvoria zygotu",F:"vznikajú mitózou",G:"sú geneticky rovnaké",H:"nesú polovicu genetickej informácie"},
-correct:["A","B","C","E","H"]
-},
-{
-text:"41. Zygota:",
-choices:{A:"vzniká splynutím gamét",B:"je diploidná",C:"je haploidná",D:"má úplnú genetickú informáciu",E:"je výsledok oplodnenia",F:"je pohlavná bunka",G:"je začiatok vývoja",H:"je mitóza"},
-correct:["A","B","D","E","G"]
-},
-{
-text:"42. Diferenciácia buniek:",
-choices:{A:"je špecializácia buniek",B:"je rovnakosť buniek",C:"prebieha počas vývinu",D:"závisí od génovej expresie",E:"prebieha len po narodení",F:"vedie k rozdielnym funkciám",G:"je vratná",H:"je nevratná"},
-correct:["A","C","D","F"]
-},
-{
-text:"43. Kmeňové bunky:",
-choices:{A:"sú totipotentné",B:"sú pluripotentné",C:"dokážu sa diferencovať",D:"sú len v dospelosti",E:"tvoria rôzne typy buniek",F:"nemajú jadro",G:"sú nediferencované",H:"sú vždy embryonálne"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"44. Apoptóza:",
-choices:{A:"je programovaná smrť bunky",B:"je patologická smrť",C:"je riadený proces",D:"je dôležitá pre vývin",E:"prebieha nekontrolovane",F:"nevyvoláva zápal",G:"je nevyhnutná pre organizmus",H:"je to nekróza"},
-correct:["A","C","D","F","G"]
-},
-{
-text:"45. Nekróza:",
-choices:{A:"je nekontrolovaná smrť bunky",B:"je spôsobená poškodením",C:"vyvoláva zápal",D:"je fyziologická",E:"je regulovaná",F:"vedie k rozpadu bunky",G:"je súčasť vývinu",H:"je patologická"},
-correct:["A","B","C","F","H"]
-},
-{
-text:"46. Ribozómy:",
-choices:{A:"syntetizujú bielkoviny",B:"sú membránové",C:"sú z RNA a bielkovín",D:"sú voľné alebo viazané",E:"sú len v jadre",F:"sú v cytoplazme",G:"sú len u eukaryotov",H:"tvoria enzýmy"},
-correct:["A","C","D","F"]
-},
-{
-text:"47. Transport cez membránu:",
-choices:{A:"môže byť pasívny",B:"môže byť aktívny",C:"vyžaduje vždy energiu",D:"prebieha cez proteíny",E:"závisí od koncentrácie",F:"prebieha osmózou",G:"prebieha difúziou",H:"neexistuje"},
-correct:["A","B","D","E","F","G"]
-},
-{
-text:"48. Osmóza:",
-choices:{A:"je difúzia vody",B:"prebieha cez polopriepustnú membránu",C:"prebieha proti gradientu",D:"je pasívny dej",E:"vyžaduje energiu",F:"závisí od koncentrácie",G:"je aktívny transport",H:"mení objem bunky"},
-correct:["A","B","D","F","H"]
-},
-{
-text:"49. Hypotonické prostredie:",
-choices:{A:"má menej rozpustených látok",B:"voda vstupuje do bunky",C:"bunka sa zmršťuje",D:"môže dôjsť k lýze",E:"bunka stráca vodu",F:"je nebezpečné pre živočíšnu bunku",G:"je rovnaké ako izotonické",H:"spôsobuje napučanie"},
-correct:["A","B","D","F","H"]
-},
-{
-text:"50. Izotonické prostredie:",
-choices:{A:"má rovnakú koncentráciu látok",B:"nedochádza k pohybu vody",C:"bunka nemení objem",D:"voda vstupuje do bunky",E:"voda vystupuje z bunky",F:"je fyziologické",G:"je nebezpečné",H:"je ideálne pre bunku"},
-correct:["A","B","C","F","H"]
-},
-{
-text:"51. Mitóza:",
-choices:{A:"je delenie jadra",B:"prebieha v telových bunkách",C:"zabezpečuje rast",D:"zabezpečuje obnovu buniek",E:"vedie k vzniku gamét",F:"je nepriamym delením",G:"je redukčné delenie",H:"zachováva počet chromozómov"},
-correct:["A","B","C","D","F","H"]
-},
-{
-text:"52. Profáza mitózy:",
-choices:{A:"chromozómy sa skracujú",B:"zaniká jadrová membrána",C:"vzniká deliace vretienko",D:"chromozómy sa radia do roviny",E:"rozchádzajú sa chromatídy",F:"prebieha replikácia DNA",G:"nastáva špiralizácia",H:"zaniká jadierko"},
-correct:["A","B","C","G","H"]
-},
-{
-text:"53. Metafáza:",
-choices:{A:"chromozómy sú v ekvatoriálnej rovine",B:"chromozómy sú dvojchromatídové",C:"prebieha crossing-over",D:"mikrotubuly sa viažu na centroméry",E:"zaniká jadro",F:"je najdlhšia fáza",G:"je najkratšia fáza",H:"chromozómy sú najviac skondenzované"},
-correct:["A","B","D","H"]
-},
-{
-text:"54. Anafáza:",
-choices:{A:"rozchádzajú sa chromatídy",B:"rozchádzajú sa homologické chromozómy",C:"chromozómy sa skracujú",D:"chromozómy putujú k pólom",E:"prebieha replikácia DNA",F:"prebieha delenie jadra",G:"vznikajú dcérske chromozómy",H:"zaniká jadrová membrána"},
-correct:["A","D","F","G"]
-},
-{
-text:"55. Telofáza:",
-choices:{A:"obnovuje sa jadrová membrána",B:"chromozómy sa despiralizujú",C:"zaniká deliace vretienko",D:"vznikajú dve jadrá",E:"prebieha cytokinéza",F:"prebieha replikácia",G:"chromozómy sa skracujú",H:"končí mitóza"},
-correct:["A","B","C","D","E","H"]
-},
-{
-text:"56. Cytokinéza:",
-choices:{A:"je delenie cytoplazmy",B:"nasleduje po karyokinéze",C:"prebieha rovnakým spôsobom u rastlín a živočíchov",D:"vznikajú dve bunky",E:"prebieha počas interfázy",F:"vzniká bunková priehradka",G:"vzniká deliaca ryha",H:"je delenie jadra"},
-correct:["A","B","D","F","G"]
-},
-{
-text:"57. Meióza zabezpečuje:",
-choices:{A:"tvorbu gamét",B:"genetickú variabilitu",C:"zníženie počtu chromozómov",D:"rast organizmu",E:"zachovanie počtu chromozómov",F:"pohlavné rozmnožovanie",G:"vznik somatických buniek",H:"rekombináciu génov"},
-correct:["A","B","C","F","H"]
-},
-{
-text:"58. Rozdiel medzi mitózou a meiózou:",
-choices:{A:"meióza má dve delenia",B:"mitóza je redukčná",C:"meióza znižuje počet chromozómov",D:"mitóza vytvára gaméty",E:"meióza zvyšuje variabilitu",F:"mitóza zachováva genetickú informáciu",G:"meióza prebieha v telových bunkách",H:"mitóza má jednu deliaciu fázu"},
-correct:["A","C","E","F","H"]
-},
-{
-text:"59. Bunky vzniknuté mitózou:",
-choices:{A:"sú geneticky rovnaké",B:"sú haploidné",C:"sú diploidné",D:"sú odlišné",E:"majú rovnaký počet chromozómov",F:"vznikajú v pohlavných orgánoch",G:"sú telové bunky",H:"majú polovicu DNA"},
-correct:["A","C","E","G"]
-},
-{
-text:"60. Bunky vzniknuté meiózou:",
-choices:{A:"sú geneticky rozdielne",B:"sú haploidné",C:"majú polovicu chromozómov",D:"sú telové bunky",E:"sú pohlavné bunky",F:"sú geneticky identické",G:"vznikajú mitózou",H:"zabezpečujú variabilitu"},
-correct:["A","B","C","E","H"]
-},
-{
-text:"61. Chromatín:",
-choices:{A:"je DNA s bielkovinami",B:"nachádza sa v jadre",C:"je viditeľný počas interfázy",D:"je základom chromozómov",E:"je len v prokaryotoch",F:"je tvorený RNA",G:"obsahuje genetickú informáciu",H:"zaniká počas mitózy"},
-correct:["A","B","C","D","G"]
-},
-{
-text:"62. Chromozóm:",
-choices:{A:"je nositeľ genetickej informácie",B:"je tvorený DNA",C:"má centroméru",D:"má ramená",E:"je prítomný len počas delenia",F:"je vždy dvojchromatídový",G:"má teloméry",H:"je len v eukaryotoch"},
-correct:["A","B","C","D","G"]
-},
-{
-text:"63. Centroméra:",
-choices:{A:"spája chromatídy",B:"je miestom pripojenia vlákien",C:"je v jadre",D:"určuje tvar chromozómu",E:"je vždy uprostred",F:"je dôležitá pre delenie",G:"je tvorená RNA",H:"zabezpečuje pohyb chromozómov"},
-correct:["A","B","D","F","H"]
-},
-{
-text:"64. Chromatídy:",
-choices:{A:"sú identické",B:"vznikajú replikáciou DNA",C:"sú spojené centromérou",D:"rozchádzajú sa v anafáze",E:"sú geneticky rozdielne",F:"sú len v meióze",G:"tvoria chromozóm",H:"vznikajú v G1 fáze"},
-correct:["A","B","C","D","G"]
-},
-{
-text:"65. Genóm:",
-choices:{A:"je súbor všetkých génov",B:"je genetická informácia organizmu",C:"je rovnaký u všetkých buniek",D:"je len v jadre",E:"je v mitochondriách",F:"je v chloroplastoch",G:"je druhovo špecifický",H:"je len v gamétach"},
-correct:["A","B","C","G"]
-},
-{
-text:"66. DNA:",
-choices:{A:"je nukleová kyselina",B:"je nositeľ genetickej informácie",C:"má dvojzávitnicovú štruktúru",D:"obsahuje ribózu",E:"obsahuje deoxyribózu",F:"je v jadre",G:"je v mitochondriách",H:"je v cytoplazme"},
-correct:["A","B","C","E","F","G"]
-},
-{
-text:"67. RNA:",
-choices:{A:"obsahuje ribózu",B:"je jednovláknová",C:"zúčastňuje sa syntézy bielkovín",D:"je len v jadre",E:"existuje mRNA, tRNA, rRNA",F:"nesie genetickú informáciu",G:"je v cytoplazme",H:"je vždy dvojvláknová"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"68. Genetický kód:",
-choices:{A:"je univerzálny",B:"je trojzložkový",C:"je preklad DNA do bielkovín",D:"je jednoznačný",E:"je náhodný",F:"je rovnaký pre všetky organizmy",G:"je degenerovaný",H:"je založený na aminokyselinách"},
-correct:["A","B","C","F","G"]
-},
-{
-text:"69. Transkripcia:",
-choices:{A:"prepis DNA do RNA",B:"prebieha v jadre",C:"vzniká mRNA",D:"je syntéza bielkovín",E:"prebieha na ribozómoch",F:"využíva DNA ako matricu",G:"je prvý krok expresie génu",H:"prebieha v cytoplazme"},
-correct:["A","B","C","F","G"]
-},
-{
-text:"70. Translácia:",
-choices:{A:"prebieha na ribozómoch",B:"je syntéza bielkovín",C:"využíva mRNA",D:"prebieha v jadre",E:"využíva tRNA",F:"je prepis DNA",G:"vzniká polypeptid",H:"je druhý krok expresie génu"},
-correct:["A","B","C","E","G","H"]
-},
-{
-text:"71. Jadierko:",
-choices:{A:"je súčasť jadra",B:"syntetizuje rRNA",C:"vzniká počas interfázy",D:"zaniká počas mitózy",E:"má vlastnú membránu",F:"je miestom tvorby ribozómov",G:"je v cytoplazme",H:"je len v prokaryotoch"},
-correct:["A","B","C","D","F"]
-},
-{
-text:"72. Ribozómy:",
-choices:{A:"sú nemembránové organely",B:"zúčastňujú sa syntézy bielkovín",C:"sú tvorené RNA a bielkovinami",D:"sú len na drsnom ER",E:"sú voľne v cytoplazme",F:"sú len v eukaryotoch",G:"vznikajú v jadierku",H:"sú viditeľné svetelným mikroskopom"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"73. Endoplazmatické retikulum:",
-choices:{A:"má drsnú a hladkú časť",B:"drsné ER syntetizuje bielkoviny",C:"hladké ER syntetizuje lipidy",D:"je bez membrány",E:"slúži na transport látok",F:"je súčasťou jadra",G:"má ribozómy",H:"je súčasť cytoskeletu"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"74. Golgiho aparát:",
-choices:{A:"upravuje bielkoviny",B:"balí látky do vezikúl",C:"je zásobárňou energie",D:"podieľa sa na sekrécii",E:"vznikajú v ňom lyzozómy",F:"je nemembránový",G:"je súčasť cytoskeletu",H:"je v jadre"},
-correct:["A","B","D","E"]
-},
-{
-text:"75. Lyzozómy:",
-choices:{A:"obsahujú tráviace enzýmy",B:"rozkladajú poškodené organely",C:"sú typické pre živočíšne bunky",D:"obsahujú DNA",E:"zabezpečujú vnútrobunkové trávenie",F:"sú typické pre rastliny",G:"vznikajú v Golgiho aparáte",H:"sú nemembránové"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"76. Mitochondrie:",
-choices:{A:"sú centrom energie bunky",B:"obsahujú vlastnú DNA",C:"majú dvojitú membránu",D:"prebieha v nich fotosyntéza",E:"prebieha v nich dýchanie",F:"sú len v rastlinných bunkách",G:"obsahujú enzýmy Krebsovho cyklu",H:"vznikajú v jadre"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"77. Chloroplasty:",
-choices:{A:"obsahujú chlorofyl",B:"prebieha v nich fotosyntéza",C:"majú dvojitú membránu",D:"nachádzajú sa len v živočíšnych bunkách",E:"obsahujú tylakoidy",F:"obsahujú strómu",G:"sú bez DNA",H:"vznikajú delením"},
-correct:["A","B","C","E","F","H"]
-},
-{
-text:"78. Plastidy:",
-choices:{A:"sú typické pre rastliny",B:"obsahujú DNA",C:"sú tri základné typy",D:"patria medzi nemembránové organely",E:"amyloplasty ukladajú škrob",F:"chromoplasty obsahujú farbivá",G:"leukoplasty obsahujú chlorofyl",H:"sú bez membrány"},
-correct:["A","B","C","E","F"]
-},
-{
-text:"79. Vakuola:",
-choices:{A:"je typická pre rastlinné bunky",B:"obsahuje bunkovú šťavu",C:"udržiava turgor",D:"má tonoplast",E:"má metabolickú funkciu",F:"je nemembránová",G:"zúčastňuje sa rozkladu látok",H:"je v živočíšnych bunkách veľká"},
-correct:["A","B","C","D","E","G"]
-},
-{
-text:"80. Cytoskelet:",
-choices:{A:"udržiava tvar bunky",B:"umožňuje pohyb buniek",C:"je tvorený mikrotubulmi",D:"je statický",E:"zúčastňuje sa delenia bunky",F:"tvorí deliace vretienko",G:"je tvorený DNA",H:"je len u rastlín"},
-correct:["A","B","C","E","F"]
-},
-{
-text:"81. Mikrotubuly:",
-choices:{A:"sú súčasťou cytoskeletu",B:"tvoria deliace vretienko",C:"sú z tubulínu",D:"zabezpečujú pohyb bičíkov",E:"sú z aktínu",F:"tvoria mikroklky",G:"sú stabilné štruktúry",H:"sú len v jadre"},
-correct:["A","B","C","D"]
-},
-{
-text:"82. Mikrofilamenty:",
-choices:{A:"sú z aktínu",B:"zabezpečujú pohyb bunky",C:"tvoria cytoskelet",D:"sú z tubulínu",E:"zúčastňujú sa kontrakcie",F:"tvoria svalové vlákna",G:"sú len v jadre",H:"sú nepohyblivé"},
-correct:["A","B","C","E","F"]
-},
-{
-text:"83. Bičíky a brvy:",
-choices:{A:"slúžia na pohyb",B:"majú usporiadanie 9+2",C:"sú z mikrotubulov",D:"sú len u baktérií",E:"sú eukaryotické štruktúry",F:"majú bazálne teliesko",G:"sú z aktínu",H:"slúžia na výživu"},
-correct:["A","B","C","E","F"]
-},
-{
-text:"84. Plazmatická membrána:",
-choices:{A:"je selektívne priepustná",B:"tvorená fosfolipidovou dvojvrstvou",C:"obsahuje bielkoviny",D:"je rigidná štruktúra",E:"umožňuje transport látok",F:"je bez sacharidov",G:"zabezpečuje komunikáciu buniek",H:"je nepriepustná"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"85. Pasívny transport:",
-choices:{A:"nevyžaduje energiu",B:"prebieha po koncentračnom spáde",C:"zahŕňa difúziu",D:"zahŕňa osmózu",E:"vyžaduje ATP",F:"prebieha proti gradientu",G:"prebieha cez membránu",H:"využíva prenášače"},
-correct:["A","B","C","D","G"]
-},
-{
-text:"86. Aktívny transport:",
-choices:{A:"vyžaduje energiu",B:"prebieha proti gradientu",C:"využíva ATP",D:"zahŕňa endocytózu",E:"nevyužíva bielkoviny",F:"zahŕňa exocytózu",G:"je pasívny dej",H:"je selektívny"},
-correct:["A","B","C","D","F","H"]
-},
-{
-text:"87. Endocytóza:",
-choices:{A:"je príjem látok do bunky",B:"zahŕňa fagocytózu",C:"zahŕňa pinocytózu",D:"je aktívny proces",E:"nevyžaduje energiu",F:"prebieha pomocou vezikúl",G:"je výdaj látok",H:"prebieha len u rastlín"},
-correct:["A","B","C","D","F"]
-},
-{
-text:"88. Exocytóza:",
-choices:{A:"je výdaj látok z bunky",B:"prebieha pomocou vezikúl",C:"je pasívny proces",D:"vyžaduje energiu",E:"zúčastňuje sa sekrécie",F:"prebieha cez membránu",G:"je typická len pre rastliny",H:"prebieha v Golgiho aparáte"},
-correct:["A","B","D","E","F"]
-},
-{
-text:"89. Osmóza:",
-choices:{A:"je pohyb vody",B:"prebieha cez semipermeabilnú membránu",C:"prebieha z nižšej koncentrácie",D:"prebieha do vyššej koncentrácie",E:"je pasívny dej",F:"vyžaduje ATP",G:"je typ difúzie",H:"prebieha len v rastlinách"},
-correct:["A","B","D","E","G"]
-},
-{
-text:"90. Hypotonické prostredie:",
-choices:{A:"má nižšiu koncentráciu látok",B:"bunka prijíma vodu",C:"bunka napučiava",D:"nastáva plazmolýza",E:"nastáva hemolýza",F:"bunka sa zmršťuje",G:"voda vstupuje do bunky",H:"je typické pre fyziologický roztok"},
-correct:["A","B","C","E","G"]
-},
-{
-text:"91. Vakuoly:",
-choices:{A:"sú obalené tonoplastom",B:"sú vyplnené bunkovou šťavou",C:"sú vyplnené cytoplazmou",D:"obsahujú hydrolytické enzýmy",E:"sú oddelené semipermeabilnou membránou",F:"sú produktom protoplastu",G:"vypĺňajú strómu",H:"sú len v živočíšnych bunkách"},
-correct:["A","B","D","E","F"]
-},
-{
-text:"92. V jadrovom obale sa nachádzajú:",
-choices:{A:"mikrotubuly",B:"jadrové póry",C:"plazmodezmy",D:"protoplasty",E:"peptidoglykán",F:"pektíny",G:"lignín",H:"jadrové póry"},
-correct:["B","H"]
-},
-{
-text:"93. Rastlinná bunka sa odlišuje tým, že má:",
-choices:{A:"mitochondrie",B:"plastidy",C:"ribozómy",D:"vakuoly",E:"drsné ER",F:"bunkovú stenu",G:"lyzozómy",H:"mikrotubuly"},
-correct:["B","D","F"]
-},
-{
-text:"94. Tylakoidy:",
-choices:{A:"sú v mitochondriách",B:"sú v stróme chloroplastov",C:"sú v cytoplazme baktérií",D:"sú membránové štruktúry",E:"sú súčasť Golgiho aparátu",F:"sú súčasťou chloroplastov",G:"viažu chlorofyl",H:"sú v cyanobaktériách"},
-correct:["B","F","G","H"]
-},
-{
-text:"95. Bičíky eukaryotických buniek:",
-choices:{A:"majú usporiadanie 9+2",B:"sú pokryté membránou",C:"sú zakotvené v bunkovej stene",D:"sú z mikrotubulov",E:"obsahujú kolagén",F:"sú zakotvené v bazálnom teliesku",G:"majú pelikulu",H:"slúžia na pohyb"},
-correct:["A","B","D","F","H"]
-},
-{
-text:"96. Bunky živočíchov:",
-choices:{A:"sú eukaryotické",B:"sú prokaryotické",C:"majú membránové organely",D:"majú lyzozómy",E:"majú pelikulu",F:"majú plazmodezmy",G:"obsahujú melanín",H:"rozmnožujú sa amitózou"},
-correct:["A","C","D"]
-},
-{
-text:"97. Fibrilárne štruktúry buniek:",
-choices:{A:"nervové vlákna",B:"mikrofilamenty",C:"cytoskelet",D:"myofibrily",E:"mikrotubuly",F:"tonofibrily",G:"brvy",H:"bičíky"},
-correct:["A","B","D","F","G","H"]
-},
-{
-text:"98. Lyzozómy:",
-choices:{A:"regulujú príjem látok",B:"sú transportné vezikuly",C:"obsahujú tráviace enzýmy",D:"sú typické pre živočíšne bunky",E:"sú typické pre rastliny",F:"rozkladajú cudzie látky",G:"rozkladajú nepotrebné látky",H:"sú bez membrány"},
-correct:["C","D","F","G"]
-},
-{
-text:"99. Mikrotubuly v bičíku:",
-choices:{A:"tvoria 9 trojíc",B:"sú uložené priečne",C:"majú usporiadanie 9+2",D:"majú 9 dvojíc a 2 centrálne",E:"majú 11 dvojíc",F:"sú náhodne usporiadané",G:"majú usporiadanie 9+3",H:"sú v centrálnej rovine"},
-correct:["C","D"]
-},
-{
-text:"100. V rastlinných bunkách sa nenachádzajú:",
-choices:{A:"lyzozómy",B:"neurofibrily",C:"tonofibrily",D:"hydrolytické enzýmy",E:"tonoplast",F:"jadierka",G:"plazmodezmy",H:"myofibrily"},
-correct:["A","B","C","H"]
-},
-{
-text:"101. Tonoplast:",
-choices:{A:"je na povrchu leukoplastov",B:"je priepustná membrána vakuoly",C:"je polopriepustná membrána vakuoly",D:"je semipermeabilný",E:"je na povrchu lyzozómov",F:"obaľuje vakuolu",G:"je na povrchu vezikúl",H:"oddeľuje obsah vakuoly od cytoplazmy"},
-correct:["C","D","F","H"]
-},
-{
-text:"102. V stróme chloroplastov sa nachádzajú:",
-choices:{A:"tylakoidy",B:"kruhová DNA",C:"chromatín",D:"lineárna DNA",E:"hydrolytické enzýmy",F:"bunková šťava",G:"karotenoidy",H:"plastidové ribozómy"},
-correct:["B","H"]
-},
-{
-text:"103. Podľa bunkovej teórie:",
-choices:{A:"bunka je základná jednotka života",B:"všetky bunky sú rovnaké",C:"bunky vznikajú delením",D:"bunky sú neživé",E:"organizmy sú tvorené bunkami",F:"bunky sú anorganické",G:"bunky uchovávajú genetickú informáciu",H:"bunky sú otvorené systémy"},
-correct:["A","C","E","G","H"]
-},
-{
-text:"104. Evolučnú teóriu sformuloval:",
-choices:{A:"Treviranus",B:"Darwin",C:"Lamarck",D:"Pasteur",E:"Linné",F:"Woese",G:"Harvey",H:"Lamarck v roku 1809"},
-correct:["C","H"]
-},
-{
-text:"105. Správne tvrdenia:",
-choices:{A:"Lamarck vytvoril binomickú nomenklatúru",B:"Pasteur vyvrátil samoplozenie",C:"Schleiden založil systematiku",D:"Schwann je autor bunkovej teórie",E:"Woese zaviedol dvojmenné názvy",F:"Hooke použil mikroskop",G:"Mendel objasnil DNA",H:"Leeuwenhoek zaviedol pojem biológia"},
-correct:["B","D","F"]
-},
-{
-text:"106. Bunkovú teóriu formulovali:",
-choices:{A:"Hooke",B:"Leeuwenhoek",C:"Schleiden",D:"Pasteur",E:"Purkyně",F:"Schwann",G:"Malpighi",H:"Treviranus"},
-correct:["C","F"]
-},
-{
-text:"107. Základy anatómie položil:",
-choices:{A:"Harvey",B:"Aristoteles",C:"Hooke",D:"Purkyně",E:"Vesalius",F:"Galenos",G:"Virchow",H:"Malpighi"},
-correct:["E"]
-},
-{
-text:"108. Medzi fyziologické vedy patria:",
-choices:{A:"fyziológia človeka",B:"fyziológia prvkov",C:"histológia",D:"embryológia",E:"vedy o funkcii orgánov",F:"fyziológia živočíchov",G:"vedy o funkcii organel",H:"fyziológia rastlín"},
-correct:["A","E","F","H"]
-},
-{
-text:"109. Parazitológia študuje:",
-choices:{A:"správanie mikroorganizmov",B:"cudzopasné organizmy",C:"vzťah k prostrediu",D:"cudzopasné mikroorganizmy",E:"dedičnosť",F:"vzťah hostiteľ–parazit",G:"vývin",H:"zákonitosti parazitizmu"},
-correct:["B","D","F","H"]
-},
-{
-text:"110. Štruktúru DNA objasnili:",
-choices:{A:"Woese",B:"1944",C:"1953",D:"Crick",E:"Mendel",F:"1866",G:"Watson",H:"1966"},
-correct:["C","D","G"]
-},
-{
-text:"111. Funkcie vody v bunke:",
-choices:{A:"zásobná",B:"stavebná",C:"energetická",D:"reakčné prostredie",E:"rozpúšťadlo",F:"regulačná",G:"termoregulačná",H:"stavebná jednotka"},
-correct:["B","D","E","F","G"]
-},
-{
-text:"112. Monomér bielkovín:",
-choices:{A:"nukleotid",B:"peptid",C:"aminoskupina",D:"uhlík",E:"aminokyselina",F:"dusíkatá báza",G:"monosacharid",H:"nukleozid"},
-correct:["E"]
-},
-{
-text:"113. Väzba medzi aminokyselinami:",
-choices:{A:"esterová",B:"fosfodiesterová",C:"glykozidová",D:"peptidová",E:"vodíková",F:"medzi bázami",G:"kovalentná",H:"nekovalentná"},
-correct:["D","G"]
-},
-{
-text:"114. Funkcie bielkovín:",
-choices:{A:"informačná",B:"energetická",C:"metabolická",D:"regulačná",E:"mechanická",F:"zásobná",G:"ochranná",H:"štruktúrna"},
-correct:["C","D","E","H"]
-},
-{
-text:"115. Monoméry nukleových kyselín:",
-choices:{A:"aminokyseliny",B:"dusíkaté bázy",C:"nukleotidy",D:"chromatín",E:"nukleozidy",F:"pentózy",G:"ribonukleotidy",H:"deoxyribonukleotidy"},
-correct:["C","G","H"]
-}
-  
+let index = 0;
+let current = [];
+
+const bioQuestions = [
+  {
+    q: "1. Prokaryotická bunka:",
+    a: {
+      A:"Má jadro",
+      B:"Nemá jadro",
+      C:"Má mitochondrie",
+      D:"Má ribozómy"
+    },
+    c:["B","D"]
+  },
+  {
+    q: "2. Cytoplazmatická membrána:",
+    a:{
+      A:"Je semipermeabilná",
+      B:"Je z celulózy",
+      C:"Je z fosfolipidov",
+      D:"Nemá funkciu"
+    },
+    c:["A","C"]
+  }
 ];
 
-let index=0;
-let score=0;
+const chemQuestions = [
+  {
+    q:"1. Atóm sa skladá z:",
+    a:{
+      A:"protónov",
+      B:"elektrónov",
+      C:"neurónov",
+      D:"neutrónov"
+    },
+    c:["A","B","D"]
+  }
+];
 
-function startTest(){
-document.getElementById("menu").classList.add("hidden");
-document.getElementById("quiz").classList.remove("hidden");
-showQuestion();
-}
+function openSubject(s){
+  document.getElementById("menu").style.display="none";
+  document.getElementById("themes").style.display="block";
 
-function showQuestion(){
-const q=questions[index];
-document.getElementById("qText").innerText=q.text;
-const div=document.getElementById("choices");
-div.innerHTML="";
-for(let k in q.choices){
-div.innerHTML+=`
-<div class="choice">
-<input type="checkbox" value="${k}"> ${k}) ${q.choices[k]}
-</div>`;
-}
-}
+  const t = document.getElementById("themeTitle");
+  const b = document.getElementById("themeButtons");
 
-function next(){
-const checked=[...document.querySelectorAll("input:checked")].map(x=>x.value);
-const correct=questions[index].correct;
-checked.forEach(v=>{if(correct.includes(v))score++;});
-index++;
-if(index<questions.length) showQuestion();
-else finish();
-}
+  b.innerHTML = "";
 
-function finish(){
-document.getElementById("quiz").classList.add("hidden");
-document.getElementById("result").classList.remove("hidden");
-document.getElementById("score").innerText =
-`Správne odpovede: ${score} / ${questions.reduce((s,q)=>s+q.correct.length,0)}`;
-}
-</scriptfunction openSubject(subject){
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("themes").style.display = "block";
-
-  const title = document.getElementById("subjectTitle");
-  const list = document.getElementById("themeList");
-  list.innerHTML = "";
-
-  if(subject === "bio"){
-    title.innerText = "Biológia";
-    list.innerHTML = `
-      <button onclick="startTest('bunka')">🧫 Štruktúra bunky</button>
-    `;
+  if(s==="bio"){
+    t.innerText="Biológia";
+    b.innerHTML = `<button onclick="startTest('bio')">Štruktúra bunky</button>`;
   }
 
-  if(subject === "chem"){
-    title.innerText = "Chémia";
-    list.innerHTML = `
-      <button onclick="startTest('chemia')">⚗️ Základy chémie</button>
-    `;
+  if(s==="chem"){
+    t.innerText="Chémia";
+    b.innerHTML = `<button onclick="startTest('chem')">Základy chémie</button>`;
   }
 }
 
 function backToMenu(){
-  document.getElementById("themes").style.display = "none";
-  document.getElementById("menu").style.display = "block";
-}>
+  document.getElementById("themes").style.display="none";
+  document.getElementById("menu").style.display="block";
+}
+
+function startTest(type){
+  document.getElementById("themes").style.display="none";
+  document.getElementById("test").style.display="block";
+
+  index = 0;
+  current = type==="bio" ? bioQuestions : chemQuestions;
+
+  show();
+}
+
+function show(){
+  const q = current[index];
+  document.getElementById("question").innerText = q.q;
+
+  const box = document.getElementById("answers");
+  box.innerHTML = "";
+
+  for(let k in q.a){
+    box.innerHTML += `
+      <div class="choice">
+        <label>
+          <input type="checkbox" value="${k}"> ${k}) ${q.a[k]}
+        </label>
+      </div>`;
+  }
+}
+
+function next(){
+  index++;
+  if(index >= current.length){
+    alert("Hotovo 🎉");
+    location.reload();
+  } else {
+    show();
+  }
+}
+</script>
 </body>
 </html>
