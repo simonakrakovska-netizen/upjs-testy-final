@@ -3,39 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <title>Testy – Biológia & Chémia</title>
-
 <style>
-body{margin:0;font-family:Segoe UI,sans-serif;background:linear-gradient(120deg,#0b1220,#101a33);color:white}
-.container{max-width:950px;margin:auto;padding:20px}
-.card{background:#141e3a;border-radius:16px;padding:20px;margin-bottom:15px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-button{padding:10px 14px;border:none;border-radius:10px;background:#3b82f6;color:white;font-weight:bold;cursor:pointer;margin:4px}
-button:hover{opacity:.9}
-.choice{display:block;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #444}
-.progress{height:10px;background:#222;border-radius:10px;overflow:hidden}
-.bar{height:100%;width:0%;background:#3b82f6}
+body{margin:0;font-family:Arial;background:#0b1020;color:white}
+h1,h2{margin:0}
+button{padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+.wrap{max-width:1100px;margin:auto;padding:20px}
+.card{background:#121a35;padding:20px;border-radius:16px;margin-bottom:20px}
+.menu button{width:100%;margin:5px 0;background:#1f2c55;color:white}
+.choice{background:#1b254b;padding:10px;border-radius:10px;margin:5px 0}
+.progress{height:10px;background:#333;border-radius:10px;overflow:hidden}
+.bar{height:100%;background:#3b82f6;width:0%}
 .hidden{display:none}
 </style>
 </head>
 
 <body>
-<div class="container">
+<div class="wrap">
 
-<div id="menuSubject" class="card">
-  <h1>📘 Testy</h1>
-  <button onclick="openSubject('bio')">🧬 Biológia</button>
-  <button onclick="openSubject('chem')">⚗️ Chémia</button>
+<h1>📘 Testy – Biológia & Chémia</h1>
+
+<div id="menu" class="card">
+  <h2>Vyber predmet</h2>
+  <div class="menu">
+    <button onclick="openSubject('bio')">🧬 Biológia</button>
+    <button onclick="openSubject('chem')">⚗️ Chémia</button>
+  </div>
 </div>
 
-<div id="menuTheme" class="card hidden">
-  <h2 id="themeTitle"></h2>
-  <div id="themeList"></div>
-  <button onclick="backToSubjects()">⬅ Späť</button>
-</div>
+<div id="themes" class="card hidden"></div>
 
 <div id="quiz" class="card hidden">
   <div class="progress"><div id="bar" class="bar"></div></div>
-  <h2 id="question"></h2>
-  <div id="answers"></div>
+  <h3 id="qText"></h3>
+  <div id="choices"></div>
+  <br>
   <button onclick="next()">Ďalej</button>
 </div>
 
@@ -49,95 +50,315 @@ button:hover{opacity:.9}
 
 <script>
 const DATA = {
-  bio: {
-    name: "Biológia",
-    themes: {
-      bunka: [],
-      mikroorganizmy: [],
-      genetika: [],
-      clovek: [],
-      ekologia: []
+  bio:{
+    name:"Biológia",
+    themes:{
+      t1:{name:"Štruktúra bunky (1–115)",questions:[{
+  text: "1. Prokaryotická bunka:",
+  choices: {
+    A: "môže obsahovať tylakoidy",
+    B: "môže obsahovať chloroplasty",
+    C: "obsahuje prokaryotické ribozómy",
+    D: "má cytoplazmatickú membránu",
+    E: "má nukleoid",
+    F: "má lineárne molekuly DNA",
+    G: "má vnútorné membrány",
+    H: "má kruhové chromozómy"
+  },
+  correct: ["A","C","D","E"]
+},
+
+{
+  text: "2. Prokaryotické bunky nemajú:",
+  choices: {
+    A: "plastidy",
+    B: "vnútorný membránový systém",
+    C: "ribozómy",
+    D: "diktyozómy",
+    E: "cytoplazmatickú membránu",
+    F: "centriol",
+    G: "jadierko",
+    H: "mitochondrie"
+  },
+  correct: ["A","B","D","F","G","H"]
+},
+
+{
+  text: "3. Ktoré štruktúry zabezpečujú uvoľňovanie energie:",
+  choices: {
+    A: "tylakoidy",
+    B: "bičíky",
+    C: "ribozómy",
+    D: "mitochondrie",
+    E: "plazmatická membrána",
+    F: "jadro",
+    G: "diktyozómy",
+    H: "vakuoly"
+  },
+  correct: ["E"]
+},
+
+{
+  text: "4. Cytológia sa zaoberá štúdiom:",
+  choices: {
+    A: "živých sústav na molekulovej úrovni",
+    B: "mikroskopickej stavby tkanív",
+    C: "javov na úrovni bunky",
+    D: "živých mikroorganizmov",
+    E: "základnej stavebnej jednotky života",
+    F: "vírusov",
+    G: "tvaru a štruktúry buniek a organel",
+    H: "makromolekúl"
+  },
+  correct: ["C","E","G"]
+},
+
+{
+  text: "5. Najmenší systém schopný samostatného života je:",
+  choices: {
+    A: "vírus",
+    B: "bunka",
+    C: "kolónia",
+    D: "biopolymér",
+    E: "mnohobunkový organizmus",
+    F: "populácia",
+    G: "nukleoproteínová častica",
+    H: "indivíduum vyššieho rádu"
+  },
+  correct: ["B"]
+},
+
+{
+  text: "6. Vírusy sú:",
+  choices: {
+    A: "extracelulárne parazity",
+    B: "schopné uchovávať genetickú informáciu",
+    C: "nebunkové organizmy",
+    D: "najjednoduchšie prokaryotické organizmy",
+    E: "najjednoduchšie živé sústavy",
+    F: "schopné autoreprodukcie",
+    G: "existujú len ako parazity buniek",
+    H: "rozmnožujú sa len v živých bunkách"
+  },
+  correct: ["B","C","G","H"]
+},
+
+{
+  text: "7. Podľa stavby rozlišujeme bunky:",
+  choices: {
+    A: "rastlinné a živočíšne",
+    B: "jadrové a bezjadrové",
+    C: "diferencované a nediferencované",
+    D: "prokaryotické a eukaryotické",
+    E: "mikroskopické a submikroskopické",
+    F: "jednoduché a zložené",
+    G: "membránové a nemembránové",
+    H: "telové a pohlavné"
+  },
+  correct: ["D"]
+},
+
+{
+  text: "8. Pravé individuá vyššieho rádu:",
+  choices: {
+    A: "sú spoločenstvá sociálneho hmyzu",
+    B: "sú svorky vlkov",
+    C: "sú samostatne existujúce jedince",
+    D: "sú obligátne spoločenstvá organizmov",
+    E: "majú trvalo diferencovaných jedincov",
+    F: "majú zameniteľné funkcie",
+    G: "majú nezameniteľnú funkciu jedincov",
+    H: "sú dočasné spoločenstvá"
+  },
+  correct: ["D","G"]
+},
+
+{
+  text: "9. Bunky rovnakého typu sa spájajú do:",
+  choices: {
+    A: "orgánov",
+    B: "špecializovaných buniek",
+    C: "pletív",
+    D: "organizmov",
+    E: "indivíduí vyššieho rádu",
+    F: "tkanív",
+    G: "tkanivových kultúr",
+    H: "organel"
+  },
+  correct: ["C","F"]
+},
+
+{
+  text: "10. Základom cytoplazmatickej membrány je:",
+  choices: {
+    A: "bielkovinová dvojvrstva",
+    B: "celulózová dvojvrstva",
+    C: "dvojvrstva lipidov s bielkovinami",
+    D: "cytosol",
+    E: "cytoplazmatická matrix",
+    F: "fosfolipidová dvojvrstva",
+    G: "plazmaléma",
+    H: "bielkovinová vrstva s fosfolipidmi"
+  },
+  correct: ["C","F"]
+},
+
+{
+  text: "11. K základným bunkovým povrchom eukaryotickej bunky patrí:",
+  choices: {
+    A: "plazmaléma",
+    B: "jadrová membrána",
+    C: "kutikula",
+    D: "pelikula",
+    E: "bunková stena",
+    F: "cytoplazmatická membrána",
+    G: "slizové puzdro",
+    H: "karyoléma"
+  },
+  correct: ["A","B","E","F","H"]
+},
+
+{
+  text: "12. Cytoplazmatická membrána:",
+  choices: {
+    A: "je jedinou biomembránou prokaryotov",
+    B: "reguluje príjem látok",
+    C: "nazýva sa plazmaléma",
+    D: "nazýva sa karyoléma",
+    E: "patrí medzi bunkové povrchy",
+    F: "obsahuje receptory",
+    G: "tvorí prostredie pre organely",
+    H: "má len mechanickú funkciu"
+  },
+  correct: ["A","B","C","E","F"]
+},
+
+{
+  text: "13. Biomembrány sú zložené:",
+  choices: {
+    A: "z dvojvrstvy bielkovín a sacharidov",
+    B: "z dvojvrstvy lipidov a bielkovín",
+    C: "z dvojvrstvy fosfolipidov a sacharidov",
+    D: "z jednej vrstvy fosfolipidov",
+    E: "z fosfolipidov a bielkovín",
+    F: "z bielkovín",
+    G: "z lipidov a bielkovín",
+    H: "z dvojvrstvy fosfolipidov s bielkovinami"
+  },
+  correct: ["B","E","H"]
+},
+
+{
+  text: "14. Eukaryotické bunky:",
+  choices: {
+    A: "majú membránové organely",
+    B: "nemajú membránové organely",
+    C: "majú karyolému",
+    D: "nemajú jadrovú membránu",
+    E: "majú kruhové chromozómy",
+    F: "sú menšie ako prokaryoty",
+    G: "majú vnútorné membrány",
+    H: "nemajú DNA"
+  },
+  correct: ["A","C","G"]
+},
+
+{
+  text: "15. Živočíšne bunky:",
+  choices: {
+    A: "majú bunkovú stenu",
+    B: "obsahujú lyzozómy",
+    C: "majú veľkú vakuolu",
+    D: "sú spojené plazmodezmami",
+    E: "majú tonoplast",
+    F: "nemajú bunkovú stenu",
+    G: "môžu obsahovať myofibrily",
+    H: "obsahujú plastidy"
+  },
+  correct: ["B","F","G"]
+}]},
+      t2:{name:"Bunka a mikroorganizmy",questions:[]},
+      t3:{name:"Fyziológia rastlín",questions:[]},
+      t4:{name:"Fyziológia živočíchov I",questions:[]},
+      t5:{name:"Fyziológia živočíchov II",questions:[]},
+      t6:{name:"Sústavy človeka I",questions:[]},
+      t7:{name:"Sústavy človeka II",questions:[]},
+      t8:{name:"Sústavy človeka III",questions:[]},
+      t9:{name:"Genetika I",questions:[]},
+      t10:{name:"Genetika II",questions:[]},
+      t11:{name:"Genetika III",questions:[]},
+      t12:{name:"Evolúcia a ekológia",questions:[]}
     }
   },
-  chem: {
-    name: "Chémia",
-    themes: {
-      zaklady: [],
-      atom: [],
-      vazby: [],
-      reakcie: [],
-      organicka: []
+
+  chem:{
+    name:"Chémia",
+    themes:{
+      c1:{name:"Základy chémie",questions:[]},
+      c2:{name:"Stavba atómu",questions:[]},
+      c3:{name:"Chemické väzby",questions:[]},
+      c4:{name:"Fyzikálna chémia",questions:[]},
+      c5:{name:"Kyseliny a zásady",questions:[]},
+      c6:{name:"Reakcie",questions:[]},
+      c7:{name:"Anorganická chémia",questions:[]},
+      c8:{name:"Uhľovodíky",questions:[]},
+      c9:{name:"Deriváty",questions:[]},
+      c10:{name:"Biomolekuly",questions:[]}
     }
   }
 };
 
-let currentQuestions = [];
-let index = 0;
-let score = 0;
+let questions=[], index=0, score=0;
 
-function openSubject(sub){
-  document.getElementById("menuSubject").classList.add("hidden");
-  document.getElementById("menuTheme").classList.remove("hidden");
-  const t = DATA[sub];
-  document.getElementById("themeTitle").innerText = t.name;
-  const list = document.getElementById("themeList");
-  list.innerHTML = "";
-  for(let k in t.themes){
-    const b = document.createElement("button");
-    b.innerText = k;
-    b.onclick = ()=>startQuiz(t.themes[k]);
-    list.appendChild(b);
+function openSubject(key){
+  const t=document.getElementById("themes");
+  t.innerHTML=`<h2>${DATA[key].name}</h2>`;
+  for(let k in DATA[key].themes){
+    let b=document.createElement("button");
+    b.textContent=DATA[key].themes[k].name;
+    b.onclick=()=>startQuiz(key,k);
+    t.appendChild(b);
   }
+  document.getElementById("menu").classList.add("hidden");
+  t.classList.remove("hidden");
 }
 
-function backToSubjects(){
-  document.getElementById("menuTheme").classList.add("hidden");
-  document.getElementById("menuSubject").classList.remove("hidden");
-}
-
-function startQuiz(q){
-  currentQuestions = q;
-  index = 0;
-  score = 0;
-  document.getElementById("menuTheme").classList.add("hidden");
+function startQuiz(sub,theme){
+  questions=[...DATA[sub].themes[theme].questions];
+  index=0; score=0;
+  document.getElementById("themes").classList.add("hidden");
   document.getElementById("quiz").classList.remove("hidden");
-  showQuestion();
+  show();
 }
 
-function showQuestion(){
-  if(index >= currentQuestions.length){
-    finish();
-    return;
+function show(){
+  if(index>=questions.length){finish();return;}
+  const q=questions[index];
+  document.getElementById("qText").innerText=q.text;
+  const box=document.getElementById("choices");
+  box.innerHTML="";
+  for(let k in q.choices){
+    let d=document.createElement("div");
+    d.className="choice";
+    d.innerHTML=`<label><input type="checkbox" value="${k}"> ${k}) ${q.choices[k]}</label>`;
+    box.appendChild(d);
   }
-  const q = currentQuestions[index];
-  document.getElementById("question").innerText = q.q;
-  const box = document.getElementById("answers");
-  box.innerHTML = "";
-  for(let k in q.a){
-    box.innerHTML += `
-      <label class="choice">
-        <input type="checkbox" value="${k}">
-        ${k}: ${q.a[k]}
-      </label>`;
-  }
-  document.getElementById("bar").style.width =
-    (index / currentQuestions.length * 100) + "%";
+  document.getElementById("bar").style.width=((index/questions.length)*100)+"%";
 }
 
 function next(){
-  const q = currentQuestions[index];
-  document.querySelectorAll("input:checked").forEach(i=>{
-    if(q.c.includes(i.value)) score++;
-  });
+  const sel=[...document.querySelectorAll("input:checked")].map(x=>x.value);
+  const cor=questions[index].correct;
+  sel.forEach(x=>{ if(cor.includes(x)) score++; });
   index++;
-  showQuestion();
+  show();
 }
 
 function finish(){
   document.getElementById("quiz").classList.add("hidden");
   document.getElementById("result").classList.remove("hidden");
   document.getElementById("score").innerText =
-    "Získané body: " + score;
+    `Správne odpovede: ${score}`;
 }
 </script>
 </body>
