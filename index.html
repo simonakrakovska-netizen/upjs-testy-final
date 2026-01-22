@@ -1,902 +1,155 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UPJŠ BioChem Testy</title>
-  <style>
-    :root{
-      --bg1:#0b1020;
-      --bg2:#0b2a6b;
-      --card:#0f1730cc;
-      --card2:#0f1730;
-      --text:#eaf0ff;
-      --muted:#b8c6ff;
-      --accent:#3b82f6;
-      --accent2:#60a5fa;
-      --good:#22c55e;
-      --bad:#ef4444;
-      --warn:#f59e0b;
-      --border:#22305d;
-      --shadow: 0 18px 40px rgba(0,0,0,.35);
-      --radius: 18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(96,165,250,.35), transparent 60%),
-        radial-gradient(800px 500px at 95% 10%, rgba(59,130,246,.25), transparent 55%),
-        linear-gradient(160deg, var(--bg1), var(--bg2));
-      min-height:100vh;
-      padding:18px 14px 40px;
-    }
-    .wrap{max-width:980px;margin:0 auto}
-    .topbar{
-      display:flex; gap:12px; align-items:center; justify-content:space-between;
-      padding:14px 16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:linear-gradient(180deg, rgba(15,23,48,.78), rgba(15,23,48,.55));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      position: sticky; top: 10px; z-index: 10;
-      backdrop-filter: blur(10px);
-    }
-    .brand{
-      display:flex; gap:12px; align-items:center; min-width: 0;
-    }
-    .logo{
-      width:42px;height:42px;border-radius:14px;
-      background: radial-gradient(circle at 30% 30%, rgba(96,165,250,.9), rgba(59,130,246,.55));
-      border:1px solid rgba(255,255,255,.18);
-      display:grid; place-items:center;
-      box-shadow: 0 12px 25px rgba(59,130,246,.25);
-      flex:0 0 auto;
-    }
-    .logo span{font-weight:800; letter-spacing:.5px}
-    .brand h1{
-      font-size:16px; margin:0; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .brand p{
-      margin:0; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-
-    .pill{
-      display:inline-flex; gap:10px; align-items:center;
-      padding:8px 10px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      border-radius: 999px;
-      color: var(--text);
-      font-size: 12px;
-    }
-    .toggle{
-      display:flex; align-items:center; gap:8px;
-      user-select:none;
-    }
-    .switch{
-      width:44px; height:26px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.20);
-      background: rgba(0,0,0,.25);
-      position:relative;
-      flex:0 0 auto;
-    }
-    .knob{
-      width:22px; height:22px; border-radius:999px;
-      background: linear-gradient(180deg, #fff, #cfe0ff);
-      position:absolute; top:1px; left:1px;
-      transition: all .2s ease;
-      box-shadow: 0 10px 20px rgba(0,0,0,.35);
-    }
-    .switch.on{ background: rgba(59,130,246,.35); }
-    .switch.on .knob{ left: 21px; }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:14px;
-      margin-top:14px;
-    }
-    @media(min-width:900px){
-      .grid{ grid-template-columns: 380px 1fr; align-items:start;}
-    }
-
-    .card{
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(15,23,48,.80), rgba(15,23,48,.55));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(10px);
-    }
-    .card .hd{
-      padding:14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-    }
-    .card .hd h2{margin:0; font-size:14px}
-    .card .bd{padding:14px 16px}
-
-    .btn{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor:pointer;
-      font-weight:600;
-      transition: transform .06s ease, background .15s ease, border .15s ease;
-    }
-    .btn:hover{ background: rgba(255,255,255,.10); }
-    .btn:active{ transform: translateY(1px); }
-    .btn.primary{
-      background: linear-gradient(180deg, rgba(59,130,246,.95), rgba(37,99,235,.95));
-      border-color: rgba(255,255,255,.18);
-      box-shadow: 0 16px 30px rgba(59,130,246,.25);
-    }
-    .btn.primary:hover{ filter: brightness(1.04); }
-    .btn.ghost{ background: transparent; }
-    .btn.danger{ background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.35); }
-    .btn.good{ background: rgba(34,197,94,.16); border-color: rgba(34,197,94,.35); }
-    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; }
-
-    .list{
-      display:flex; flex-direction:column; gap:8px;
-    }
-    .item{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      padding:10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      transition: background .15s ease, border .15s ease;
-    }
-    .item:hover{ background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); }
-    .item .t{ font-weight:700; font-size:13px; }
-    .item .s{ font-size:12px; color: var(--muted); }
-
-    .crumbs{ font-size:12px; color: var(--muted); }
-    .crumbs b{ color: var(--text); }
-
-    .progress{
-      height:10px; border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-    }
-    .bar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(96,165,250,.95), rgba(59,130,246,.95));
-      transition: width .2s ease;
-    }
-
-    .qTitle{ margin:0 0 8px; font-size:15px; line-height:1.35; }
-    .metaRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin: 8px 0 12px; }
-    .metaRow .pill{ font-size:12px; }
-
-    .choices{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    @media(min-width:720px){
-      .choices{ grid-template-columns: 1fr 1fr; }
-    }
-
-    .choice{
-      display:flex; gap:10px; align-items:flex-start;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      padding:10px 12px;
-      border-radius: 14px;
-    }
-    .choice input{ margin-top:3px; transform: scale(1.15); }
-    .choice .lbl{ font-weight:800; width: 22px; flex: 0 0 auto; color: var(--accent2); }
-    .choice .tx{ font-size:13px; color: var(--text); line-height:1.25; }
-    .choice.small{ opacity: .65; }
-
-    .hr{ height:1px; background: rgba(255,255,255,.10); margin: 14px 0; }
-
-    .resultBox{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      padding:12px 12px;
-      border-radius: 14px;
-    }
-    .resultGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
-    @media(min-width:720px){ .resultGrid{ grid-template-columns: 1fr 1fr; } }
-
-    .stat{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      padding:10px 12px;
-      border-radius: 14px;
-    }
-    .stat .k{ font-size:12px; color: var(--muted); }
-    .stat .v{ font-size:18px; font-weight:900; margin-top:4px; }
-
-    .hint{
-      font-size:12px; color: var(--muted); line-height:1.35;
-    }
-    .badge{
-      display:inline-block;
-      padding:4px 8px;
-      border-radius: 999px;
-      font-size:11px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-    }
-    .badge.good{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12); }
-    .badge.bad{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.12); }
-    .badge.warn{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.12); }
-
-    .footer{
-      text-align:center; margin-top:14px; color: rgba(255,255,255,.65); font-size:12px;
-    }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      background: rgba(0,0,0,.25);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 10px;
-      padding: 2px 6px;
-      color: rgba(255,255,255,.85);
-    }
-  </style>
+<meta charset="UTF-8">
+<title>UPJŠ Testy</title>
+<style>
+body{font-family:Arial;background:#0f172a;color:white;padding:20px}
+h1,h2{margin:5px 0}
+button{padding:10px 14px;margin:5px;border:none;border-radius:6px;cursor:pointer}
+.card{background:#1e293b;padding:15px;border-radius:10px;margin-bottom:15px}
+.choice{margin:6px 0}
+.hidden{display:none}
+</style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo"><span>U</span></div>
-        <div style="min-width:0">
-          <h1>UPJŠ BioChem Testy</h1>
-          <p>Predmet → Téma → Test · bodovanie podľa správnych možností</p>
-        </div>
-      </div>
 
-      <div class="pill toggle" title="Prepína medzi 8 možnosťami (A–H) a 4 možnosťami (A–D)">
-        <span id="modeLabel">Režim: 8 možností</span>
-        <div id="modeSwitch" class="switch on" role="switch" aria-checked="true" tabindex="0">
-          <div class="knob"></div>
-        </div>
-      </div>
-    </div>
+<h1>UPJŠ – Testy</h1>
 
-    <div class="grid">
-      <!-- LEFT: NAV -->
-      <div class="card" id="navCard">
-        <div class="hd">
-          <h2 id="navTitle">Menu</h2>
-          <span class="badge" id="navBadge">Pripravené</span>
-        </div>
-        <div class="bd">
-          <div class="crumbs" id="crumbs">Si tu: <b>Predmet</b></div>
-          <div class="hr"></div>
+<div id="menu" class="card">
+  <h2>Vyber predmet</h2>
+  <button onclick="openSubject('bio')">🧬 Biológia</button>
+  <button onclick="openSubject('chem')">⚗️ Chémia</button>
+</div>
 
-          <div id="screenSubject" class="list"></div>
-          <div id="screenThemes" class="list" style="display:none"></div>
+<div id="themes" class="card hidden">
+  <h2 id="themeTitle"></h2>
+  <div id="themeList"></div>
+  <button onclick="backToMenu()">⬅ Späť</button>
+</div>
 
-          <div class="hr"></div>
-          <div class="btnRow">
-            <button class="btn ghost" id="backBtn" onclick="goBack()" style="display:none">⬅ Späť</button>
-            <button class="btn danger" id="resetBtn" onclick="hardReset()">Reset</button>
-          </div>
-          <div style="margin-top:10px" class="hint">
-            Tip: ak chceš „appku na ploche“ na iPhone, otvor v Safari → <b>Zdieľať</b> → <b>Pridať na plochu</b>.
-          </div>
-        </div>
-      </div>
+<div id="quiz" class="card hidden">
+  <h3 id="questionText"></h3>
+  <div id="choices"></div>
+  <button onclick="nextQuestion()">Ďalej</button>
+</div>
 
-      <!-- RIGHT: QUIZ -->
-      <div class="card" id="quizCard">
-        <div class="hd">
-          <h2 id="quizTitle">Vyber predmet a tému</h2>
-          <span class="badge" id="quizBadge">—</span>
-        </div>
-        <div class="bd">
-          <div class="progress" aria-label="Progress">
-            <div class="bar" id="progressBar"></div>
-          </div>
-
-          <div class="metaRow">
-            <span class="pill">Otázka: <b id="qIndex">—</b></span>
-            <span class="pill">Body: <b id="scoreNow">0</b></span>
-            <span class="pill">Možností: <b id="lettersNow">A–H</b></span>
-          </div>
-
-          <h3 class="qTitle" id="qText">Tu sa zobrazí otázka.</h3>
-          <div id="choices" class="choices"></div>
-
-          <div class="hr"></div>
-          <div class="btnRow">
-            <button class="btn primary" id="checkBtn" onclick="checkAndNext()" disabled>Skontrolovať & ďalej</button>
-            <button class="btn" id="skipBtn" onclick="skipQuestion()" disabled>Preskočiť</button>
-            <button class="btn good" id="finishBtn" onclick="finishQuiz()" disabled>Vyhodnotiť</button>
-          </div>
-
-          <div id="resultWrap" style="display:none; margin-top:14px;">
-            <div class="resultBox">
-              <div class="resultGrid">
-                <div class="stat">
-                  <div class="k">Získané body</div>
-                  <div class="v" id="finalScore">0</div>
-                </div>
-                <div class="stat">
-                  <div class="k">Úspešnosť</div>
-                  <div class="v" id="finalPct">0%</div>
-                </div>
-                <div class="stat">
-                  <div class="k">Otázok spolu</div>
-                  <div class="v" id="finalCount">0</div>
-                </div>
-                <div class="stat">
-                  <div class="k">Režim</div>
-                  <div class="v" id="finalMode">8 možností</div>
-                </div>
-              </div>
-              <div class="hr"></div>
-              <div id="finalBadgeRow"></div>
-              <div class="hr"></div>
-              <div class="btnRow">
-                <button class="btn primary" onclick="restartSameTheme()">Znova túto tému</button>
-                <button class="btn" onclick="goBackToThemes()">Vybrať inú tému</button>
-              </div>
-              <div class="hint" style="margin-top:10px">
-                Bodovanie: za každú otázku dostaneš <b>bod za každú správne označenú možnosť</b>.
-                Ak otázka má napr. 4 správne možnosti a označíš 3 z nich, získaš <b>3 body</b>.
-                (T. j. „čiastočné body“ ako na prijímačkách.)
-              </div>
-            </div>
-          </div>
-
-          <div class="footer">
-            Ovládanie: <span class="kbd">Tap</span> na možnosti · <span class="kbd">Skontrolovať & ďalej</span> pokračuje · <span class="kbd">Vyhodnotiť</span> ukončí.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="result" class="card hidden">
+  <h2>Výsledok</h2>
+  <p id="scoreText"></p>
+  <button onclick="location.reload()">Nový test</button>
+</div>
 
 <script>
-/**
- * ============================
- * 1) SEM VLOŽÍŠ OTÁZKY (JEDINÉ MIESTO)
- * ============================
- *
- * Formát jednej otázky:
- * {
- *   id: 116,                         // číslo otázky (voliteľné, ale odporúčam)
- *   text: "116. ...",
- *   choices: { A:"...", B:"...", ... H:"..." },  // 8 možností (A–H)
- *   correct: ["C","D","E"]           // správne písmená
- * }
- *
- * Ak chceš otázku len s 4 možnosťami, môžeš aj tak dať A–H a prepínač režimu urobí výber.
- */
-const QUESTION_BANK = {const QUESTIONS_1_115 = [
-  {
-    id: 1,
-    text: "1. Prokaryotická bunka:",
-    choices: {
-      A: "môže obsahovať tylakoidy",
-      B: "môže obsahovať chloroplasty",
-      C: "obsahuje prokaryotické ribozómy",
-      D: "má cytoplazmatickú membránu",
-      E: "má nukleoid",
-      F: "má lineárne molekuly DNA",
-      G: "má vnútorné membrány",
-      H: "má kruhové chromozómy"
-    },
-    correct: ["A","C","D","E","H"]
-  },
-  {
-    id: 2,
-    text: "2. Prokaryotické bunky nemajú:",
-    choices: {
-      A: "plastidy",
-      B: "vnútorný membránový systém",
-      C: "ribozómy",
-      D: "diktyozómy",
-      E: "cytoplazmatickú membránu",
-      F: "centriol",
-      G: "jadierko",
-      H: "mitochondrie"
-    },
-    correct: ["A","B","D","F","G","H"]
-  },
-  {
-    id: 3,
-    text: "3. Ktoré štruktúry zabezpečujú uvoľňovanie energie:",
-    choices: {
-      A: "tylakoidy",
-      B: "bičíky",
-      C: "ribozómy",
-      D: "mitochondrie",
-      E: "plazmatická membrána",
-      F: "jadro",
-      G: "diktyozómy",
-      H: "vakuoly"
-    },
-    correct: ["E"]
-  },
-  {
-    id: 4,
-    text: "4. Cytológia sa zaoberá štúdiom:",
-    choices: {
-      A: "živých sústav na molekulovej úrovni",
-      B: "mikroskopickej stavby tkanív",
-      C: "javov na úrovni bunky",
-      D: "živých mikroorganizmov",
-      E: "základnej stavebnej jednotky života",
-      F: "vírusov",
-      G: "tvaru a štruktúry buniek a organel",
-      H: "makromolekúl"
-    },
-    correct: ["C","E","G"]
-  },
-  {
-    id: 5,
-    text: "5. Najmenší systém schopný samostatného života je:",
-    choices: {
-      A: "vírus",
-      B: "bunka",
-      C: "kolónia",
-      D: "biopolymér",
-      E: "mnohobunkový organizmus",
-      F: "populácia",
-      G: "nukleoproteínová častica",
-      H: "indivíduum vyššieho rádu"
-    },
-    correct: ["B"]
-  },
-
-  /* ………………………………………
-     OTÁZKY 6 – 114
-     (sú opravené rovnakým spôsobom)
-     ……………………………………… */
-
-  {
-    id: 115,
-    text: "115. Monoméry nukleových kyselín sú:",
-    choices: {
-      A: "aminokyseliny",
-      B: "dusíkaté bázy",
-      C: "nukleotidy",
-      D: "chromatín",
-      E: "nukleozidy",
-      F: "pentózy",
-      G: "ribonukleotidy",
-      H: "deoxyribonukleotidy"
-    },
-    correct: ["C","G","H"]
-  }
-];
-  
-        
-      { key:"bio_mikro_116_152", name:"Bunka a mikroorganizmy (116–152)", questions: [
-        // 🔽 TU VLOŽÍŠ OTÁZKY 116–152
-      ]},
-      { key:"bio_fyzio_rastlin_153_250", name:"Fyziológia rastlín (153–250)", questions: [] },
-      { key:"bio_fyzio_ziv_I_251_349", name:"Fyziológia živočíchov I. (251–349)", questions: [] },
-      { key:"bio_fyzio_ziv_II_350_450", name:"Fyziológia živočíchov II. (350–450)", questions: [] },
-      { key:"bio_sustavy_I_451_617", name:"Sústavy človeka I. (451–617)", questions: [] },
-      { key:"bio_sustavy_II_618_740", name:"Sústavy človeka II. (618–740)", questions: [] },
-      { key:"bio_sustavy_III_741_900", name:"Sústavy človeka III. (741–900)", questions: [] },
-      { key:"bio_gen_I_901_1006", name:"Genetika I. (901–1006)", questions: [] },
-      { key:"bio_gen_II_1007_1119", name:"Genetika II. (1007–1119)", questions: [] },
-      { key:"bio_gen_III_1120_1250", name:"Genetika III. (1120–1250)", questions: [] },
-      { key:"bio_system_1251_1500", name:"Systém rastlín a živočíchov, ekológia, evolúcia (1251–1500)", questions: [] },
-      { key:"bio_opakovanie_1_1500", name:"OPAKOVANIE (1–1500)", questions: [] },
+const QUESTION_BANK = {
+  bio: {
+    name: "Biológia",
+    themes: [
+      {
+        name: "Štruktúra bunky (1–115)",
+        questions: [
+          {
+            text: "1. Prokaryotická bunka:",
+            choices: {
+              A:"má jadro",
+              B:"má nukleoid",
+              C:"má mitochondrie",
+              D:"má ribozómy"
+            },
+            correct:["B","D"]
+          }
+        ]
+      }
     ]
   },
   chem: {
     name: "Chémia",
     themes: [
-      { key:"chem_zaklady_1_110", name:"Základné pojmy a názvoslovie (1–110)", questions: [] },
-      { key:"chem_atom_111_160", name:"Stavba atómu (111–160)", questions: [] },
-      { key:"chem_vazby_161_210", name:"Chemické väzby (161–210)", questions: [] },
-      { key:"chem_kinetika_211_260", name:"Fyzikálna chémia – kinetika (211–260)", questions: [] },
-      { key:"chem_kyseliny_261_315", name:"Kyseliny a zásady (261–315)", questions: [] },
-      { key:"chem_reakcie_316_390", name:"Chemické reakcie (316–390)", questions: [] },
-      { key:"chem_anorg_391_470", name:"Anorganická chémia – prvky (391–470)", questions: [] },
-      { key:"chem_uhlov_641_790", name:"Uhľovodíky (641–790)", questions: [] },
-      { key:"chem_deriv_791_940", name:"Deriváty uhľovodíkov (791–940)", questions: [] },
-      { key:"chem_karb_941_1040", name:"Karboxylové kyseliny (941–1040)", questions: [] },
-      { key:"chem_hetero_1040_1195", name:"Heterocykly, polyméry, lipidy (1040–1195)", questions: [] },
-      { key:"chem_sachar_1196_1350", name:"Sacharidy, bielkoviny, aminokyseliny (1196–1350)", questions: [] },
-      { key:"chem_nukleo_1351_1500", name:"Nukleové kyseliny, biochémia (1351–1500)", questions: [] },
-      { key:"chem_opakovanie_1_1500", name:"OPAKOVANIE (1–1500)", questions: [] },
+      { name:"Základy", questions:[] }
     ]
   }
 };
 
-/**
- * ============================
- * 2) APLIKÁCIA – LOGIKA
- * ============================
- */
-const LETTERS_8 = ["A","B","C","D","E","F","G","H"];
-const LETTERS_4 = ["A","B","C","D"];
+let currentQuestions = [];
+let index = 0;
+let score = 0;
 
-let mode8 = true; // true = 8 možností, false = 4 možnosti
-let navLevel = "subject"; // subject | theme | quiz | result
-let currentSubjectKey = null; // 'bio'|'chem'
-let currentThemeKey = null;
-let quiz = null;
+function openSubject(key){
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("themes").classList.remove("hidden");
 
-function $(id){ return document.getElementById(id); }
+  const subject = QUESTION_BANK[key];
+  document.getElementById("themeTitle").innerText = subject.name;
 
-function setModeUI(){
-  const switchEl = $("modeSwitch");
-  const label = $("modeLabel");
-  const lettersNow = $("lettersNow");
-  if(mode8){
-    switchEl.classList.add("on");
-    switchEl.setAttribute("aria-checked","true");
-    label.textContent = "Režim: 8 možností";
-    lettersNow.textContent = "A–H";
-  } else {
-    switchEl.classList.remove("on");
-    switchEl.setAttribute("aria-checked","false");
-    label.textContent = "Režim: 4 možnosti";
-    lettersNow.textContent = "A–D";
-  }
-}
-
-function buildSubjectScreen(){
-  $("navTitle").textContent = "Menu";
-  $("navBadge").textContent = "Pripravené";
-  $("crumbs").innerHTML = 'Si tu: <b>Predmet</b>';
-  $("backBtn").style.display = "none";
-
-  const box = $("screenSubject");
-  box.style.display = "";
-  $("screenThemes").style.display = "none";
-
-  box.innerHTML = "";
-  [
-    { key:"bio", icon:"🧬" },
-    { key:"chem", icon:"⚗️" }
-  ].forEach(s=>{
-    const subj = QUESTION_BANK[s.key];
-    const div = document.createElement("div");
-    div.className = "item";
-    div.onclick = ()=>openSubject(s.key);
-    div.innerHTML = `
-      <div>
-        <div class="t">${s.icon} ${subj.name}</div>
-        <div class="s">${subj.themes.length} tém</div>
-      </div>
-      <div class="badge">Vybrať</div>
-    `;
-    box.appendChild(div);
-  });
-
-  setQuizIdle();
-  navLevel = "subject";
-}
-
-function openSubject(subjectKey){
-  currentSubjectKey = subjectKey;
-  currentThemeKey = null;
-  navLevel = "theme";
-
-  const subj = QUESTION_BANK[subjectKey];
-  $("navTitle").textContent = subj.name;
-  $("navBadge").textContent = "Témy";
-  $("crumbs").innerHTML = `Si tu: <b>Predmet</b> → <b>${subj.name}</b>`;
-  $("backBtn").style.display = "";
-
-  $("screenSubject").style.display = "none";
-  const list = $("screenThemes");
-  list.style.display = "";
+  const list = document.getElementById("themeList");
   list.innerHTML = "";
 
-  subj.themes.forEach(t=>{
-    const count = (t.questions || []).length;
-    const div = document.createElement("div");
-    div.className = "item";
-    div.onclick = ()=>startThemeQuiz(subjectKey, t.key);
-    div.innerHTML = `
-      <div>
-        <div class="t">${t.name}</div>
-        <div class="s">${count} otázok</div>
-      </div>
-      <div class="badge">${count ? "Spustiť" : "Prázdne"}</div>
-    `;
-    list.appendChild(div);
-  });
-
-  setQuizIdle(subj.name);
-}
-
-function goBack(){
-  if(navLevel === "theme"){ buildSubjectScreen(); return; }
-  if(navLevel === "quiz" || navLevel === "result"){ goBackToThemes(); return; }
-  buildSubjectScreen();
-}
-
-function hardReset(){
-  // len reset UI stavu (bez vymazania otázok)
-  quiz = null;
-  currentSubjectKey = null;
-  currentThemeKey = null;
-  $("resultWrap").style.display = "none";
-  $("quizBadge").textContent = "—";
-  $("finalBadgeRow").innerHTML = "";
-  buildSubjectScreen();
-}
-
-function setQuizIdle(subjName){
-  $("quizTitle").textContent = subjName ? `${subjName} · vyber tému` : "Vyber predmet a tému";
-  $("quizBadge").textContent = "—";
-  $("qIndex").textContent = "—";
-  $("scoreNow").textContent = "0";
-  $("qText").textContent = "Tu sa zobrazí otázka.";
-  $("choices").innerHTML = "";
-  $("progressBar").style.width = "0%";
-  $("checkBtn").disabled = true;
-  $("skipBtn").disabled = true;
-  $("finishBtn").disabled = true;
-  $("resultWrap").style.display = "none";
-}
-
-/**
- * ============================
- * 3) KVÍZ (miešanie v rámci témy, nie naprieč témami)
- * ============================
- */
-function startThemeQuiz(subjectKey, themeKey){
-  const subj = QUESTION_BANK[subjectKey];
-  const theme = subj.themes.find(t=>t.key===themeKey);
-  currentThemeKey = themeKey;
-
-  // V opakovaní chceš mix, ale v rámci témy chceš tiež miešať (len vnútri témy).
-  // Tu miešame VŽDY len otázky z vybranej témy.
-  const original = (theme.questions || []).slice();
-  const shuffled = shuffle(original);
-
-  quiz = {
-    subjectKey,
-    themeKey,
-    themeName: theme.name,
-    questions: shuffled,
-    i: 0,
-    score: 0,
-    maxScore: 0, // súčet počtu správnych možností podľa režimu (4/8)
-    answered: 0
-  };
-
-  // maxScore počítame podľa režimu (ak režim 4, tak sa berú len A–D a aj correct sa filtruje)
-  quiz.maxScore = shuffled.reduce((sum, q)=> sum + getCorrectLetters(q).length, 0);
-
-  navLevel = "quiz";
-  $("quizTitle").textContent = theme.name;
-  $("quizBadge").textContent = "Test";
-  $("resultWrap").style.display = "none";
-
-  $("checkBtn").disabled = shuffled.length === 0;
-  $("skipBtn").disabled = shuffled.length === 0;
-  $("finishBtn").disabled = shuffled.length === 0;
-
-  renderQuestion();
-}
-
-function getLetters(){
-  return mode8 ? LETTERS_8 : LETTERS_4;
-}
-
-function getCorrectLetters(q){
-  const allowed = new Set(getLetters());
-  const corr = Array.isArray(q.correct) ? q.correct : [];
-  return corr.filter(x=>allowed.has(x));
-}
-
-function getChoiceText(q, letter){
-  // ak v režime 4, stále používame A–D
-  return (q.choices && q.choices[letter]) ? q.choices[letter] : "";
-}
-
-function renderQuestion(){
-  const list = quiz.questions;
-  const total = list.length;
-
-  $("resultWrap").style.display = "none";
-
-  if(total === 0){
-    $("qIndex").textContent = "0 / 0";
-    $("qText").textContent = "Táto téma zatiaľ nemá otázky. Najprv ich vlož do QUESTION_BANK.";
-    $("choices").innerHTML = "";
-    $("progressBar").style.width = "0%";
-    $("checkBtn").disabled = true;
-    $("skipBtn").disabled = true;
-    $("finishBtn").disabled = true;
-    return;
-  }
-
-  if(quiz.i >= total){
-    finishQuiz();
-    return;
-  }
-
-  const q = list[quiz.i];
-  const letters = getLetters();
-
-  $("qIndex").textContent = `${quiz.i+1} / ${total}`;
-  $("scoreNow").textContent = `${quiz.score}`;
-  $("progressBar").style.width = `${Math.round((quiz.i/total)*100)}%`;
-
-  $("qText").textContent = q.text || "(chýba text otázky)";
-
-  const ch = $("choices");
-  ch.innerHTML = "";
-
-  letters.forEach(L=>{
-    const txt = getChoiceText(q, L);
-    const div = document.createElement("label");
-    div.className = "choice" + (txt ? "" : " small");
-    div.innerHTML = `
-      <input type="checkbox" value="${L}" ${txt ? "" : "disabled"} />
-      <div class="lbl">${L}</div>
-      <div class="tx">${txt ? txt : "— (nevyplnené)"}</div>
-    `;
-    ch.appendChild(div);
+  subject.themes.forEach(t=>{
+    const btn = document.createElement("button");
+    btn.textContent = t.name;
+    btn.onclick = () => startTest(t.questions);
+    list.appendChild(btn);
   });
 }
 
-function readSelected(){
-  const inputs = $("choices").querySelectorAll('input[type="checkbox"]');
-  const picked = [];
-  inputs.forEach(i=>{ if(i.checked) picked.push(i.value); });
-  return picked;
+function backToMenu(){
+  document.getElementById("themes").classList.add("hidden");
+  document.getElementById("menu").classList.remove("hidden");
 }
 
-/**
- * Bodovanie (čiastočné body):
- * +1 za každú správnu možnosť, ktorú si označila.
- * 0 bodov za nesprávne označenia (žiadne mínus body).
- * => ak správnych je 4 a označíš 3 správne, máš 3 body.
- */
-function scoreAnswer(selected, correct){
-  const correctSet = new Set(correct);
-  let pts = 0;
-  selected.forEach(s=>{ if(correctSet.has(s)) pts += 1; });
-  return pts;
+function startTest(questions){
+  currentQuestions = questions;
+  index = 0;
+  score = 0;
+
+  document.getElementById("themes").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+
+  showQuestion();
 }
 
-function checkAndNext(){
-  if(!quiz) return;
+function showQuestion(){
+  const q = currentQuestions[index];
+  document.getElementById("questionText").innerText = q.text;
 
-  const q = quiz.questions[quiz.i];
-  const selected = readSelected();
-  const correct = getCorrectLetters(q);
+  const box = document.getElementById("choices");
+  box.innerHTML = "";
 
-  const pts = scoreAnswer(selected, correct);
-  quiz.score += pts;
-  quiz.answered += 1;
-
-  quiz.i += 1;
-  renderQuestion();
-}
-
-function skipQuestion(){
-  if(!quiz) return;
-  quiz.i += 1;
-  renderQuestion();
-}
-
-function finishQuiz(){
-  if(!quiz) return;
-
-  const totalQ = quiz.questions.length;
-  const max = quiz.maxScore || 0;
-  const got = quiz.score || 0;
-
-  const pct = max > 0 ? Math.round((got / max) * 100) : 0;
-
-  $("resultWrap").style.display = "";
-  $("finalScore").textContent = `${got} / ${max}`;
-  $("finalPct").textContent = `${pct}%`;
-  $("finalCount").textContent = `${totalQ}`;
-  $("finalMode").textContent = mode8 ? "8 možností (A–H)" : "4 možnosti (A–D)";
-
-  $("progressBar").style.width = "100%";
-  $("qText").textContent = "Vyhodnotenie testu";
-  $("choices").innerHTML = "";
-
-  // badge
-  $("finalBadgeRow").innerHTML = renderBadge(pct);
-
-  $("checkBtn").disabled = true;
-  $("skipBtn").disabled = true;
-  $("finishBtn").disabled = true;
-
-  navLevel = "result";
-}
-
-function renderBadge(pct){
-  let cls = "warn", text = "Pokračuj ďalej 💪";
-  if(pct >= 85){ cls="good"; text="Výborne! 🔥"; }
-  else if(pct >= 70){ cls="good"; text="Super! ✅"; }
-  else if(pct >= 50){ cls="warn"; text="Dá sa, ešte dotiahnuť. ✨"; }
-  else { cls="bad"; text="Nevadí, skúsiť znova. 💙"; }
-  return `<span class="badge ${cls}">${text}</span>`;
-}
-
-function restartSameTheme(){
-  if(!quiz) return;
-  startThemeQuiz(quiz.subjectKey, quiz.themeKey);
-}
-
-function goBackToThemes(){
-  if(!currentSubjectKey) { buildSubjectScreen(); return; }
-  openSubject(currentSubjectKey);
-  $("resultWrap").style.display = "none";
-  navLevel = "theme";
-}
-
-/**
- * ============================
- * 4) HELPERS
- * ============================
- */
-function shuffle(arr){
-  // Fisher–Yates
-  const a = arr.slice();
-  for(let i=a.length-1; i>0; i--){
-    const j = Math.floor(Math.random() * (i+1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-/**
- * ============================
- * 5) MODE SWITCH EVENTS
- * ============================
- */
-function toggleMode(){
-  mode8 = !mode8;
-  setModeUI();
-
-  // ak práve beží test, prepočítame maxScore podľa nového režimu a prekreslíme otázku
-  if(quiz){
-    quiz.maxScore = quiz.questions.reduce((sum, q)=> sum + getCorrectLetters(q).length, 0);
-    $("scoreNow").textContent = `${quiz.score}`;
-    renderQuestion();
+  for(let k in q.choices){
+    box.innerHTML += `
+      <div class="choice">
+        <label>
+          <input type="checkbox" value="${k}">
+          ${k}: ${q.choices[k]}
+        </label>
+      </div>`;
   }
 }
 
-$("modeSwitch").addEventListener("click", toggleMode);
-$("modeSwitch").addEventListener("keydown", (e)=>{
-  if(e.key === "Enter" || e.key === " "){
-    e.preventDefault();
-    toggleMode();
+function nextQuestion(){
+  const selected = [...document.querySelectorAll("input:checked")].map(x=>x.value);
+  const correct = currentQuestions[index].correct;
+
+  selected.forEach(v=>{
+    if(correct.includes(v)) score++;
+  });
+
+  index++;
+
+  if(index < currentQuestions.length){
+    showQuestion();
+  } else {
+    finish();
   }
-});
+}
 
-setModeUI();
-buildSubjectScreen();
-
-/**
- * ============================
- * 6) (Voliteľné) Rýchla kontrola, či máš chybný formát otázok
- * ============================
- * Ak by si vložila otázku zle (chýba zátvorka/čiarka), stránka by nabehneť nemusela.
- * Preto odporúčam vkladať otázky po menších dávkach.
- */
+function finish(){
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("scoreText").innerText =
+    `Získala si ${score} bodov z ${currentQuestions.length}`;
+}
 </script>
+
 </body>
 </html>
