@@ -1,2430 +1,810 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="UTF-8">
-<title>Testy – Biológia & Chémia</title>
-<style>
-body { font-family: Arial; background:#eef2f5; padding:20px; }
-.box { background:white; padding:20px; border-radius:10px; max-width:800px; margin:auto; }
-button { padding:10px; margin:5px; cursor:pointer; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UPJŠ BioChem Testy</title>
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0b2a6b;
+      --card:#0f1730cc;
+      --card2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#b8c6ff;
+      --accent:#3b82f6;
+      --accent2:#60a5fa;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+      --border:#22305d;
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(96,165,250,.35), transparent 60%),
+        radial-gradient(800px 500px at 95% 10%, rgba(59,130,246,.25), transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      padding:18px 14px 40px;
+    }
+    .wrap{max-width:980px;margin:0 auto}
+    .topbar{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px 16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(15,23,48,.78), rgba(15,23,48,.55));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky; top: 10px; z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center; min-width: 0;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, rgba(96,165,250,.9), rgba(59,130,246,.55));
+      border:1px solid rgba(255,255,255,.18);
+      display:grid; place-items:center;
+      box-shadow: 0 12px 25px rgba(59,130,246,.25);
+      flex:0 0 auto;
+    }
+    .logo span{font-weight:800; letter-spacing:.5px}
+    .brand h1{
+      font-size:16px; margin:0; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .brand p{
+      margin:0; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .pill{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 12px;
+    }
+    .toggle{
+      display:flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    .switch{
+      width:44px; height:26px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.20);
+      background: rgba(0,0,0,.25);
+      position:relative;
+      flex:0 0 auto;
+    }
+    .knob{
+      width:22px; height:22px; border-radius:999px;
+      background: linear-gradient(180deg, #fff, #cfe0ff);
+      position:absolute; top:1px; left:1px;
+      transition: all .2s ease;
+      box-shadow: 0 10px 20px rgba(0,0,0,.35);
+    }
+    .switch.on{ background: rgba(59,130,246,.35); }
+    .switch.on .knob{ left: 21px; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media(min-width:900px){
+      .grid{ grid-template-columns: 380px 1fr; align-items:start;}
+    }
+
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(15,23,48,.80), rgba(15,23,48,.55));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+    .card .hd{
+      padding:14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .card .hd h2{margin:0; font-size:14px}
+    .card .bd{padding:14px 16px}
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight:600;
+      transition: transform .06s ease, background .15s ease, border .15s ease;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(59,130,246,.95), rgba(37,99,235,.95));
+      border-color: rgba(255,255,255,.18);
+      box-shadow: 0 16px 30px rgba(59,130,246,.25);
+    }
+    .btn.primary:hover{ filter: brightness(1.04); }
+    .btn.ghost{ background: transparent; }
+    .btn.danger{ background: rgba(239,68,68,.16); border-color: rgba(239,68,68,.35); }
+    .btn.good{ background: rgba(34,197,94,.16); border-color: rgba(34,197,94,.35); }
+    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; }
+
+    .list{
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .item{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: background .15s ease, border .15s ease;
+    }
+    .item:hover{ background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); }
+    .item .t{ font-weight:700; font-size:13px; }
+    .item .s{ font-size:12px; color: var(--muted); }
+
+    .crumbs{ font-size:12px; color: var(--muted); }
+    .crumbs b{ color: var(--text); }
+
+    .progress{
+      height:10px; border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(96,165,250,.95), rgba(59,130,246,.95));
+      transition: width .2s ease;
+    }
+
+    .qTitle{ margin:0 0 8px; font-size:15px; line-height:1.35; }
+    .metaRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin: 8px 0 12px; }
+    .metaRow .pill{ font-size:12px; }
+
+    .choices{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media(min-width:720px){
+      .choices{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .choice{
+      display:flex; gap:10px; align-items:flex-start;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius: 14px;
+    }
+    .choice input{ margin-top:3px; transform: scale(1.15); }
+    .choice .lbl{ font-weight:800; width: 22px; flex: 0 0 auto; color: var(--accent2); }
+    .choice .tx{ font-size:13px; color: var(--text); line-height:1.25; }
+    .choice.small{ opacity: .65; }
+
+    .hr{ height:1px; background: rgba(255,255,255,.10); margin: 14px 0; }
+
+    .resultBox{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      padding:12px 12px;
+      border-radius: 14px;
+    }
+    .resultGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    @media(min-width:720px){ .resultGrid{ grid-template-columns: 1fr 1fr; } }
+
+    .stat{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding:10px 12px;
+      border-radius: 14px;
+    }
+    .stat .k{ font-size:12px; color: var(--muted); }
+    .stat .v{ font-size:18px; font-weight:900; margin-top:4px; }
+
+    .hint{
+      font-size:12px; color: var(--muted); line-height:1.35;
+    }
+    .badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius: 999px;
+      font-size:11px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+    }
+    .badge.good{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12); }
+    .badge.bad{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.12); }
+    .badge.warn{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.12); }
+
+    .footer{
+      text-align:center; margin-top:14px; color: rgba(255,255,255,.65); font-size:12px;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px;
+      padding: 2px 6px;
+      color: rgba(255,255,255,.85);
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"><span>U</span></div>
+        <div style="min-width:0">
+          <h1>UPJŠ BioChem Testy</h1>
+          <p>Predmet → Téma → Test · bodovanie podľa správnych možností</p>
+        </div>
+      </div>
 
-<!-- MENU -->
-<div id="menu" class="box">
-    <h2>Vyber predmet</h2>
-    <button onclick="openBiology()">🧬 Biológia</button>
-    <button onclick="openChemistry()">⚗️ Chémia</button>
-</div>
+      <div class="pill toggle" title="Prepína medzi 8 možnosťami (A–H) a 4 možnosťami (A–D)">
+        <span id="modeLabel">Režim: 8 možností</span>
+        <div id="modeSwitch" class="switch on" role="switch" aria-checked="true" tabindex="0">
+          <div class="knob"></div>
+        </div>
+      </div>
+    </div>
 
-<!-- TÉMY -->
-<div id="themes" class="box" style="display:none;">
-    <h2 id="subjectTitle"></h2>
-    <div id="themeList"></div>
-    <button onclick="backToMenu()">⬅ Späť</button>
-</div>
+    <div class="grid">
+      <!-- LEFT: NAV -->
+      <div class="card" id="navCard">
+        <div class="hd">
+          <h2 id="navTitle">Menu</h2>
+          <span class="badge" id="navBadge">Pripravené</span>
+        </div>
+        <div class="bd">
+          <div class="crumbs" id="crumbs">Si tu: <b>Predmet</b></div>
+          <div class="hr"></div>
 
-<!-- TEST -->
-<div id="test" class="box" style="display:none;">
-    <h2 id="themeTitle"></h2>
-    <div id="questionBox"></div>
+          <div id="screenSubject" class="list"></div>
+          <div id="screenThemes" class="list" style="display:none"></div>
 
-    <button onclick="nextQuestion()">Ďalšia otázka</button>
-    <button onclick="finishTest()">Vyhodnotiť</button>
-    <button onclick="backToThemes()">⬅ Späť</button>
+          <div class="hr"></div>
+          <div class="btnRow">
+            <button class="btn ghost" id="backBtn" onclick="goBack()" style="display:none">⬅ Späť</button>
+            <button class="btn danger" id="resetBtn" onclick="hardReset()">Reset</button>
+          </div>
+          <div style="margin-top:10px" class="hint">
+            Tip: ak chceš „appku na ploche“ na iPhone, otvor v Safari → <b>Zdieľať</b> → <b>Pridať na plochu</b>.
+          </div>
+        </div>
+      </div>
 
-    <div id="result"></div>
-</div>
+      <!-- RIGHT: QUIZ -->
+      <div class="card" id="quizCard">
+        <div class="hd">
+          <h2 id="quizTitle">Vyber predmet a tému</h2>
+          <span class="badge" id="quizBadge">—</span>
+        </div>
+        <div class="bd">
+          <div class="progress" aria-label="Progress">
+            <div class="bar" id="progressBar"></div>
+          </div>
+
+          <div class="metaRow">
+            <span class="pill">Otázka: <b id="qIndex">—</b></span>
+            <span class="pill">Body: <b id="scoreNow">0</b></span>
+            <span class="pill">Možností: <b id="lettersNow">A–H</b></span>
+          </div>
+
+          <h3 class="qTitle" id="qText">Tu sa zobrazí otázka.</h3>
+          <div id="choices" class="choices"></div>
+
+          <div class="hr"></div>
+          <div class="btnRow">
+            <button class="btn primary" id="checkBtn" onclick="checkAndNext()" disabled>Skontrolovať & ďalej</button>
+            <button class="btn" id="skipBtn" onclick="skipQuestion()" disabled>Preskočiť</button>
+            <button class="btn good" id="finishBtn" onclick="finishQuiz()" disabled>Vyhodnotiť</button>
+          </div>
+
+          <div id="resultWrap" style="display:none; margin-top:14px;">
+            <div class="resultBox">
+              <div class="resultGrid">
+                <div class="stat">
+                  <div class="k">Získané body</div>
+                  <div class="v" id="finalScore">0</div>
+                </div>
+                <div class="stat">
+                  <div class="k">Úspešnosť</div>
+                  <div class="v" id="finalPct">0%</div>
+                </div>
+                <div class="stat">
+                  <div class="k">Otázok spolu</div>
+                  <div class="v" id="finalCount">0</div>
+                </div>
+                <div class="stat">
+                  <div class="k">Režim</div>
+                  <div class="v" id="finalMode">8 možností</div>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <div id="finalBadgeRow"></div>
+              <div class="hr"></div>
+              <div class="btnRow">
+                <button class="btn primary" onclick="restartSameTheme()">Znova túto tému</button>
+                <button class="btn" onclick="goBackToThemes()">Vybrať inú tému</button>
+              </div>
+              <div class="hint" style="margin-top:10px">
+                Bodovanie: za každú otázku dostaneš <b>bod za každú správne označenú možnosť</b>.
+                Ak otázka má napr. 4 správne možnosti a označíš 3 z nich, získaš <b>3 body</b>.
+                (T. j. „čiastočné body“ ako na prijímačkách.)
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            Ovládanie: <span class="kbd">Tap</span> na možnosti · <span class="kbd">Skontrolovať & ďalej</span> pokračuje · <span class="kbd">Vyhodnotiť</span> ukončí.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <script>
-/* =============================
-   TU BUDEŠ VKLADAŤ OTÁZKY
-   ============================= */
-
-const questions = {
-
-"Štruktúra bunky": [{
-  question: "1. Prokaryotická bunka:",
-  answers: [
-    "A) môže obsahovať tylakoidy",
-    "B) môže obsahovať chloroplasty",
-    "C) obsahuje prokaryotické ribozómy",
-    "D) má cytoplazmatickú membránu",
-    "E) má nukleoid",
-    "F) má lineárne molekuly DNA",
-    "G) má vnútorné membrány",
-    "H) má kruhové chromozómy"
-  ],
-  correct: ["A","C","D","E"]
-},
-
-{
-  question: "2. Prokaryotické bunky nemajú:",
-  answers: [
-    "A) plastidy",
-    "B) vnútorný membránový systém",
-    "C) ribozómy",
-    "D) diktyozómy",
-    "E) cytoplazmatickú membránu",
-    "F) centriol",
-    "G) jadierko",
-    "H) mitochondrie"
-  ],
-  correct: ["A","B","D","F","G","H"]
-},
-
-{
-  question: "3. Ktoré štruktúry prokaryotickej bunky zabezpečujú uvoľňovanie energie:",
-  answers: [
-    "A) tylakoidy",
-    "B) bičíky",
-    "C) ribozómy",
-    "D) mitochondrie",
-    "E) plazmatická membrána",
-    "F) jadro",
-    "G) diktyozómy",
-    "H) vakuoly"
-  ],
-  correct: ["E"]
-},
-
-{
-  question: "4. Cytológia sa zaoberá štúdiom:",
-  answers: [
-    "A) živých sústav na molekulovej úrovni",
-    "B) mikroskopickej stavby tkanív",
-    "C) javov na úrovni bunky",
-    "D) živých mikroorganizmov",
-    "E) základnej stavebnej jednotky života",
-    "F) vírusov",
-    "G) tvaru a štruktúry buniek a organel",
-    "H) makromolekúl"
-  ],
-  correct: ["C","E","G"]
-},
-
-{
-  question: "5. Najmenší systém schopný samostatného života je:",
-  answers: [
-    "A) vírus",
-    "B) bunka",
-    "C) kolónia",
-    "D) biopolymér",
-    "E) mnohobunkový organizmus",
-    "F) populácia",
-    "G) nukleoproteínová častica",
-    "H) indivíduum vyššieho rádu"
-  ],
-  correct: ["B"]
-},
-
-{
-  question: "6. Vírusy sú:",
-  answers: [
-    "A) extracelulárne parazity",
-    "B) schopné uchovávať genetickú informáciu",
-    "C) nebunkové organizmy",
-    "D) najjednoduchšie prokaryotické organizmy",
-    "E) najjednoduchšie živé sústavy",
-    "F) schopné autoreprodukcie",
-    "G) schopné existovať len ako parazity buniek",
-    "H) rozmnožujú sa len v živých bunkách"
-  ],
-  correct: ["B","C","G","H"]
-},
-
-{
-  question: "7. Podľa všeobecnej stavby rozlišujeme bunky:",
-  answers: [
-    "A) rastlinné a živočíšne",
-    "B) jadrové a bezjadrové",
-    "C) diferencované a nediferencované",
-    "D) prokaryotické a eukaryotické",
-    "E) mikroskopické a submikroskopické",
-    "F) jednoduché a zložené",
-    "G) membránové a nemembránové",
-    "H) telové a pohlavné"
-  ],
-  correct: ["D"]
-},
-
-{
-  question: "8. Pravé individuá vyššieho rádu:",
-  answers: [
-    "A) sú spoločenstvá sociálneho hmyzu",
-    "B) sú svorky vlkov",
-    "C) sú samostatne existujúce jedince",
-    "D) sú obligátne spoločenstvá organizmov",
-    "E) majú trvalo diferencovaných jedincov",
-    "F) majú zameniteľné funkcie",
-    "G) majú nezameniteľnú funkciu jedincov",
-    "H) sú dočasné spoločenstvá"
-  ],
-  correct: ["D","G"]
-},
-
-{
-  question: "9. Bunky rovnakého typu sa spájajú do:",
-  answers: [
-    "A) orgánov",
-    "B) špecializovaných buniek",
-    "C) pletív",
-    "D) organizmov",
-    "E) indivíduí vyššieho rádu",
-    "F) tkanív",
-    "G) tkanivových kultúr",
-    "H) organel"
-  ],
-  correct: ["C","F"]
-},
-
-{
-  question: "10. Základom cytoplazmatickej membrány je:",
-  answers: [
-    "A) bielkovinová dvojvrstva",
-    "B) celulózová dvojvrstva",
-    "C) dvojvrstva lipidov s bielkovinami",
-    "D) cytosol",
-    "E) cytoplazmatická matrix",
-    "F) fosfolipidová dvojvrstva",
-    "G) plazmaléma",
-    "H) bielkovinová vrstva s fosfolipidmi"
-  ],
-  correct: ["C","F"]
-}{
-  question: "11. K základným bunkovým povrchom eukaryotickej bunky patrí:",
-  answers: [
-    "A) plazmaléma",
-    "B) jadrová membrána",
-    "C) kutikula",
-    "D) pelikula",
-    "E) bunková stena",
-    "F) cytoplazmatická membrána",
-    "G) slizové puzdro",
-    "H) karyoléma"
-  ],
-  correct: ["A","B","E","F","H"]
-},
-
-{
-  question: "12. Cytoplazmatická membrána:",
-  answers: [
-    "A) je jedinou biomembránou prokaryotických buniek",
-    "B) reguluje príjem látok do bunky",
-    "C) nazýva sa plazmaléma",
-    "D) nazýva sa karyoléma",
-    "E) patrí k bunkovým povrchom",
-    "F) obsahuje receptory",
-    "G) tvorí prostredie pre organely",
-    "H) zabezpečuje len mechanickú ochranu"
-  ],
-  correct: ["A","B","C","E","F"]
-},
-
-{
-  question: "13. Biomembrány sú zložené:",
-  answers: [
-    "A) z dvojvrstvy bielkovín a sacharidov",
-    "B) z dvojvrstvy lipidov a bielkovín",
-    "C) z dvojvrstvy fosfolipidov a sacharidov",
-    "D) z jednej vrstvy fosfolipidov",
-    "E) z fosfolipidov a bielkovín",
-    "F) z vonkajšej bielkovinovej vrstvy",
-    "G) z lipidov a bielkovín",
-    "H) z dvojvrstvy fosfolipidov s bielkovinami"
-  ],
-  correct: ["B","E","H"]
-},
-
-{
-  question: "14. Eukaryotické bunky na rozdiel od prokaryotických:",
-  answers: [
-    "A) majú membránové organely",
-    "B) nemajú membránové organely",
-    "C) majú karyolému",
-    "D) nemajú jadrovú membránu",
-    "E) majú kruhové chromozómy",
-    "F) sú spravidla menšie",
-    "G) majú vnútorný priestor členený membránami",
-    "H) majú vlastný genetický materiál"
-  ],
-  correct: ["A","C","G"]
-},
-
-{
-  question: "15. Živočíšne bunky na rozdiel od rastlinných:",
-  answers: [
-    "A) sú oddelené cytoplazmatickou membránou",
-    "B) obsahujú lyzozómy",
-    "C) obsahujú vakuoly",
-    "D) majú bunkovú stenu",
-    "E) sú spojené plazmodezmami",
-    "F) nemajú bunkovú stenu",
-    "G) majú tonoplast",
-    "H) môžu obsahovať myofibrily"
-  ],
-  correct: ["B","F","H"]
-},
-
-{
-  question: "16. Cytoskelet bunky:",
-  answers: [
-    "A) zabezpečuje rozloženie organel",
-    "B) je statická kostra bunky",
-    "C) podieľa sa na difúzii",
-    "D) podieľa sa na fagocytóze",
-    "E) podieľa sa na pinocytóze",
-    "F) zabezpečuje osmózu",
-    "G) je zložený z nukleoproteínov",
-    "H) má pohybovú a mechanickú funkciu"
-  ],
-  correct: ["A","D","E","H"]
-},
-
-{
-  question: "17. Cytoskeletová sústava bunky:",
-  answers: [
-    "A) patrí k membránovým štruktúram",
-    "B) zabezpečuje pohyb bunky",
-    "C) je dynamická kostra bunky",
-    "D) je statická kostra bunky",
-    "E) patrí k fibrilárnym štruktúram",
-    "F) je neživá súčasť bunky",
-    "G) je tvorená mikrotubulmi a mikrofilamentami",
-    "H) je tvorená nukleoproteínmi"
-  ],
-  correct: ["B","C","E","G"]
-},
-
-{
-  question: "18. Drsná forma endoplazmatického retikula:",
-  answers: [
-    "A) podieľa sa na syntéze vitamínu D",
-    "B) podieľa sa na syntéze lipidov",
-    "C) je bez ribozómov",
-    "D) podieľa sa na syntéze bielkovín",
-    "E) podieľa sa na syntéze proteínov",
-    "F) zabezpečuje vnútrobunkový transport",
-    "G) zabezpečuje medzibunkový transport",
-    "H) nepatrí medzi membránové organely"
-  ],
-  correct: ["D","E","F"]
-},
-
-{
-  question: "19. Hladká forma endoplazmatického retikula:",
-  answers: [
-    "A) je bez ribozómov",
-    "B) je viditeľná v optickom mikroskope",
-    "C) podieľa sa na syntéze lipidov",
-    "D) podieľa sa na syntéze vitamínu D",
-    "E) obsahuje hydrolytické enzýmy",
-    "F) má ribozómy",
-    "G) podieľa sa na syntéze bielkovín",
-    "H) zabezpečuje vnútrobunkový transport"
-  ],
-  correct: ["A","C","D","H"]
-},
-
-{
-  question: "20. Lyzozómy obsahujú enzýmy:",
-  answers: [
-    "A) podieľajúce sa na lytických procesoch",
-    "B) zabezpečujúce vnútrobunkové trávenie",
-    "C) typu polymeráz",
-    "D) tráviace a vylučovacie",
-    "E) upravujúce látky na vylučovanie",
-    "F) uložené v matrix",
-    "G) hydrolytické",
-    "H) rozkladajúce cudzie a nepotrebné látky"
-  ],
-  correct: ["A","B","G","H"]
-}{
-  question: "21. Mitochondrie sú:",
-  answers: [
-    "A) prítomné len v eukaryotických bunkách",
-    "B) oddelené od cytoplazmy dvojitou membránou",
-    "C) energetickým centrom bunky",
-    "D) prítomné v prokaryotických bunkách",
-    "E) metabolicko-respiračným centrom bunky",
-    "F) syntetickým centrom bunky",
-    "G) početné v bunkách s vysokou spotrebou energie",
-    "H) typické len pre živočíšne bunky"
-  ],
-  correct: ["A","B","C","E","G"]
-},
-
-{
-  question: "22. Bunkové jadro:",
-  answers: [
-    "A) sa označuje ako karyon",
-    "B) sa označuje ako nucleus",
-    "C) je tvorené RNA a bielkovinami",
-    "D) obsahuje kruhové chromozómy",
-    "E) obsahuje DNA a bielkoviny",
-    "F) má karyolému",
-    "G) má plazmalému",
-    "H) má dvojitú membránu"
-  ],
-  correct: ["A","B","E","F","H"]
-},
-
-{
-  question: "23. Ribozómy:",
-  answers: [
-    "A) patria medzi membránové organely",
-    "B) sú mikroskopické častice",
-    "C) sú submikroskopické častice",
-    "D) nepatria medzi membránové organely",
-    "E) sú viditeľné len elektrónovým mikroskopom",
-    "F) sú viazané na hladké ER",
-    "G) sú zložené z DNA a bielkovín",
-    "H) sú zložené z RNA a bielkovín"
-  ],
-  correct: ["C","D","E","H"]
-},
-
-{
-  question: "24. Mitochondrie sú organely, ktoré:",
-  answers: [
-    "A) majú jednu membránu",
-    "B) majú dve membrány",
-    "C) syntetizujú vlastné bielkoviny",
-    "D) obsahujú vlastnú DNA",
-    "E) obsahujú enzýmy Krebsovho cyklu",
-    "F) sú vyplnené bunkovou šťavou",
-    "G) tvoria cytoskelet",
-    "H) majú enzýmy dýchacieho reťazca"
-  ],
-  correct: ["B","C","D","E","H"]
-},
-
-{
-  question: "25. Koľko biomembrán majú mitochondrie:",
-  answers: [
-    "A) jednu",
-    "B) dve – jednu hladkú a jednu zrnitú",
-    "C) dve",
-    "D) jednu alebo dve",
-    "E) dve – vonkajšiu a vnútornú",
-    "F) dve s mitochondriálnymi pórmi",
-    "G) jednu alebo dve podľa typu bunky",
-    "H) dve – priepustnú a polopriepustnú"
-  ],
-  correct: ["C","E"]
-},
-
-{
-  question: "26. V Golgiho aparáte prebieha:",
-  answers: [
-    "A) rozklad látok",
-    "B) úprava a triedenie látok",
-    "C) tvorba lyzozómov",
-    "D) tvorba pektínov",
-    "E) oxidácia bielkovín",
-    "F) syntéza hormónov a polysacharidov",
-    "G) bunkové oxidácie",
-    "H) tvorba sekrečných vezikúl"
-  ],
-  correct: ["B","C","D","F","H"]
-},
-
-{
-  question: "27. Diktyozómy sú súčasťou:",
-  answers: [
-    "A) chloroplastov",
-    "B) Golgiho aparátu",
-    "C) lyzozómov",
-    "D) endoplazmatického retikula",
-    "E) prokaryotických buniek",
-    "F) eukaryotických buniek",
-    "G) cytoskeletu",
-    "H) mitochondrií"
-  ],
-  correct: ["B","F"]
-},
-
-{
-  question: "28. Nukleolus:",
-  answers: [
-    "A) je v cytoplazme",
-    "B) je v jadre",
-    "C) je stála štruktúra jadra",
-    "D) nachádza sa len v eukaryotických bunkách",
-    "E) je miestom syntézy rRNA",
-    "F) zaniká počas mitózy",
-    "G) má karyolému",
-    "H) je v prokaryotických bunkách"
-  ],
-  correct: ["B","D","E","F"]
-},
-
-{
-  question: "29. Jadro eukaryotických buniek:",
-  answers: [
-    "A) obsahuje chromatín",
-    "B) obsahuje centriol",
-    "C) je riadiacim centrom bunky",
-    "D) je reprodukčným centrom bunky",
-    "E) je vyplnené bunkovou šťavou",
-    "F) je pohybovým centrom bunky",
-    "G) je submikroskopická štruktúra",
-    "H) chýba v niektorých bunkách"
-  ],
-  correct: ["A","C","D","H"]
-},
-
-{
-  question: "30. Bunkové organely, ktorých základom sú biomembrány, nazývame:",
-  answers: [
-    "A) organelové štruktúry",
-    "B) cytoplazmatické organely",
-    "C) membránové štruktúry",
-    "D) biomembrány",
-    "E) štruktúrne organely",
-    "F) membránové organely",
-    "G) eukaryotické organely",
-    "H) vezikuly"
-  ],
-  correct: ["C","F"]
-}{
-  question: "31. Medzi membránové organely nepatria:",
-  answers: [
-    "A) ribozómy",
-    "B) lyzozómy",
-    "C) bakteriálne jadro",
-    "D) mitochondrie",
-    "E) centriol",
-    "F) cytoskelet",
-    "G) jadierko",
-    "H) vakuoly"
-  ],
-  correct: ["A","C","E","F","G"]
-},
-
-{
-  question: "32. Medzi membránové organely patria:",
-  answers: [
-    "A) centrioly",
-    "B) centrozómy",
-    "C) ribozómy",
-    "D) chromozómy",
-    "E) Golgiho aparát",
-    "F) jadierka",
-    "G) lyzozómy",
-    "H) vakuoly"
-  ],
-  correct: ["E","G","H"]
-},
-
-{
-  question: "33. K mitotickému aparátu bunky patria:",
-  answers: [
-    "A) centroméra",
-    "B) chromozómy",
-    "C) astrosféra",
-    "D) centrioly",
-    "E) pólové telieska",
-    "F) deliace vretienko",
-    "G) chromatídy",
-    "H) jadierkový organizátor"
-  ],
-  correct: ["A","C","D","F"]
-},
-
-{
-  question: "34. Chromozómy:",
-  answers: [
-    "A) sú viditeľné len počas delenia bunky",
-    "B) sú viditeľné v interfáze",
-    "C) homologické majú vždy rovnaké alely",
-    "D) majú centroméru",
-    "E) sú tvorené nukleoproteínmi",
-    "F) majú ramená spojené centromérou",
-    "G) v metafáze sú dvojchromatídové",
-    "H) môžu byť kruhové"
-  ],
-  correct: ["A","E","F","G"]
-},
-
-{
-  question: "35. Obsah vody v bunkách:",
-  answers: [
-    "A) je v priemere 65 %",
-    "B) sa počas života nemení",
-    "C) závisí od prostredia",
-    "D) závisí od typu bunky",
-    "E) závisí od veku bunky",
-    "F) je vyšší u starých buniek",
-    "G) je nižší u mladých buniek",
-    "H) tvorí len 10–40 % hmotnosti"
-  ],
-  correct: ["A","C","D","E"]
-},
-
-{
-  question: "36. Endocytóza:",
-  answers: [
-    "A) je pinocytóza",
-    "B) zahŕňa prestavbu membrány",
-    "C) je pasívny transport",
-    "D) je aktívny transport",
-    "E) je transport von z bunky",
-    "F) nevyžaduje energiu",
-    "G) je difúzia",
-    "H) zahŕňa fagocytózu"
-  ],
-  correct: ["A","B","D","H"]
-},
-
-{
-  question: "37. Rastlinná bunka v hypertonickom prostredí:",
-  answers: [
-    "A) stráca vodu",
-    "B) nasáva vodu",
-    "C) nemení objem",
-    "D) podlieha plazmolýze",
-    "E) podlieha plazmoptýze",
-    "F) zväčšuje objem",
-    "G) zmenšuje objem",
-    "H) oddeľuje sa membrána od bunkovej steny"
-  ],
-  correct: ["A","D","G","H"]
-},
-
-{
-  question: "38. Živočíšna bunka v hypotonickom prostredí:",
-  answers: [
-    "A) sa zmrští",
-    "B) praská",
-    "C) podlieha plazmoptýze",
-    "D) podlieha plazmolýze",
-    "E) nemení objem",
-    "F) nasáva vodu",
-    "G) zväčšuje objem",
-    "H) stráca vodu"
-  ],
-  correct: ["B","C","F","G"]
-},
-
-{
-  question: "39. Živočíšna bunka v hypertonickom prostredí:",
-  answers: [
-    "A) sa zmrští",
-    "B) praská",
-    "C) stráca vodu",
-    "D) podlieha plazmolýze",
-    "E) podlieha plazmoptýze",
-    "F) aktívne transportuje vodu",
-    "G) nasáva vodu",
-    "H) zmenšuje objem"
-  ],
-  correct: ["A","C","H"]
-},
-
-{
-  question: "40. Difúzia a osmóza majú spoločné:",
-  answers: [
-    "A) ide o aktívny transport",
-    "B) vyžadujú energiu",
-    "C) sú pasívne procesy",
-    "D) prebiehajú proti gradientu",
-    "E) menia štruktúru membrány",
-    "F) prebiehajú z vyššej do nižšej koncentrácie",
-    "G) nevyžadujú energiu",
-    "H) nemenia štruktúru membrány"
-  ],
-  correct: ["C","F","G","H"]
-}{
-  question: "41. Bunkovou bariérou, ktorá selektívne prepúšťa látky do bunky je:",
-  answers: [
-    "A) jadrová membrána",
-    "B) plazmaléma",
-    "C) bunková stena",
-    "D) cytoplazmatická membrána",
-    "E) slizové puzdro",
-    "F) plazmatická membrána",
-    "G) fibrilárna štruktúra",
-    "H) cytoskelet"
-  ],
-  correct: ["B","D","F"]
-},
-
-{
-  question: "42. Pasívny transport cez membránu:",
-  answers: [
-    "A) nevyžaduje energiu",
-    "B) prebieha proti gradientu",
-    "C) prebieha proti koncentrácii",
-    "D) je to difúzia",
-    "E) je to osmóza",
-    "F) prebieha v smere gradientu",
-    "G) nezávisí od koncentrácie",
-    "H) týka sa vody a plynov"
-  ],
-  correct: ["A","D","E","F","H"]
-},
-
-{
-  question: "43. Hypotonické prostredie:",
-  answers: [
-    "A) má nižšiu koncentráciu látok",
-    "B) má vyššiu koncentráciu látok",
-    "C) spôsobuje plazmolýzu",
-    "D) spôsobuje plazmoptýzu",
-    "E) spôsobuje lýzu erytrocytov",
-    "F) spôsobuje oddeľovanie membrány",
-    "G) je destilovaná voda",
-    "H) spôsobuje nasávanie vody bunkou"
-  ],
-  correct: ["A","D","E","G","H"]
-},
-
-{
-  question: "44. Transportné bielkoviny:",
-  answers: [
-    "A) prenášajú látky vo vezikulách",
-    "B) sú univerzálne",
-    "C) viažu špecifické látky",
-    "D) umožňujú prechod niektorých látok",
-    "E) podieľajú sa na endocytóze",
-    "F) podieľajú sa na difúzii",
-    "G) umožňujú prechod len niektorým látkam",
-    "H) zúčastňujú sa sprostredkovanej difúzie"
-  ],
-  correct: ["C","D","G","H"]
-},
-
-{
-  question: "45. Nesprávne tvrdenia:",
-  answers: [
-    "A) cytoskelet zabezpečuje pohyb len u prvokov",
-    "B) mikrotubuly obsahujú tubulín",
-    "C) vakuoly majú význam v metabolizme",
-    "D) mikrofilamenty obsahujú pektín",
-    "E) deliace vretienko vzniká z mikrotubulov",
-    "F) plastidy sú typ chloroplastov",
-    "G) mikrofilamenty skracujú bunku",
-    "H) tylakoidy sú v chloroplaste"
-  ],
-  correct: ["A","D","F"]
-},
-
-{
-  question: "46. Difúziou môžu prechádzať:",
-  answers: [
-    "A) všetky látky",
-    "B) len veľké molekuly",
-    "C) plyny",
-    "D) etanol",
-    "E) ióny",
-    "F) látky podľa priepustnosti membrány",
-    "G) voda",
-    "H) látky proti gradientu"
-  ],
-  correct: ["C","D","F","G"]
-},
-
-{
-  question: "47. Rýchlosť difúzie závisí od:",
-  answers: [
-    "A) prestavby membrány",
-    "B) ATP",
-    "C) transportných bielkovín",
-    "D) teploty",
-    "E) koncentračného spádu",
-    "F) cytoskeletu",
-    "G) enzýmov",
-    "H) diferenciácie bunky"
-  ],
-  correct: ["D","E"]
-},
-
-{
-  question: "48. Pseudopódie vznikajú:",
-  answers: [
-    "A) pri pinocytóze",
-    "B) pomocou cytoskeletu",
-    "C) pri fagocytóze",
-    "D) pri osmóze",
-    "E) pomocou mikrofilamentov",
-    "F) uzatváraním častíc",
-    "G) pri exocytóze",
-    "H) pri pasívnom transporte"
-  ],
-  correct: ["B","C","E","F"]
-},
-
-{
-  question: "49. Aktívny transport umožňuje:",
-  answers: [
-    "A) prenos vody",
-    "B) prenos plynov",
-    "C) prenos etanolu",
-    "D) transport Ca²⁺",
-    "E) prenos pomocou bielkovín",
-    "F) výstup Na⁺",
-    "G) vstup K⁺",
-    "H) prenos proti gradientu"
-  ],
-  correct: ["D","E","F","G","H"]
-},
-
-{
-  question: "50. Bunkový cyklus:",
-  answers: [
-    "A) je regeneračná doba bunky",
-    "B) je geneticky riadený",
-    "C) sa zastaví v S-fáze",
-    "D) je kontrolovaný v G₁ fáze",
-    "E) môže byť narušený vírusmi",
-    "F) zahŕňa G₁, S, G₂",
-    "G) majú ho aj prokaryotá",
-    "H) má fázy G₁, S, G₂, M"
-  ],
-  correct: ["B","D","E","F","H"]
-}{
-  question: "51. Poradie všetkých fáz bunkového cyklu je:",
-  answers: [
-    "A) karyokinéza a cytokinéza",
-    "B) profáza, metafáza, anafáza, telofáza",
-    "C) heterotypické a homeotypické delenie",
-    "D) G1, S, G2, M",
-    "E) predmitotická, S, postmitotická, M",
-    "F) amitóza, mitóza, meióza",
-    "G) interfáza a M-fáza",
-    "H) postmitotická, S, predmitotická, M"
-  ],
-  correct: ["D","G"]
-},
-
-{
-  question: "52. Generačná doba bunky:",
-  answers: [
-    "A) je daná geneticky",
-    "B) je rovnaká pre všetky bunky",
-    "C) je trvanie bunkového cyklu",
-    "D) je rozdielna pre rôzne bunky",
-    "E) nezávisí od živín",
-    "F) je len interfáza",
-    "G) je regenerácia bunky",
-    "H) závisí od množstva živín"
-  ],
-  correct: ["A","C","D","H"]
-},
-
-{
-  question: "53. Priebeh bunkového cyklu sa skúma:",
-  answers: [
-    "A) in vivo",
-    "B) na vírusoch",
-    "C) na baktériách in vivo",
-    "D) in vitro",
-    "E) na nádorových bunkách",
-    "F) na bunkových kultúrach",
-    "G) na pletivách",
-    "H) na diferencovaných bunkách"
-  ],
-  correct: ["D","E","F"]
-},
-
-{
-  question: "54. Interfáza:",
-  answers: [
-    "A) bunka sa nedelí",
-    "B) zahŕňa mitózu",
-    "C) je celý bunkový cyklus",
-    "D) je generačná doba",
-    "E) zahŕňa profázu až telofázu",
-    "F) zahŕňa G1, S, G2",
-    "G) má hlavný kontrolný bod",
-    "H) je rastová fáza"
-  ],
-  correct: ["A","F","G","H"]
-},
-
-{
-  question: "55. Pri nedostatku živín:",
-  answers: [
-    "A) sa generačná doba nemení",
-    "B) sa zrýchľuje",
-    "C) sa predlžuje",
-    "D) vznikajú nádory",
-    "E) sa zastaví G1 fáza",
-    "F) cyklus sa zastaví",
-    "G) bunka prejde do M fázy",
-    "H) bunky sa delia rýchlejšie"
-  ],
-  correct: ["C","F"]
-},
-
-{
-  question: "56. G₁ fáza:",
-  answers: [
-    "A) je predmitotická",
-    "B) je postmitotická",
-    "C) začína po delení bunky",
-    "D) začína zánikom bunky",
-    "E) je začiatok cyklu",
-    "F) prebieha rast bunky",
-    "G) je najkratšia",
-    "H) je najvariabilnejšia"
-  ],
-  correct: ["B","C","E","F","H"]
-},
-
-{
-  question: "57. V G₁ fáze:",
-  answers: [
-    "A) prebieha syntéza bielkovín",
-    "B) je kontrolný bod",
-    "C) prebieha replikácia DNA",
-    "D) bunka sa pripravuje na delenie",
-    "E) je kontrola karyokinézy",
-    "F) je kontrola cytokinézy",
-    "G) dochádza k rastu",
-    "H) neprebieha replikácia DNA"
-  ],
-  correct: ["A","B","D","G","H"]
-},
-
-{
-  question: "58. Sesterské chromatídy:",
-  answers: [
-    "A) vznikajú replikáciou DNA",
-    "B) sú homologické",
-    "C) sú spojené centromérou",
-    "D) rozchádzajú sa v mitóze",
-    "E) rozchádzajú sa v meióze I",
-    "F) rozchádzajú sa v meióze II",
-    "G) sú geneticky identické",
-    "H) vznikajú v G1 fáze"
-  ],
-  correct: ["A","C","D","F","G"]
-},
-
-{
-  question: "59. Nesprávne tvrdenie:",
-  answers: [
-    "A) v profáze sa chromozómy skracujú",
-    "B) v metafáze sú v ekvatoriálnej rovine",
-    "C) v S fáze prebieha syntéza DNA",
-    "D) v profáze sa centrozómy delia v jadre",
-    "E) v telofáze zaniká deliace vretienko",
-    "F) v anafáze sa rozchádzajú chromatídy",
-    "G) G₁ fáza je kontrolný bod",
-    "H) crossing-over prebieha v profáze I"
-  ],
-  correct: ["D"]
-},
-
-{
-  question: "60. Bielkoviny G₁ fázy slúžia:",
-  answers: [
-    "A) na tvorbu mitotického aparátu",
-    "B) na rast bunky",
-    "C) na tvorbu chromozómov",
-    "D) na metabolizmus",
-    "E) na tvorbu organel",
-    "F) na zásobné látky",
-    "G) na tvorbu vretienka",
-    "H) na tvorbu plazmatickej platničky"
-  ],
-  correct: ["B","D","E"]
-}{
-  question: "61. Kľúčovým procesom S-fázy je:",
-  answers: [
-    "A) syntéza DNA",
-    "B) zdvojenie jednochromatídových chromozómov",
-    "C) rozdelenie chromozómov",
-    "D) regenerácia jadra",
-    "E) zdvojenie organel",
-    "F) zdvojenie dvojchromatídových chromozómov",
-    "G) znásobenie genetického materiálu",
-    "H) zdvojenie homologických chromozómov"
-  ],
-  correct: ["A","B","G"]
-},
-
-{
-  question: "62. Karyokinéza a cytokinéza prebiehajú:",
-  answers: [
-    "A) v interfáze",
-    "B) v M-fáze",
-    "C) v telofáze mitózy",
-    "D) v G2 fáze",
-    "E) v telofáze II",
-    "F) v metafáze",
-    "G) v postmitotickej fáze",
-    "H) v telofáze I"
-  ],
-  correct: ["B"]
-},
-
-{
-  question: "63. Do interfázy bunkového cyklu patrí:",
-  answers: [
-    "A) G1 fáza",
-    "B) G0 fáza",
-    "C) M-fáza",
-    "D) meióza",
-    "E) mitóza",
-    "F) G1 fáza",
-    "G) S-fáza",
-    "H) G2 fáza"
-  ],
-  correct: ["A","F","G","H"]
-},
-
-{
-  question: "64. Chemické regulačné mechanizmy bunkového cyklu:",
-  answers: [
-    "A) môžu stimulovať delenie",
-    "B) môžu inhibovať delenie",
-    "C) patria sem cytostatiká",
-    "D) pôsobia najmä v G1 fáze",
-    "E) pôsobia najmä v M fáze",
-    "F) môžu byť vírusy",
-    "G) ovplyvňujú diferenciáciu buniek",
-    "H) pôsobia len na zrelé bunky"
-  ],
-  correct: ["A","B","C","D","F","G"]
-},
-
-{
-  question: "65. Reguláciu bunkového cyklu ovplyvňujú:",
-  answers: [
-    "A) cytostatiká",
-    "B) látky stimulujúce delenie",
-    "C) teplota",
-    "D) niektoré vírusy",
-    "E) kolchicín",
-    "F) rastové regulátory",
-    "G) dostatok živín",
-    "H) rastové hormóny"
-  ],
-  correct: ["A","C","D","E","F","G","H"]
-},
-
-{
-  question: "66. Stimulačný účinok na bunkový cyklus majú:",
-  answers: [
-    "A) cytostatiká",
-    "B) kolchicín",
-    "C) inhibítory rastu",
-    "D) kontrolný bod G1",
-    "E) niektoré vírusy",
-    "F) rastové hormóny",
-    "G) rastové regulátory",
-    "H) antibiotiká"
-  ],
-  correct: ["E","F","G"]
-},
-
-{
-  question: "67. V profáze mitózy:",
-  answers: [
-    "A) sa delí centriol",
-    "B) chromozómy sú dvojchromatídové",
-    "C) chromozómy sú jednochromatídové",
-    "D) chromozómy sa skracujú",
-    "E) chromozómy sa špiralizujú",
-    "F) zaniká jadrová membrána",
-    "G) chromozómy sa dešpiralizujú",
-    "H) centrozómy putujú k pólom"
-  ],
-  correct: ["A","B","D","E","F","H"]
-},
-
-{
-  question: "68. V metafáze mitózy:",
-  answers: [
-    "A) chromozómy sú dvojchromatídové",
-    "B) sú jednochromatídové",
-    "C) prebieha replikácia DNA",
-    "D) sú zoradené v ekvatoriálnej rovine",
-    "E) prebieha dešpiralizácia",
-    "F) chromatídy sa rozchádzajú",
-    "G) vrcholí špiralizácia",
-    "H) mikrotubuly sa viažu na centroméry"
-  ],
-  correct: ["A","D","G","H"]
-},
-
-{
-  question: "69. V telofáze mitózy:",
-  answers: [
-    "A) chromozómy sa špiralizujú",
-    "B) chromozómy sa dešpiralizujú",
-    "C) sú dvojchromatídové",
-    "D) sú jednochromatídové",
-    "E) zaniká deliace vretienko",
-    "F) zaniká jadrová membrána",
-    "G) zaniká jadierko",
-    "H) obnovuje sa jadro"
-  ],
-  correct: ["B","D","E","H"]
-},
-
-{
-  question: "70. Cytokinéza:",
-  answers: [
-    "A) je veda o bunkách",
-    "B) je rozdelenie jadra",
-    "C) je pozdĺžne delenie bunky",
-    "D) vedie k vzniku viacjadrových buniek",
-    "E) je súčasť interfázy",
-    "F) je rastová fáza",
-    "G) je pohyb bunky",
-    "H) je rozdelenie bunky na dve dcérske"
-  ],
-  correct: ["H"]
-}{
-  question: "71. Telové bunky živočíchov:",
-  answers: [
-    "A) sú haploidné",
-    "B) sú diploidné",
-    "C) majú 2n chromozómov",
-    "D) sú geneticky homologické",
-    "E) sú geneticky identické",
-    "F) sú geneticky odlišné",
-    "G) diferencované sú geneticky odlišné",
-    "H) vznikajú meiotickým delením"
-  ],
-  correct: ["B","C","E"]
-},
-
-{
-  question: "72. Bivalenty vznikajú:",
-  answers: [
-    "A) v profáze homeotypického delenia",
-    "B) v anafáze heterotypického delenia",
-    "C) v profáze heterotypického delenia",
-    "D) párovaním homologických chromozómov",
-    "E) párovaním geneticky identických chromozómov",
-    "F) párovaním heterologických chromozómov",
-    "G) v profáze I a zanikajú v anafáze I",
-    "H) v mitóze"
-  ],
-  correct: ["C","D","G"]
-},
-
-{
-  question: "73. Správne tvrdenie:",
-  answers: [
-    "A) meiózou sa delia len diploidné bunky",
-    "B) meiózou sa delia len haploidné bunky",
-    "C) v anafáze I sa rozchádzajú chromatídy",
-    "D) v anafáze I sa rozchádzajú dvojchromatídové chromozómy",
-    "E) v metafáze I sú v rovine jednotlivé chromozómy",
-    "F) v metafáze I sú v rovine bivalenty",
-    "G) crossing-over prebieha v profáze II",
-    "H) druhé delenie znižuje počet chromozómov"
-  ],
-  correct: ["A","D","F"]
-},
-
-{
-  question: "74. Zygota:",
-  answers: [
-    "A) je oplodnené vajíčko",
-    "B) vzniká redukčným delením",
-    "C) je zrelá pohlavná bunka",
-    "D) má schopnosť totipotencie",
-    "E) je haploidná",
-    "F) je diploidná",
-    "G) obsahuje kompletnú genetickú informáciu",
-    "H) obsahuje genetickú informáciu len v cytoplazme"
-  ],
-  correct: ["A","D","F","G"]
-},
-
-{
-  question: "75. Karyokinéza je:",
-  answers: [
-    "A) rozdelenie jadra",
-    "B) rozdelenie bunky",
-    "C) súčasť interfázy",
-    "D) súčasť bunkového cyklu",
-    "E) zdvojenie jadra",
-    "F) veda o jadre",
-    "G) rozmnožovanie buniek",
-    "H) delenie centriol"
-  ],
-  correct: ["A","D"]
-},
-
-{
-  question: "76. Bunkové delenie:",
-  answers: [
-    "A) sa nazýva karyokinéza",
-    "B) môže byť mitóza",
-    "C) prebieha v M fáze",
-    "D) prebieha v interfáze",
-    "E) zabezpečuje regeneráciu",
-    "F) zabezpečuje náhradu buniek",
-    "G) znamená rozmnožovanie buniek",
-    "H) zahŕňa karyokinézu aj cytokinézu"
-  ],
-  correct: ["B","C","E","F","G","H"]
-},
-
-{
-  question: "77. Počet chromozómov po mitóze:",
-  answers: [
-    "A) je rovnaký ako v materskej bunke",
-    "B) je polovičný",
-    "C) je haploidný",
-    "D) vzniká redukcia",
-    "E) chromozómy sa delia pozdĺžne",
-    "F) chromozómy sa delia priečne",
-    "G) zodpovedá meióze",
-    "H) je diploidný"
-  ],
-  correct: ["A","E","H"]
-},
-
-{
-  question: "78. Bunky vzniknuté meiózou:",
-  answers: [
-    "A) sú geneticky rovnaké",
-    "B) nie sú geneticky rovnaké",
-    "C) sú haploidné",
-    "D) sú diploidné",
-    "E) sú pohlavné bunky",
-    "F) sú geneticky identické s materskou",
-    "G) zvyšujú variabilitu",
-    "H) vznikajú mitózou"
-  ],
-  correct: ["B","C","E","G"]
-},
-
-{
-  question: "79. Heterotypické delenie:",
-  answers: [
-    "A) je mitóza",
-    "B) redukuje počet chromozómov",
-    "C) je druhé meiotické delenie",
-    "D) vedie k nerovnomernému rozdeleniu DNA",
-    "E) končí vznikom 4 buniek",
-    "F) je prvé meiotické delenie",
-    "G) nemení počet chromozómov",
-    "H) je súčasť mitózy"
-  ],
-  correct: ["B","F"]
-},
-
-{
-  question: "80. Redukčné delenie:",
-  answers: [
-    "A) je mitóza",
-    "B) je meióza",
-    "C) vytvára pohlavné bunky",
-    "D) vytvára diploidné bunky",
-    "E) prebieha v dvoch fázach",
-    "F) prebieha len raz",
-    "G) je typické pre pohlavné rozmnožovanie",
-    "H) nemení počet chromozómov"
-  ],
-  correct: ["B","C","E","G"]
-}{
-  question: "81. Homeotypické delenie:",
-  answers: [
-    "A) je prvé meiotické delenie",
-    "B) je druhé meiotické delenie",
-    "C) má profázu I",
-    "D) má profázu II",
-    "E) prebieha v ňom crossing-over",
-    "F) nasleduje po replikácii DNA",
-    "G) nasleduje bez replikácie DNA",
-    "H) redukuje počet chromozómov"
-  ],
-  correct: ["B","D","G"]
-},
-
-{
-  question: "82. Diferenciácia buniek je:",
-  answers: [
-    "A) stimulácia buniek",
-    "B) totipotencia",
-    "C) tvarové a funkčné odlíšenie buniek",
-    "D) špecializácia buniek",
-    "E) rozmnožovanie buniek",
-    "F) autoregulácia",
-    "G) tvorba identických buniek",
-    "H) vznik špecializovaných buniek"
-  ],
-  correct: ["C","D","H"]
-},
-
-{
-  question: "83. Bunkové kultúry sa získavajú:",
-  answers: [
-    "A) pestovaním buniek in vivo",
-    "B) pestovaním buniek in vitro",
-    "C) diferenciáciou buniek",
-    "D) pestovaním buniek mimo organizmu",
-    "E) delením buniek v tele",
-    "F) mitózou v organizme",
-    "G) kultiváciou tkanív",
-    "H) delením buniek v prírode"
-  ],
-  correct: ["B","D","G"]
-},
-
-{
-  question: "84. Bunková diferenciácia znamená:",
-  answers: [
-    "A) tvarové odlíšenie buniek",
-    "B) funkčné odlíšenie buniek",
-    "C) genetické odlíšenie",
-    "D) morfologické odlíšenie",
-    "E) tvarové a funkčné odlíšenie",
-    "F) vznik po narodení",
-    "G) realizáciu celej genetickej informácie",
-    "H) špecializáciu buniek"
-  ],
-  correct: ["A","B","D","E","H"]
-},
-
-{
-  question: "85. Diferencovaná bunka:",
-  answers: [
-    "A) má aktivované len niektoré gény",
-    "B) má aktivované všetky gény",
-    "C) je totipotentná",
-    "D) obsahuje kompletnú DNA",
-    "E) má len časť genetickej informácie",
-    "F) je embryonálna",
-    "G) je funkčne špecializovaná",
-    "H) má typický tvar"
-  ],
-  correct: ["A","D","G","H"]
-},
-
-{
-  question: "86. Bunková stena:",
-  answers: [
-    "A) je selektívne priepustná",
-    "B) je permeabilná",
-    "C) tvorí osmotickú bariéru",
-    "D) je produktom protoplastu",
-    "E) má vyživovaciu funkciu",
-    "F) udržiava tvar bunky",
-    "G) je semipermeabilná",
-    "H) obsahuje pektíny"
-  ],
-  correct: ["B","D","F"]
-},
-
-{
-  question: "87. Rozkladné procesy v živočíšnych bunkách zabezpečujú:",
-  answers: [
-    "A) amyloplasty",
-    "B) Golgiho aparát",
-    "C) vakuoly",
-    "D) cytoplazma",
-    "E) hladké ER",
-    "F) zrnité ER",
-    "G) lyzozómy",
-    "H) hydrolytické enzýmy"
-  ],
-  correct: ["G","H"]
-},
-
-{
-  question: "88. Rozkladné procesy v rastlinných bunkách zabezpečujú:",
-  answers: [
-    "A) amyloplasty",
-    "B) lyzozómy",
-    "C) vakuoly",
-    "D) tonoplast",
-    "E) plastidové ribozómy",
-    "F) hladké ER",
-    "G) ribozómy",
-    "H) hydrolytické enzýmy"
-  ],
-  correct: ["C","H"]
-},
-
-{
-  question: "89. V chloroplastoch prebieha:",
-  answers: [
-    "A) fotosyntéza",
-    "B) rozklad látok",
-    "C) syntéza bielkovín",
-    "D) glykolýza",
-    "E) Krebsov cyklus",
-    "F) syntéza polysacharidov",
-    "G) syntéza NK",
-    "H) Calvinov cyklus"
-  ],
-  correct: ["A","F","H"]
-},
-
-{
-  question: "90. Rastlinné bunky sú spojené:",
-  answers: [
-    "A) pletivami",
-    "B) mikrotubulmi",
-    "C) cytoskeletom",
-    "D) plazmodezmami",
-    "E) amyloplastami",
-    "F) plazmidmi",
-    "G) tonoplastmi",
-    "H) pórmi"
-  ],
-  correct: ["D"]
-}{
-  question: "91. Vakuoly:",
-  answers: [
-    "A) sú obalené permeabilným tonoplastom",
-    "B) sú vyplnené bunkovou šťavou",
-    "C) sú vyplnené cytoplazmou",
-    "D) obsahujú hydrolytické enzýmy",
-    "E) majú na povrchu tonoplast",
-    "F) sú oddelené semipermeabilnou membránou",
-    "G) sú produktom protoplastu",
-    "H) vypĺňajú strómu"
-  ],
-  correct: ["B","E","F","G"]
-},
-
-{
-  question: "92. V jadrovom obale sú:",
-  answers: [
-    "A) mikrotubuly",
-    "B) otvory",
-    "C) plazmodezmy",
-    "D) protoplasty",
-    "E) peptidoglykan",
-    "F) pektíny",
-    "G) lignín",
-    "H) jadrové póry"
-  ],
-  correct: ["B","H"]
-},
-
-{
-  question: "93. Rastlinná bunka sa líši tým, že má:",
-  answers: [
-    "A) mitochondrie",
-    "B) plastidy",
-    "C) ribozómy",
-    "D) vakuoly",
-    "E) drsné ER",
-    "F) bunkovú stenu",
-    "G) lyzozómy",
-    "H) mikrotubuly"
-  ],
-  correct: ["B","D","F"]
-},
-
-{
-  question: "94. Tylakoidy:",
-  answers: [
-    "A) sú v mitochondriách",
-    "B) sú v stróme chloroplastov",
-    "C) sú v cytoplazme baktérií",
-    "D) sú membránové organely",
-    "E) sú súčasťou Golgiho aparátu",
-    "F) sú súčasťou chloroplastov",
-    "G) viažu chlorofyl",
-    "H) sú v cyanobaktériách"
-  ],
-  correct: ["B","F","G","H"]
-},
-
-{
-  question: "95. Bičíky eukaryotických buniek:",
-  answers: [
-    "A) majú 9 trojíc mikrotubulov",
-    "B) sú obalené membránou",
-    "C) sú zakotvené v bunkovej stene",
-    "D) sú tvorené mikrotubulmi",
-    "E) obsahujú kolagén",
-    "F) sú zakotvené v bazálnom teliesku",
-    "G) majú pelikulu",
-    "H) slúžia na pohyb"
-  ],
-  correct: ["B","D","F","H"]
-},
-
-{
-  question: "96. Bunky živočíchov:",
-  answers: [
-    "A) sú eukaryotické",
-    "B) sú prokaryotické",
-    "C) majú membránové organely",
-    "D) majú lyzozómy",
-    "E) majú pelikulu",
-    "F) majú plazmodezmy",
-    "G) obsahujú melanín",
-    "H) delia sa amitózou"
-  ],
-  correct: ["A","C","D"]
-},
-
-{
-  question: "97. K fibrilárnym štruktúram patria:",
-  answers: [
-    "A) nervové vlákna",
-    "B) mikrofilamenty",
-    "C) cytoskelet",
-    "D) myofibrily",
-    "E) mikrotubuly",
-    "F) tonofibrily",
-    "G) brvy",
-    "H) bičíky"
-  ],
-  correct: ["A","B","D","F","G","H"]
-},
-
-{
-  question: "98. Lyzozómy:",
-  answers: [
-    "A) regulujú príjem látok",
-    "B) sú transportné vezikuly",
-    "C) obsahujú tráviace enzýmy",
-    "D) sú typické pre živočíšne bunky",
-    "E) sú typické pre rastliny",
-    "F) fungujú v prokaryotách",
-    "G) rozkladajú cudzie látky",
-    "H) rozkladajú nepotrebné látky"
-  ],
-  correct: ["C","D","G","H"]
-},
-
-{
-  question: "99. Mikrotubuly v bičíku:",
-  answers: [
-    "A) sú v 9 trojiciach",
-    "B) sú uložené priečne",
-    "C) majú usporiadanie 9+2",
-    "D) majú 9 dvojíc + 2 centrálne",
-    "E) majú 11 dvojíc",
-    "F) sú náhodné",
-    "G) majú usporiadanie 9+3",
-    "H) sú v centrálnej rovine"
-  ],
-  correct: ["C","D"]
-},
-
-{
-  question: "100. V rastlinných bunkách sa nenachádzajú:",
-  answers: [
-    "A) lyzozómy",
-    "B) neurofibrily",
-    "C) tonofibrily",
-    "D) hydrolytické enzýmy",
-    "E) tonoplast",
-    "F) jadierka",
-    "G) plazmodezmy",
-    "H) myofibrily"
-  ],
-  correct: ["A","B","C","H"]
-}{
-  question: "101. Tonoplast:",
-  answers: [
-    "A) je na povrchu leukoplastov",
-    "B) je priepustná membrána vakuoly",
-    "C) je polopriepustná membrána vakuoly",
-    "D) je semipermeabilný",
-    "E) je na povrchu lyzozómov",
-    "F) obaľuje vakuoly",
-    "G) je na povrchu transportných vezikúl",
-    "H) oddeľuje obsah vakuoly od cytoplazmy"
-  ],
-  correct: ["C","D","F","H"]
-},
-
-{
-  question: "102. V stróme chloroplastov sa nachádzajú:",
-  answers: [
-    "A) tylakoidy",
-    "B) kruhové molekuly DNA",
-    "C) chromatín",
-    "D) lineárne molekuly DNA",
-    "E) hydrolytické enzýmy",
-    "F) bunková šťava",
-    "G) karotenoidy",
-    "H) plastidové ribozómy"
-  ],
-  correct: ["B","H"]
-},
-
-{
-  question: "103. Podľa bunkovej teórie:",
-  answers: [
-    "A) bunka je najmenšia živá jednotka",
-    "B) všetky bunky majú rovnaké zloženie",
-    "C) každá bunka vzniká z inej bunky",
-    "D) živé bunky majú rovnaké zloženie ako neživé",
-    "E) bunka je základom organizmov",
-    "F) bunky sú tvorené anorganickými látkami",
-    "G) bunky sú otvorené sústavy",
-    "H) bunky uchovávajú genetickú informáciu"
-  ],
-  correct: ["A","C","E","G","H"]
-},
-
-{
-  question: "104. Prvú evolučnú teóriu sformuloval:",
-  answers: [
-    "A) G. Treviranus",
-    "B) Charles Darwin",
-    "C) J. B. Lamarck",
-    "D) L. Pasteur",
-    "E) C. Linné",
-    "F) C. Woese",
-    "G) W. Harvey",
-    "H) J. B. Lamarck (1809)"
-  ],
-  correct: ["C","H"]
-},
-
-{
-  question: "105. Správne tvrdenia:",
-  answers: [
-    "A) Lamarck vytvoril binomickú nomenklatúru",
-    "B) Pasteur vyvrátil samoplozenie",
-    "C) Schleiden zakladateľ systematiky",
-    "D) Schwann je autor bunkovej teórie",
-    "E) Woese zaviedol dvojmenné názvy",
-    "F) Hooke použil mikroskop",
-    "G) Mendel objasnil DNA",
-    "H) Leeuwenhoek zaviedol pojem biológia"
-  ],
-  correct: ["B","D","F"]
-},
-
-{
-  question: "106. Bunkovú teóriu formulovali:",
-  answers: [
-    "A) R. Hooke",
-    "B) A. Leeuwenhoek",
-    "C) M. J. Schleiden",
-    "D) L. Pasteur",
-    "E) J. E. Purkyně",
-    "F) T. Schwann",
-    "G) M. Malpighi",
-    "H) C. L. Treviranus"
-  ],
-  correct: ["C","F"]
-},
-
-{
-  question: "107. Základy anatómie položil:",
-  answers: [
-    "A) W. Harvey",
-    "B) Aristoteles",
-    "C) R. Hooke",
-    "D) J. E. Purkyně",
-    "E) A. Vesalius",
-    "F) Galenos",
-    "G) R. Virchow",
-    "H) M. Malpighi"
-  ],
-  correct: ["E"]
-},
-
-{
-  question: "108. Medzi fyziologické vedy patria:",
-  answers: [
-    "A) fyziológia človeka",
-    "B) fyziológia prvkov",
-    "C) histológia",
-    "D) embryológia",
-    "E) vedy o funkcii orgánov",
-    "F) fyziológia živočíchov",
-    "G) vedy o funkcii organel",
-    "H) fyziológia rastlín"
-  ],
-  correct: ["A","E","F","H"]
-},
-
-{
-  question: "109. Parazitológia študuje:",
-  answers: [
-    "A) správanie mikroorganizmov",
-    "B) cudzopasné organizmy",
-    "C) vzťah organizmov k prostrediu",
-    "D) cudzopasné mikroorganizmy",
-    "E) dedičnosť mikroorganizmov",
-    "F) vzťah parazita a hostiteľa",
-    "G) zárodočný vývin",
-    "H) biologické zákonitosti parazitizmu"
-  ],
-  correct: ["B","D","F","H"]
-},
-
-{
-  question: "110. Štruktúru DNA objasnili:",
-  answers: [
-    "A) C. Woese",
-    "B) v roku 1944",
-    "C) v roku 1953",
-    "D) F. Crick",
-    "E) J. G. Mendel",
-    "F) v roku 1866",
-    "G) J. D. Watson",
-    "H) v roku 1966"
-  ],
-  correct: ["C","D","G"]
-},
-
-{
-  question: "111. Funkcie vody v bunke:",
-  answers: [
-    "A) zásobná",
-    "B) konštrukčná",
-    "C) zdroj energie",
-    "D) reakčné prostredie",
-    "E) rozpúšťadlo",
-    "F) regulačná",
-    "G) termoregulačná",
-    "H) stavebná jednotka makromolekúl"
-  ],
-  correct: ["B","D","E","F","G"]
-},
-
-{
-  question: "112. Monomér bielkovín je:",
-  answers: [
-    "A) nukleotid",
-    "B) peptid",
-    "C) aminoskupina",
-    "D) atóm uhlíka",
-    "E) aminokyselina",
-    "F) dusíkatá báza",
-    "G) monosacharid",
-    "H) nukleozid"
-  ],
-  correct: ["E"]
-},
-
-{
-  question: "113. Väzba medzi aminokyselinami:",
-  answers: [
-    "A) esterová",
-    "B) fosfodiesterová",
-    "C) glykozidová",
-    "D) peptidová",
-    "E) vodíková",
-    "F) medzi bázami",
-    "G) kovalentná",
-    "H) nekovalentná"
-  ],
-  correct: ["D","G"]
-},
-
-{
-  question: "114. Funkcie bielkovín:",
-  answers: [
-    "A) informačná",
-    "B) energetická",
-    "C) metabolická",
-    "D) regulačná",
-    "E) mechanická",
-    "F) zásobná",
-    "G) ochranná",
-    "H) štruktúrna"
-  ],
-  correct: ["C","D","E","H"]
-},
-
-{
-  question: "115. Monoméry nukleových kyselín sú:",
-  answers: [
-    "A) aminokyseliny",
-    "B) dusíkaté bázy",
-    "C) nukleotidy",
-    "D) chromatín",
-    "E) nukleozidy",
-    "F) pentózy",
-    "G) ribonukleotidy",
-    "H) deoxyribonukleotidy"
-  ],
-  correct: ["C","G","H"]
-}
-    // TU DÁŠ OTÁZKY
-],
-
-"Bunka a mikroorganizmy": [{
-  question: "116. Z chemického hľadiska sú nukleové kyseliny:",
-  answers: {
-    A: "polypeptidy",
-    B: "estery mastných kyselín",
-    C: "polynukleotidy",
-    D: "makromolekulové látky",
-    E: "biopolyméry",
-    F: "pentózy",
-    G: "monoméry",
-    H: "aminokyselinové reťazce"
+/**
+ * ============================
+ * 1) SEM VLOŽÍŠ OTÁZKY (JEDINÉ MIESTO)
+ * ============================
+ *
+ * Formát jednej otázky:
+ * {
+ *   id: 116,                         // číslo otázky (voliteľné, ale odporúčam)
+ *   text: "116. ...",
+ *   choices: { A:"...", B:"...", ... H:"..." },  // 8 možností (A–H)
+ *   correct: ["C","D","E"]           // správne písmená
+ * }
+ *
+ * Ak chceš otázku len s 4 možnosťami, môžeš aj tak dať A–H a prepínač režimu urobí výber.
+ */
+const QUESTION_BANK = {
+  bio: {
+    name: "Biológia",
+    themes: [
+      { key:"bio_struktura_1_115", name:"Štruktúra a delenie bunky (1–115)", questions: [
+        // 🔽 TU VLOŽÍŠ OTÁZKY 1–115
+        // { id:1, text:"1. ...", choices:{A:"...",B:"...",C:"...",D:"...",E:"...",F:"...",G:"...",H:"..."}, correct:["A","C"] },
+      ]},
+      { key:"bio_mikro_116_152", name:"Bunka a mikroorganizmy (116–152)", questions: [
+        // 🔽 TU VLOŽÍŠ OTÁZKY 116–152
+      ]},
+      { key:"bio_fyzio_rastlin_153_250", name:"Fyziológia rastlín (153–250)", questions: [] },
+      { key:"bio_fyzio_ziv_I_251_349", name:"Fyziológia živočíchov I. (251–349)", questions: [] },
+      { key:"bio_fyzio_ziv_II_350_450", name:"Fyziológia živočíchov II. (350–450)", questions: [] },
+      { key:"bio_sustavy_I_451_617", name:"Sústavy človeka I. (451–617)", questions: [] },
+      { key:"bio_sustavy_II_618_740", name:"Sústavy človeka II. (618–740)", questions: [] },
+      { key:"bio_sustavy_III_741_900", name:"Sústavy človeka III. (741–900)", questions: [] },
+      { key:"bio_gen_I_901_1006", name:"Genetika I. (901–1006)", questions: [] },
+      { key:"bio_gen_II_1007_1119", name:"Genetika II. (1007–1119)", questions: [] },
+      { key:"bio_gen_III_1120_1250", name:"Genetika III. (1120–1250)", questions: [] },
+      { key:"bio_system_1251_1500", name:"Systém rastlín a živočíchov, ekológia, evolúcia (1251–1500)", questions: [] },
+      { key:"bio_opakovanie_1_1500", name:"OPAKOVANIE (1–1500)", questions: [] },
+    ]
   },
-  correct: ["C","D","E"]
-},
-
-{
-  question: "117. Lipidy:",
-  answers: {
-    A: "sú súčasťou vitamínov",
-    B: "sú súčasťou niektorých hormónov",
-    C: "katalyzujú chemické reakcie",
-    D: "tvoria protilátky",
-    E: "podieľajú sa na regulácii",
-    F: "sú najhospodárnejším zdrojom energie",
-    G: "sú súčasťou biomembrán",
-    H: "majú ochrannú funkciu"
-  },
-  correct: ["A","B","E","F","G","H"]
-},
-
-{
-  question: "118. Mikroorganizmy:",
-  answers: {
-    A: "sú archeóny",
-    B: "sú všetky baktérie",
-    C: "študuje ich mikrobiológia",
-    D: "majú mikroskopické rozmery",
-    E: "sú onkogénne vírusy",
-    F: "sú len eukaryotické",
-    G: "sú jednobunkové organizmy",
-    H: "sú viditeľné voľným okom"
-  },
-  correct: ["A","B","C","D","G"]
-},
-
-{
-  question: "119. Medzi prokaryotá patria:",
-  answers: {
-    A: "jednobunkové riasy",
-    B: "baktérie",
-    C: "niektoré mikroorganizmy",
-    D: "bakteriofágy",
-    E: "bičíkovce",
-    F: "archeóny",
-    G: "vírusy",
-    H: "jednobunkové rastliny"
-  },
-  correct: ["B","C","F"]
-},
-
-{
-  question: "120. Medzi nebunkové organizmy patria:",
-  answers: {
-    A: "sinice",
-    B: "onkovírusy",
-    C: "spirily",
-    D: "červené krvinky",
-    E: "bakteriofágy",
-    F: "spirochéty",
-    G: "vírusy",
-    H: "molekulárne vnútrobunkové parazity"
-  },
-  correct: ["B","E","G","H"]
-},
-
-{
-  question: "121. Vírusy sú:",
-  answers: {
-    A: "vnútrobunkové parazity",
-    B: "nebunkové organizmy",
-    C: "mimobunkové parazity",
-    D: "nukleoproteínové častice",
-    E: "organizmy s metabolizmom",
-    F: "bez vlastného metabolizmu",
-    G: "prokaryotické organizmy",
-    H: "schopné vyvolať infekcie"
-  },
-  correct: ["A","B","D","F","H"]
-},
-
-{
-  question: "122. Vírusy spôsobujú:",
-  answers: {
-    A: "besnotu",
-    B: "žltačku",
-    C: "chrípku",
-    D: "slintačku a krívačku",
-    E: "kiahne",
-    F: "tuberkulózu",
-    G: "kvapavku",
-    H: "Downov syndróm"
-  },
-  correct: ["A","B","C","D","E"]
-},
-
-{
-  question: "123. Rozmnožovanie vírusov:",
-  answers: {
-    A: "má fázy mitózy",
-    B: "má tri fázy",
-    C: "prebieha amitózou",
-    D: "prebieha len v živých bunkách",
-    E: "prebieha len v eukaryotických bunkách",
-    F: "prebieha delením",
-    G: "prebieha aj mimo bunky",
-    H: "prebieha v bunkových kultúrach"
-  },
-  correct: ["B","D","H"]
-},
-
-{
-  question: "124. Pôvodcom detskej obrny je:",
-  answers: {
-    A: "vírus",
-    B: "bakteriofág",
-    C: "nukleoproteínová častica",
-    D: "baktéria",
-    E: "bacil",
-    F: "Salmonella",
-    G: "Shigella",
-    H: "streptokok"
-  },
-  correct: ["A","C"]
-},
-
-{
-  question: "125. Bielkovinový obal vírusu:",
-  answers: {
-    A: "kapsid",
-    B: "cysta",
-    C: "puzdro",
-    D: "virión",
-    E: "bielkovinový plášť",
-    F: "spóra",
-    G: "nukleoid",
-    H: "kapsid"
-  },
-  correct: ["A","E","H"]
-}{
-  question: "126. Vírusy spôsobujú u človeka:",
-  answers: {
-    A: "syfilis",
-    B: "osýpky",
-    C: "infekčné ochorenia",
-    D: "nádchu",
-    E: "herpes simplex",
-    F: "zhubné nádory",
-    G: "mozaikovú chorobu",
-    H: "AIDS"
-  },
-  correct: ["B","C","D","E","F","H"]
-},
-
-{
-  question: "127. Vírusy sa rozmnožujú:",
-  answers: {
-    A: "meiózou",
-    B: "mitózou",
-    C: "amitózou",
-    D: "prenikaním do bunky",
-    E: "pučaním",
-    F: "nepriamym delením",
-    G: "v hostiteľskej bunke",
-    H: "replikáciou genetickej informácie"
-  },
-  correct: ["D","G","H"]
-},
-
-{
-  question: "128. Vírusy sa odlišujú tým, že:",
-  answers: {
-    A: "majú len jeden typ nukleovej kyseliny",
-    B: "sú prokaryotické",
-    C: "sú najmenšie infekčné častice",
-    D: "majú rozmery v mikrometroch",
-    E: "sú nebunkové organizmy",
-    F: "spôsobujú infekčné ochorenia",
-    G: "majú bičíky",
-    H: "nemajú vlastný metabolizmus"
-  },
-  correct: ["A","C","E","F","H"]
-},
-
-{
-  question: "129. Bakteriofág je:",
-  answers: {
-    A: "baktéria",
-    B: "makrofág",
-    C: "bakteriálny vírus",
-    D: "druh baktérie",
-    E: "baktéria pohlcujúca vírusy",
-    F: "druh vírusu",
-    G: "vírus napádajúci baktérie",
-    H: "vírus eukaryotov"
-  },
-  correct: ["C","F","G"]
-},
-
-{
-  question: "130. Každý virión obsahuje:",
-  answers: {
-    A: "bielkovinový kapsid",
-    B: "DNA alebo RNA",
-    C: "nukleovú kyselinu a bielkoviny",
-    D: "tukový obal",
-    E: "tukový kapsid",
-    F: "hlavičku a bičík",
-    G: "bielkovinový plášť",
-    H: "obe nukleové kyseliny"
-  },
-  correct: ["A","B","C","G"]
-},
-
-{
-  question: "131. Vírusy:",
-  answers: {
-    A: "majú jednoduchú bunku",
-    B: "sú jednobunkové organizmy",
-    C: "sú vnútrobunkové parazity",
-    D: "sú tvorené nukleovou kyselinou a obalom",
-    E: "študuje ich mikrobiológia",
-    F: "študuje ich virológia",
-    G: "sú nebunkové organizmy",
-    H: "majú ako rezervoár bezstavovce"
-  },
-  correct: ["C","D","F","G"]
-},
-
-{
-  question: "132. Vírus chrípky:",
-  answers: {
-    A: "má veľkosť 50–80 nm",
-    B: "pozorujeme len elektrónovým mikroskopom",
-    C: "má kapsid z bielkovín",
-    D: "vidíme ho optickým mikroskopom",
-    E: "má veľkosť 15–300 nm",
-    F: "má tukový obal",
-    G: "má bielkovinový nukleoid",
-    H: "má nukleokapsid v tukovom obale"
-  },
-  correct: ["A","B","C","F","H"]
-},
-
-{
-  question: "133. Medzi vírusové ochorenia patria:",
-  answers: {
-    A: "angína",
-    B: "žltačka",
-    C: "zápal príušných žliaz",
-    D: "zápal mozgových blán",
-    E: "tuberkulóza",
-    F: "malária",
-    G: "mor hydiny",
-    H: "mozaika tabaku"
-  },
-  correct: ["B","C","D","G","H"]
-},
-
-{
-  question: "134. Rastlinné vírusy:",
-  answers: {
-    A: "obsahujú RNA",
-    B: "nazývajú sa cyanofágy",
-    C: "obsahujú DNA",
-    D: "nie sú infekčné",
-    E: "rozmnožujú sa v siniciach",
-    F: "vírus tabakovej mozaiky má RNA",
-    G: "spôsobujú rastlinné virózy",
-    H: "rozmnožujú sa v rastlinných bunkách"
-  },
-  correct: ["A","F","G","H"]
-},
-
-{
-  question: "135. Baktérie:",
-  answers: {
-    A: "sú autotrofné alebo heterotrofné",
-    B: "majú generačný čas 15–30 min",
-    C: "fototrofné sú cyanobaktérie",
-    D: "rozmnožujú sa nepriamym delením",
-    E: "môžu byť saprofyty",
-    F: "môžu žiť v symbióze",
-    G: "majú v stene peptidoglykan",
-    H: "sú submikroskopické"
-  },
-  correct: ["A","B","C","E","F","G"]
-},
-
-{
-  question: "136. Kokovité baktérie:",
-  answers: {
-    A: "majú bičíky",
-    B: "nemajú bičíky",
-    C: "nevykonávajú aktívny pohyb",
-    D: "vykonávajú pohyb bičíkom",
-    E: "tvoria strapce",
-    F: "tvoria reťazce",
-    G: "spôsobujú tuberkulózu",
-    H: "rozmnožujú sa delením"
-  },
-  correct: ["B","C","E","F","H"]
-}{
-  question: "137. Streptokoky vytvárajú:",
-  answers: {
-    A: "strapce",
-    B: "dvojice",
-    C: "špirály",
-    D: "paličky",
-    E: "reťazce",
-    F: "rozvetvené vlákna",
-    G: "organické látky chemosyntézou",
-    H: "spóry"
-  },
-  correct: ["E"]
-},
-
-{
-  question: "138. Stafylokoky vytvárajú:",
-  answers: {
-    A: "strapce",
-    B: "dvojice",
-    C: "špirály",
-    D: "paličky",
-    E: "reťazce",
-    F: "vlákna",
-    G: "organické látky",
-    H: "spóry"
-  },
-  correct: ["A"]
-},
-
-{
-  question: "139. Baktérie sa rozmnožujú:",
-  answers: {
-    A: "priečnym delením",
-    B: "priamym delením",
-    C: "replikáciou",
-    D: "pozdĺžnym delením",
-    E: "nepohlavne",
-    F: "nepriamym delením",
-    G: "výmenou chromozómov",
-    H: "rozpadom vláken"
-  },
-  correct: ["A","E","H"]
-},
-
-{
-  question: "140. Každá bakteriálna bunka má:",
-  answers: {
-    A: "bičík",
-    B: "ribozómy",
-    C: "cytoplazmu",
-    D: "nukleoid",
-    E: "puzdro",
-    F: "fotosyntézu",
-    G: "bunkovú stenu",
-    H: "kruhový chromozóm"
-  },
-  correct: ["B","C","D","G","H"]
-},
-
-{
-  question: "141. Špirálovité bunky majú:",
-  answers: {
-    A: "aktinomycéty",
-    B: "streptokoky",
-    C: "stafylokoky",
-    D: "bacily",
-    E: "spirily",
-    F: "spirochéty",
-    G: "Rhodospirillum",
-    H: "virióny"
-  },
-  correct: ["E","F","G"]
-},
-
-{
-  question: "142. Bakteriálny chromozóm:",
-  answers: {
-    A: "je lineárny",
-    B: "je ohraničený membránou",
-    C: "nie je ohraničený membránou",
-    D: "je z chromatínu",
-    E: "je pripojený k membráne",
-    F: "má kruhový tvar",
-    G: "je dvojvláknová DNA",
-    H: "je v jadre"
-  },
-  correct: ["C","E","F","G"]
-},
-
-{
-  question: "143. Medzi živočíšne vírusy patria:",
-  answers: {
-    A: "bakteriofágy",
-    B: "vírus mozaiky zemiakov",
-    C: "onkovírusy",
-    D: "vírus slintačky",
-    E: "vírusy človeka",
-    F: "onkogénne vírusy",
-    G: "vírusy E. coli",
-    H: "fág gama"
-  },
-  correct: ["C","D","E","F"]
-},
-
-{
-  question: "144. V prostredí s vysokým obsahom soli žijú:",
-  answers: {
-    A: "patogénne baktérie",
-    B: "Halobacterium",
-    C: "Halococcus",
-    D: "termoarcheóny",
-    E: "metanoarcheóny",
-    F: "Pseudomonas",
-    G: "Thermoproteus",
-    H: "haloarcheóny"
-  },
-  correct: ["B","C","H"]
-},
-
-{
-  question: "145. Archeóny sa odlišujú tým, že:",
-  answers: {
-    A: "majú mikroskopické rozmery",
-    B: "majú jadro",
-    C: "rozmnožujú sa delením",
-    D: "nemajú peptidoglykan",
-    E: "žijú v extrémnych podmienkach",
-    F: "sú jednobunkové",
-    G: "sú patogénne",
-    H: "nie sú patogénne"
-  },
-  correct: ["D","E","F","H"]
-},
-
-{
-  question: "146. Význam baktérií v prírode:",
-  answers: {
-    A: "produkujú kyslík",
-    B: "spôsobujú choroby",
-    C: "žijú v extrémnych podmienkach",
-    D: "rozkladajú odumreté organizmy",
-    E: "obohacujú pôdu",
-    F: "zabezpečujú kolobeh látok",
-    G: "mineralizujú organickú hmotu",
-    H: "čistia vodu"
-  },
-  correct: ["D","F","G","H"]
-},
-
-{
-  question: "147. Chemoautotrofné baktérie:",
-  answers: {
-    A: "využívajú chlorofyl",
-    B: "využívajú CO₂",
-    C: "sú fotosyntetické",
-    D: "sú heterotrofné",
-    E: "sú saprofyty",
-    F: "získavajú energiu oxidáciou",
-    G: "sú autotrofné bez pigmentov",
-    H: "rozkladajú glukózu"
-  },
-  correct: ["B","F","G"]
-},
-
-{
-  question: "148. Fototrofné prokaryotá:",
-  answers: {
-    A: "sú predchodcami chloroplastov",
-    B: "využívajú organické látky",
-    C: "sú sinice",
-    D: "sú cyanobaktérie",
-    E: "sú saprofyty",
-    F: "sú jednobunkové rastliny",
-    G: "využívajú chlorofyl",
-    H: "používajú sa v mliekárstve"
-  },
-  correct: ["A","C","D","G"]
-},
-
-{
-  question: "149. Patogénne baktérie:",
-  answers: {
-    A: "rozmnožujú sa nepriamo",
-    B: "spôsobujú choroby",
-    C: "žijú v extrémoch",
-    D: "spôsobujú choroby rastlín",
-    E: "spôsobujú choroby živočíchov",
-    F: "rozmnožujú sa delením",
-    G: "používajú sa v jogurtoch",
-    H: "spôsobujú pohlavné choroby"
-  },
-  correct: ["B","D","E","F","H"]
-},
-
-{
-  question: "150. Baktérie spôsobujú:",
-  answers: {
-    A: "kvapavku",
-    B: "vírusové choroby",
-    C: "kiahne",
-    D: "besnotu",
-    E: "slintačku",
-    F: "respiračné infekcie",
-    G: "hnačky",
-    H: "tuberkulózu"
-  },
-  correct: ["A","F","G","H"]
-},
-
-{
-  question: "151. Ktoré ochorenia NIE sú vírusové:",
-  answers: {
-    A: "encefalitída",
-    B: "detská obrna",
-    C: "tuberkulóza",
-    D: "kvapavka",
-    E: "syfilis",
-    F: "chrípka",
-    G: "opar",
-    H: "besnota"
-  },
-  correct: ["C","D","E"]
-},
-
-{
-  question: "152. Pozitívne využitie baktérií:",
-  answers: {
-    A: "pri infekciách",
-    B: "v mliekárstve",
-    C: "pri rozklade látok",
-    D: "pri fotosyntéze",
-    E: "vo farmácii",
-    F: "v kvasnom priemysle",
-    G: "pri ekologickej sanácii",
-    H: "pri chemosyntéze"
-  },
-  correct: ["B","C","E","F","G","H"]
-    // TU DÁŠ OTÁZKY (116–152)
-],
-
-"Fyziológia rastlín": [],
-"Fyziológia živočíchov I.": [],
-"Fyziológia živočíchov II.": [],
-"Sústavy človeka I.": [],
-"Sústavy človeka II.": [],
-"Sústavy človeka III.": [],
-"Genetika I.": [],
-"Genetika II.": [],
-"Genetika III.": [],
-"Systém rastlín a živočíchov": [],
-"Opakovanie": []
+  chem: {
+    name: "Chémia",
+    themes: [
+      { key:"chem_zaklady_1_110", name:"Základné pojmy a názvoslovie (1–110)", questions: [] },
+      { key:"chem_atom_111_160", name:"Stavba atómu (111–160)", questions: [] },
+      { key:"chem_vazby_161_210", name:"Chemické väzby (161–210)", questions: [] },
+      { key:"chem_kinetika_211_260", name:"Fyzikálna chémia – kinetika (211–260)", questions: [] },
+      { key:"chem_kyseliny_261_315", name:"Kyseliny a zásady (261–315)", questions: [] },
+      { key:"chem_reakcie_316_390", name:"Chemické reakcie (316–390)", questions: [] },
+      { key:"chem_anorg_391_470", name:"Anorganická chémia – prvky (391–470)", questions: [] },
+      { key:"chem_uhlov_641_790", name:"Uhľovodíky (641–790)", questions: [] },
+      { key:"chem_deriv_791_940", name:"Deriváty uhľovodíkov (791–940)", questions: [] },
+      { key:"chem_karb_941_1040", name:"Karboxylové kyseliny (941–1040)", questions: [] },
+      { key:"chem_hetero_1040_1195", name:"Heterocykly, polyméry, lipidy (1040–1195)", questions: [] },
+      { key:"chem_sachar_1196_1350", name:"Sacharidy, bielkoviny, aminokyseliny (1196–1350)", questions: [] },
+      { key:"chem_nukleo_1351_1500", name:"Nukleové kyseliny, biochémia (1351–1500)", questions: [] },
+      { key:"chem_opakovanie_1_1500", name:"OPAKOVANIE (1–1500)", questions: [] },
+    ]
+  }
 };
 
-/* =============================
-   LOGIKA APPKY
-   ============================= */
+/**
+ * ============================
+ * 2) APLIKÁCIA – LOGIKA
+ * ============================
+ */
+const LETTERS_8 = ["A","B","C","D","E","F","G","H"];
+const LETTERS_4 = ["A","B","C","D"];
 
-let currentQuestions = [];
-let index = 0;
-let score = 0;
+let mode8 = true; // true = 8 možností, false = 4 možnosti
+let navLevel = "subject"; // subject | theme | quiz | result
+let currentSubjectKey = null; // 'bio'|'chem'
+let currentThemeKey = null;
+let quiz = null;
 
-function openBiology() {
-    openThemes("Biológia", [
-        "Štruktúra bunky",
-        "Bunka a mikroorganizmy",
-        "Fyziológia rastlín",
-        "Fyziológia živočíchov I.",
-        "Fyziológia živočíchov II.",
-        "Sústavy človeka I.",
-        "Sústavy človeka II.",
-        "Sústavy človeka III.",
-        "Genetika I.",
-        "Genetika II.",
-        "Genetika III.",
-        "Systém rastlín a živočíchov",
-        "Opakovanie"
-    ]);
+function $(id){ return document.getElementById(id); }
+
+function setModeUI(){
+  const switchEl = $("modeSwitch");
+  const label = $("modeLabel");
+  const lettersNow = $("lettersNow");
+  if(mode8){
+    switchEl.classList.add("on");
+    switchEl.setAttribute("aria-checked","true");
+    label.textContent = "Režim: 8 možností";
+    lettersNow.textContent = "A–H";
+  } else {
+    switchEl.classList.remove("on");
+    switchEl.setAttribute("aria-checked","false");
+    label.textContent = "Režim: 4 možnosti";
+    lettersNow.textContent = "A–D";
+  }
 }
 
-function openChemistry() {
-    openThemes("Chémia", [
-        "Základy chémie",
-        "Atóm",
-        "Väzby",
-        "Reakcie",
-        "Organická chémia",
-        "Opakovanie"
-    ]);
+function buildSubjectScreen(){
+  $("navTitle").textContent = "Menu";
+  $("navBadge").textContent = "Pripravené";
+  $("crumbs").innerHTML = 'Si tu: <b>Predmet</b>';
+  $("backBtn").style.display = "none";
+
+  const box = $("screenSubject");
+  box.style.display = "";
+  $("screenThemes").style.display = "none";
+
+  box.innerHTML = "";
+  [
+    { key:"bio", icon:"🧬" },
+    { key:"chem", icon:"⚗️" }
+  ].forEach(s=>{
+    const subj = QUESTION_BANK[s.key];
+    const div = document.createElement("div");
+    div.className = "item";
+    div.onclick = ()=>openSubject(s.key);
+    div.innerHTML = `
+      <div>
+        <div class="t">${s.icon} ${subj.name}</div>
+        <div class="s">${subj.themes.length} tém</div>
+      </div>
+      <div class="badge">Vybrať</div>
+    `;
+    box.appendChild(div);
+  });
+
+  setQuizIdle();
+  navLevel = "subject";
 }
 
-function openThemes(title, list) {
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("themes").style.display = "block";
-    document.getElementById("subjectTitle").innerText = title;
+function openSubject(subjectKey){
+  currentSubjectKey = subjectKey;
+  currentThemeKey = null;
+  navLevel = "theme";
 
-    let html = "";
-    list.forEach(t => {
-        html += `<button onclick="openTheme('${t}')">${t}</button><br>`;
-    });
+  const subj = QUESTION_BANK[subjectKey];
+  $("navTitle").textContent = subj.name;
+  $("navBadge").textContent = "Témy";
+  $("crumbs").innerHTML = `Si tu: <b>Predmet</b> → <b>${subj.name}</b>`;
+  $("backBtn").style.display = "";
 
-    document.getElementById("themeList").innerHTML = html;
+  $("screenSubject").style.display = "none";
+  const list = $("screenThemes");
+  list.style.display = "";
+  list.innerHTML = "";
+
+  subj.themes.forEach(t=>{
+    const count = (t.questions || []).length;
+    const div = document.createElement("div");
+    div.className = "item";
+    div.onclick = ()=>startThemeQuiz(subjectKey, t.key);
+    div.innerHTML = `
+      <div>
+        <div class="t">${t.name}</div>
+        <div class="s">${count} otázok</div>
+      </div>
+      <div class="badge">${count ? "Spustiť" : "Prázdne"}</div>
+    `;
+    list.appendChild(div);
+  });
+
+  setQuizIdle(subj.name);
 }
 
-function openTheme(name) {
-    document.getElementById("themes").style.display = "none";
-    document.getElementById("test").style.display = "block";
-
-    document.getElementById("themeTitle").innerText = name;
-    currentQuestions = questions[name] || [];
-    index = 0;
-    score = 0;
-
-    showQuestion();
+function goBack(){
+  if(navLevel === "theme"){ buildSubjectScreen(); return; }
+  if(navLevel === "quiz" || navLevel === "result"){ goBackToThemes(); return; }
+  buildSubjectScreen();
 }
 
-function showQuestion() {
-    if (currentQuestions.length === 0) {
-        document.getElementById("questionBox").innerHTML =
-            "<p>Táto téma zatiaľ nemá otázky.</p>";
-        return;
-    }
-
-    let q = currentQuestions[index];
-    let html = `<h3>${q.question}</h3>`;
-
-    for (let key in q.answers) {
-        html += `
-        <label>
-            <input type="checkbox" value="${key}">
-            ${key}) ${q.answers[key]}
-        </label><br>`;
-    }
-
-    document.getElementById("questionBox").innerHTML = html;
+function hardReset(){
+  // len reset UI stavu (bez vymazania otázok)
+  quiz = null;
+  currentSubjectKey = null;
+  currentThemeKey = null;
+  $("resultWrap").style.display = "none";
+  $("quizBadge").textContent = "—";
+  $("finalBadgeRow").innerHTML = "";
+  buildSubjectScreen();
 }
 
-function nextQuestion() {
-    index++;
-    if (index >= currentQuestions.length) {
-        finishTest();
-        return;
-    }
-    showQuestion();
+function setQuizIdle(subjName){
+  $("quizTitle").textContent = subjName ? `${subjName} · vyber tému` : "Vyber predmet a tému";
+  $("quizBadge").textContent = "—";
+  $("qIndex").textContent = "—";
+  $("scoreNow").textContent = "0";
+  $("qText").textContent = "Tu sa zobrazí otázka.";
+  $("choices").innerHTML = "";
+  $("progressBar").style.width = "0%";
+  $("checkBtn").disabled = true;
+  $("skipBtn").disabled = true;
+  $("finishBtn").disabled = true;
+  $("resultWrap").style.display = "none";
 }
 
-function finishTest() {
-    document.getElementById("questionBox").innerHTML =
-        `<h3>Test dokončený ✅</h3>
-         <p>Správne odpovede: ${score} / ${currentQuestions.length}</p>`;
+/**
+ * ============================
+ * 3) KVÍZ (miešanie v rámci témy, nie naprieč témami)
+ * ============================
+ */
+function startThemeQuiz(subjectKey, themeKey){
+  const subj = QUESTION_BANK[subjectKey];
+  const theme = subj.themes.find(t=>t.key===themeKey);
+  currentThemeKey = themeKey;
+
+  // V opakovaní chceš mix, ale v rámci témy chceš tiež miešať (len vnútri témy).
+  // Tu miešame VŽDY len otázky z vybranej témy.
+  const original = (theme.questions || []).slice();
+  const shuffled = shuffle(original);
+
+  quiz = {
+    subjectKey,
+    themeKey,
+    themeName: theme.name,
+    questions: shuffled,
+    i: 0,
+    score: 0,
+    maxScore: 0, // súčet počtu správnych možností podľa režimu (4/8)
+    answered: 0
+  };
+
+  // maxScore počítame podľa režimu (ak režim 4, tak sa berú len A–D a aj correct sa filtruje)
+  quiz.maxScore = shuffled.reduce((sum, q)=> sum + getCorrectLetters(q).length, 0);
+
+  navLevel = "quiz";
+  $("quizTitle").textContent = theme.name;
+  $("quizBadge").textContent = "Test";
+  $("resultWrap").style.display = "none";
+
+  $("checkBtn").disabled = shuffled.length === 0;
+  $("skipBtn").disabled = shuffled.length === 0;
+  $("finishBtn").disabled = shuffled.length === 0;
+
+  renderQuestion();
 }
 
-function backToThemes() {
-    document.getElementById("test").style.display = "none";
-    document.getElementById("themes").style.display = "block";
+function getLetters(){
+  return mode8 ? LETTERS_8 : LETTERS_4;
 }
 
-function backToMenu() {
-    document.getElementById("themes").style.display = "none";
-    document.getElementById("menu").style.display = "block";
+function getCorrectLetters(q){
+  const allowed = new Set(getLetters());
+  const corr = Array.isArray(q.correct) ? q.correct : [];
+  return corr.filter(x=>allowed.has(x));
 }
 
+function getChoiceText(q, letter){
+  // ak v režime 4, stále používame A–D
+  return (q.choices && q.choices[letter]) ? q.choices[letter] : "";
+}
+
+function renderQuestion(){
+  const list = quiz.questions;
+  const total = list.length;
+
+  $("resultWrap").style.display = "none";
+
+  if(total === 0){
+    $("qIndex").textContent = "0 / 0";
+    $("qText").textContent = "Táto téma zatiaľ nemá otázky. Najprv ich vlož do QUESTION_BANK.";
+    $("choices").innerHTML = "";
+    $("progressBar").style.width = "0%";
+    $("checkBtn").disabled = true;
+    $("skipBtn").disabled = true;
+    $("finishBtn").disabled = true;
+    return;
+  }
+
+  if(quiz.i >= total){
+    finishQuiz();
+    return;
+  }
+
+  const q = list[quiz.i];
+  const letters = getLetters();
+
+  $("qIndex").textContent = `${quiz.i+1} / ${total}`;
+  $("scoreNow").textContent = `${quiz.score}`;
+  $("progressBar").style.width = `${Math.round((quiz.i/total)*100)}%`;
+
+  $("qText").textContent = q.text || "(chýba text otázky)";
+
+  const ch = $("choices");
+  ch.innerHTML = "";
+
+  letters.forEach(L=>{
+    const txt = getChoiceText(q, L);
+    const div = document.createElement("label");
+    div.className = "choice" + (txt ? "" : " small");
+    div.innerHTML = `
+      <input type="checkbox" value="${L}" ${txt ? "" : "disabled"} />
+      <div class="lbl">${L}</div>
+      <div class="tx">${txt ? txt : "— (nevyplnené)"}</div>
+    `;
+    ch.appendChild(div);
+  });
+}
+
+function readSelected(){
+  const inputs = $("choices").querySelectorAll('input[type="checkbox"]');
+  const picked = [];
+  inputs.forEach(i=>{ if(i.checked) picked.push(i.value); });
+  return picked;
+}
+
+/**
+ * Bodovanie (čiastočné body):
+ * +1 za každú správnu možnosť, ktorú si označila.
+ * 0 bodov za nesprávne označenia (žiadne mínus body).
+ * => ak správnych je 4 a označíš 3 správne, máš 3 body.
+ */
+function scoreAnswer(selected, correct){
+  const correctSet = new Set(correct);
+  let pts = 0;
+  selected.forEach(s=>{ if(correctSet.has(s)) pts += 1; });
+  return pts;
+}
+
+function checkAndNext(){
+  if(!quiz) return;
+
+  const q = quiz.questions[quiz.i];
+  const selected = readSelected();
+  const correct = getCorrectLetters(q);
+
+  const pts = scoreAnswer(selected, correct);
+  quiz.score += pts;
+  quiz.answered += 1;
+
+  quiz.i += 1;
+  renderQuestion();
+}
+
+function skipQuestion(){
+  if(!quiz) return;
+  quiz.i += 1;
+  renderQuestion();
+}
+
+function finishQuiz(){
+  if(!quiz) return;
+
+  const totalQ = quiz.questions.length;
+  const max = quiz.maxScore || 0;
+  const got = quiz.score || 0;
+
+  const pct = max > 0 ? Math.round((got / max) * 100) : 0;
+
+  $("resultWrap").style.display = "";
+  $("finalScore").textContent = `${got} / ${max}`;
+  $("finalPct").textContent = `${pct}%`;
+  $("finalCount").textContent = `${totalQ}`;
+  $("finalMode").textContent = mode8 ? "8 možností (A–H)" : "4 možnosti (A–D)";
+
+  $("progressBar").style.width = "100%";
+  $("qText").textContent = "Vyhodnotenie testu";
+  $("choices").innerHTML = "";
+
+  // badge
+  $("finalBadgeRow").innerHTML = renderBadge(pct);
+
+  $("checkBtn").disabled = true;
+  $("skipBtn").disabled = true;
+  $("finishBtn").disabled = true;
+
+  navLevel = "result";
+}
+
+function renderBadge(pct){
+  let cls = "warn", text = "Pokračuj ďalej 💪";
+  if(pct >= 85){ cls="good"; text="Výborne! 🔥"; }
+  else if(pct >= 70){ cls="good"; text="Super! ✅"; }
+  else if(pct >= 50){ cls="warn"; text="Dá sa, ešte dotiahnuť. ✨"; }
+  else { cls="bad"; text="Nevadí, skúsiť znova. 💙"; }
+  return `<span class="badge ${cls}">${text}</span>`;
+}
+
+function restartSameTheme(){
+  if(!quiz) return;
+  startThemeQuiz(quiz.subjectKey, quiz.themeKey);
+}
+
+function goBackToThemes(){
+  if(!currentSubjectKey) { buildSubjectScreen(); return; }
+  openSubject(currentSubjectKey);
+  $("resultWrap").style.display = "none";
+  navLevel = "theme";
+}
+
+/**
+ * ============================
+ * 4) HELPERS
+ * ============================
+ */
+function shuffle(arr){
+  // Fisher–Yates
+  const a = arr.slice();
+  for(let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
+ * ============================
+ * 5) MODE SWITCH EVENTS
+ * ============================
+ */
+function toggleMode(){
+  mode8 = !mode8;
+  setModeUI();
+
+  // ak práve beží test, prepočítame maxScore podľa nového režimu a prekreslíme otázku
+  if(quiz){
+    quiz.maxScore = quiz.questions.reduce((sum, q)=> sum + getCorrectLetters(q).length, 0);
+    $("scoreNow").textContent = `${quiz.score}`;
+    renderQuestion();
+  }
+}
+
+$("modeSwitch").addEventListener("click", toggleMode);
+$("modeSwitch").addEventListener("keydown", (e)=>{
+  if(e.key === "Enter" || e.key === " "){
+    e.preventDefault();
+    toggleMode();
+  }
+});
+
+setModeUI();
+buildSubjectScreen();
+
+/**
+ * ============================
+ * 6) (Voliteľné) Rýchla kontrola, či máš chybný formát otázok
+ * ============================
+ * Ak by si vložila otázku zle (chýba zátvorka/čiarka), stránka by nabehneť nemusela.
+ * Preto odporúčam vkladať otázky po menších dávkach.
+ */
 </script>
 </body>
 </html>
