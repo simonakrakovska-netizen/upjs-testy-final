@@ -2,269 +2,143 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<title>Testy</title>
+<title>Testy – Biológia & Chémia</title>
+
 <style>
-body{font-family:Arial;background:#0f172a;color:white;padding:20px}
-button{padding:10px 15px;margin:5px;border-radius:8px;border:none;background:#3b82f6;color:white;cursor:pointer}
-button:hover{background:#2563eb}
-.box{max-width:700px;margin:auto}
-.choice{margin:6px 0}
+body{margin:0;font-family:Segoe UI,sans-serif;background:linear-gradient(120deg,#0b1220,#101a33);color:white}
+.container{max-width:950px;margin:auto;padding:20px}
+.card{background:#141e3a;border-radius:16px;padding:20px;margin-bottom:15px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+button{padding:10px 14px;border:none;border-radius:10px;background:#3b82f6;color:white;font-weight:bold;cursor:pointer;margin:4px}
+button:hover{opacity:.9}
+.choice{display:block;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #444}
+.progress{height:10px;background:#222;border-radius:10px;overflow:hidden}
+.bar{height:100%;width:0%;background:#3b82f6}
+.hidden{display:none}
 </style>
 </head>
+
 <body>
+<div class="container">
 
-<div class="box" id="menu">
-  <h2>Vyber predmet</h2>
-  <button onclick="openSubject('bio')">Biológia</button>
-  <button onclick="openSubject('chem')">Chémia</button>
+<div id="menuSubject" class="card">
+  <h1>📘 Testy</h1>
+  <button onclick="openSubject('bio')">🧬 Biológia</button>
+  <button onclick="openSubject('chem')">⚗️ Chémia</button>
 </div>
 
-<div class="box" id="themes" style="display:none">
+<div id="menuTheme" class="card hidden">
   <h2 id="themeTitle"></h2>
-  <button onclick="startTest('bio')">Bunka a mikroorganizmy</button>
-  <button onclick="backToMenu()">⬅ Späť</button>
+  <div id="themeList"></div>
+  <button onclick="backToSubjects()">⬅ Späť</button>
 </div>
 
-<div class="box" id="test" style="display:none">
-  <h3 id="question"></h3>
+<div id="quiz" class="card hidden">
+  <div class="progress"><div id="bar" class="bar"></div></div>
+  <h2 id="question"></h2>
   <div id="answers"></div>
   <button onclick="next()">Ďalej</button>
 </div>
 
-<div class="box" id="result" style="display:none">
+<div id="result" class="card hidden">
   <h2>Výsledok</h2>
-  <p id="scoreText"></p>
-  <button onclick="location.reload()">Znova</button>
+  <p id="score"></p>
+  <button onclick="location.reload()">Späť na menu</button>
+</div>
+
 </div>
 
 <script>
+const DATA = {
+  bio: {
+    name: "Biológia",
+    themes: {
+      bunka: [],
+      mikroorganizmy: [],
+      genetika: [],
+      clovek: [],
+      ekologia: []
+    }
+  },
+  chem: {
+    name: "Chémia",
+    themes: {
+      zaklady: [],
+      atom: [],
+      vazby: [],
+      reakcie: [],
+      organicka: []
+    }
+  }
+};
+
+let currentQuestions = [];
 let index = 0;
 let score = 0;
-let current = [];
 
-const bioQuestions = [const bioQuestions = [
-{
-q:"1. Prokaryotická bunka:",
-a:{A:"má jadro",B:"nemá jadro",C:"má ribozómy",D:"má mitochondrie",E:"má bunkovú stenu",F:"má jadierko",G:"má chloroplasty",H:"má kruhovú DNA"},
-c:["B","C","E","H"]
-},
-{
-q:"2. Prokaryotické bunky nemajú:",
-a:{A:"plastidy",B:"vnútorný membránový systém",C:"ribozómy",D:"diktyozómy",E:"cytoplazmatickú membránu",F:"centriol",G:"jadierko",H:"mitochondrie"},
-c:["A","B","D","F","G","H"]
-},
-{
-q:"3. Cytológia sa zaoberá:",
-a:{A:"živými sústavami",B:"mikroorganizmami",C:"javmi na úrovni bunky",D:"tkanivami",E:"základnou jednotkou života",F:"organizmami",G:"stavbou bunky",H:"biochemickými reakciami"},
-c:["C","E","G"]
-},
-{
-q:"4. Najmenšia jednotka života je:",
-a:{A:"molekula",B:"bunka",C:"tkanivo",D:"orgán",E:"organizmus",F:"vírus",G:"enzým",H:"ribozóm"},
-c:["B"]
-},
-{
-q:"5. Vírusy:",
-a:{A:"sú bunky",B:"majú vlastný metabolizmus",C:"sú nebunkové",D:"množia sa len v bunke",E:"majú DNA alebo RNA",F:"majú ribozómy",G:"sú parazity",H:"majú mitochondrie"},
-c:["C","D","E","G"]
-},
-{
-q:"6. Eukaryotická bunka:",
-a:{A:"má jadro",B:"nemá membrány",C:"má mitochondrie",D:"má ribozómy",E:"nemá DNA",F:"má vnútorné membrány",G:"má jadierko",H:"nemá cytoplazmu"},
-c:["A","C","D","F","G"]
-},
-{
-q:"7. Cytoplazmatická membrána:",
-a:{A:"je polopriepustná",B:"je z celulózy",C:"je z fosfolipidov",D:"obsahuje bielkoviny",E:"je pevná",F:"reguluje transport",G:"je len u rastlín",H:"je nepriepustná"},
-c:["A","C","D","F"]
-},
-{
-q:"8. Funkcie membrány:",
-a:{A:"ochrana bunky",B:"transport látok",C:"syntéza DNA",D:"receptorová funkcia",E:"tvorba ATP",F:"udržiavanie tvaru",G:"metabolizmus",H:"signalizácia"},
-c:["A","B","D","H"]
-},
-{
-q:"9. Cytoplazma:",
-a:{A:"obsahuje organely",B:"je bez vody",C:"je prostredím reakcií",D:"obsahuje cytoskelet",E:"obsahuje DNA",F:"je tekutá",G:"je pevná",H:"obsahuje ribozómy"},
-c:["A","C","D","F","H"]
-},
-{
-q:"10. Cytoskelet:",
-a:{A:"udržiava tvar bunky",B:"umožňuje pohyb",C:"je z mikrotubulov",D:"je z DNA",E:"je z mikrofilamentov",F:"je statický",G:"je dynamický",H:"neexistuje"},
-c:["A","B","C","E","G"]
-},
-
-{
-q:"11. Endoplazmatické retikulum:",
-a:{A:"je membránová organela",B:"má drsnú a hladkú časť",C:"syntetizuje bielkoviny",D:"syntetizuje lipidy",E:"má ribozómy",F:"je v prokaryotoch",G:"slúži na transport",H:"je súčasť jadra"},
-c:["A","B","C","D","E","G"]
-},
-{
-q:"12. Golgiho aparát:",
-a:{A:"modifikuje bielkoviny",B:"balí látky",C:"tvorí lyzozómy",D:"je v jadre",E:"syntetizuje DNA",F:"tvorí vezikuly",G:"nemá membránu",H:"je súčasť cytoskeletu"},
-c:["A","B","C","F"]
-},
-{
-q:"13. Lyzozómy:",
-a:{A:"obsahujú tráviace enzýmy",B:"sú typické pre živočíchy",C:"rozkladajú odpad",D:"sú plastidy",E:"obsahujú DNA",F:"rozkladajú organely",G:"sú vakuoly",H:"rozkladajú baktérie"},
-c:["A","B","C","F","H"]
-},
-{
-q:"14. Mitochondrie:",
-a:{A:"tvoria ATP",B:"majú vlastnú DNA",C:"majú dve membrány",D:"sú len v rastlinách",E:"prebieha v nich dýchanie",F:"nemajú ribozómy",G:"sú v prokaryotoch",H:"sú energetické centrá"},
-c:["A","B","C","E","H"]
-},
-{
-q:"15. Ribozómy:",
-a:{A:"syntetizujú bielkoviny",B:"sú membránové",C:"sú z RNA a bielkovín",D:"sú voľné alebo viazané",E:"sú len v jadre",F:"sú v prokaryotoch",G:"majú enzymatickú funkciu",H:"tvoria ATP"},
-c:["A","C","D","F","G"]
-},{
-q:"16. Hladké endoplazmatické retikulum:",
-a:{A:"nemá ribozómy",B:"syntetizuje lipidy",C:"syntetizuje bielkoviny",D:"detoxikuje látky",E:"má ribozómy",F:"syntetizuje steroidy",G:"je súčasť jadra",H:"tvorí ATP"},
-c:["A","B","D","F"]
-},
-{
-q:"17. Drsné endoplazmatické retikulum:",
-a:{A:"má ribozómy",B:"syntetizuje bielkoviny",C:"syntetizuje lipidy",D:"je hladké",E:"slúži na transport",F:"je bez membrány",G:"je súčasť Golgiho aparátu",H:"nemá funkciu"},
-c:["A","B","E"]
-},
-{
-q:"18. Jadro bunky:",
-a:{A:"obsahuje DNA",B:"je riadiace centrum",C:"má jadrovú membránu",D:"je len u prokaryotov",E:"obsahuje jadierko",F:"je bez pórov",G:"má karyolému",H:"neobsahuje RNA"},
-c:["A","B","C","E","G"]
-},
-{
-q:"19. Jadierko:",
-a:{A:"vzniká počas interfázy",B:"syntetizuje rRNA",C:"zaniká pri delení",D:"je v cytoplazme",E:"tvorí ribozómy",F:"je len u baktérií",G:"má membránu",H:"má genetickú informáciu"},
-c:["A","B","C","E"]
-},
-{
-q:"20. Chromozómy:",
-a:{A:"sú viditeľné stále",B:"sú tvorené DNA a bielkovinami",C:"majú centroméru",D:"sú viditeľné pri delení",E:"sú tvorené RNA",F:"majú chromatídy",G:"sú len v jadre",H:"sú len u rastlín"},
-c:["B","C","D","F"]
-},
-{
-q:"21. Mitóza:",
-a:{A:"je delenie jadra",B:"vedie k rastu",C:"vznikajú 2 bunky",D:"znižuje počet chromozómov",E:"prebieha v telových bunkách",F:"má 4 fázy",G:"je redukčné delenie",H:"je nepohlavné delenie"},
-c:["A","B","C","E","F","H"]
-},
-{
-q:"22. Meióza:",
-a:{A:"je redukčné delenie",B:"vznikajú 4 bunky",C:"vznikajú pohlavné bunky",D:"zvyšuje počet chromozómov",E:"má dve delenia",F:"prebieha v telových bunkách",G:"zabezpečuje variabilitu",H:"má crossing-over"},
-c:["A","B","C","E","G","H"]
-},
-{
-q:"23. Interfáza:",
-a:{A:"je medzi deleniami",B:"prebieha rast bunky",C:"prebieha syntéza DNA",D:"je M fáza",E:"má G1,S,G2",F:"je najdlhšia fáza",G:"prebieha mitóza",H:"neprebieha syntéza"},
-c:["A","B","C","E","F"]
-},
-{
-q:"24. G1 fáza:",
-a:{A:"je po delení",B:"je pred syntézou DNA",C:"prebieha rast bunky",D:"prebieha replikácia DNA",E:"je kontrolný bod",F:"je najkratšia",G:"je pred mitózou",H:"neexistuje"},
-c:["A","B","C","E"]
-},
-{
-q:"25. S fáza:",
-a:{A:"prebieha replikácia DNA",B:"vznikajú chromatídy",C:"je po mitóze",D:"zdvojuje sa genetická informácia",E:"prebieha cytokinéza",F:"prebieha rast bunky",G:"je medzi G1 a G2",H:"nevzniká DNA"},
-c:["A","B","D","G"]
-},
-{
-q:"26. G2 fáza:",
-a:{A:"nasleduje po S fáze",B:"príprava na mitózu",C:"syntéza bielkovín",D:"delenie jadra",E:"kontrola DNA",F:"je prvá fáza",G:"nastáva po mitóze",H:"je posledná fáza interfázy"},
-c:["A","B","C","E","H"]
-},
-{
-q:"27. Profáza:",
-a:{A:"chromozómy sa skracujú",B:"zaniká jadrová membrána",C:"vzniká deliace vretienko",D:"chromozómy sa rozchádzajú",E:"začína mitóza",F:"DNA sa replikuje",G:"jadierko zaniká",H:"chromozómy sa zhlukujú"},
-c:["A","B","C","E","G"]
-},
-{
-q:"28. Metafáza:",
-a:{A:"chromozómy sú v ekvatoriálnej rovine",B:"chromozómy sa rozchádzajú",C:"vrcholí špiralizácia",D:"zostavuje sa deliace vretienko",E:"chromozómy sú dvojchromatídové",F:"prebieha cytokinéza",G:"je prvá fáza mitózy",H:"je posledná fáza"},
-c:["A","C","E"]
-},
-{
-q:"29. Anafáza:",
-a:{A:"rozchádzajú sa chromatídy",B:"rozchádzajú sa chromozómy",C:"skracujú sa mikrotubuly",D:"zaniká jadro",E:"vznikajú dve skupiny chromozómov",F:"prebieha replikácia",G:"vzniká jadrová membrána",H:"nastáva cytokinéza"},
-c:["A","C","E"]
-},
-{
-q:"30. Telofáza:",
-a:{A:"chromozómy sa despiralizujú",B:"vzniká jadrová membrána",C:"zaniká deliace vretienko",D:"vznikajú dve jadrá",E:"prebieha cytokinéza",F:"je prvá fáza mitózy",G:"chromozómy sa skracujú",H:"zaniká jadierko"},
-c:["A","B","C","D","E"]
+function openSubject(sub){
+  document.getElementById("menuSubject").classList.add("hidden");
+  document.getElementById("menuTheme").classList.remove("hidden");
+  const t = DATA[sub];
+  document.getElementById("themeTitle").innerText = t.name;
+  const list = document.getElementById("themeList");
+  list.innerHTML = "";
+  for(let k in t.themes){
+    const b = document.createElement("button");
+    b.innerText = k;
+    b.onclick = ()=>startQuiz(t.themes[k]);
+    list.appendChild(b);
+  }
 }
 
-// pokračuj rovnakým štýlom až po 115
-];
-
-];
-
-function openSubject(){
-  document.getElementById("menu").style.display="none";
-  document.getElementById("themes").style.display="block";
-  document.getElementById("themeTitle").innerText = "Biológia";
+function backToSubjects(){
+  document.getElementById("menuTheme").classList.add("hidden");
+  document.getElementById("menuSubject").classList.remove("hidden");
 }
 
-function backToMenu(){
-  document.getElementById("themes").style.display="none";
-  document.getElementById("menu").style.display="block";
-}
-
-function startTest(){
+function startQuiz(q){
+  currentQuestions = q;
   index = 0;
   score = 0;
-  current = bioQuestions;
-  document.getElementById("themes").style.display="none";
-  document.getElementById("test").style.display="block";
+  document.getElementById("menuTheme").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
   showQuestion();
 }
 
 function showQuestion(){
-  const q = current[index];
+  if(index >= currentQuestions.length){
+    finish();
+    return;
+  }
+  const q = currentQuestions[index];
   document.getElementById("question").innerText = q.q;
-
   const box = document.getElementById("answers");
   box.innerHTML = "";
-
   for(let k in q.a){
     box.innerHTML += `
-      <div class="choice">
-        <label>
-          <input type="checkbox" value="${k}">
-          ${k}) ${q.a[k]}
-        </label>
-      </div>`;
+      <label class="choice">
+        <input type="checkbox" value="${k}">
+        ${k}: ${q.a[k]}
+      </label>`;
   }
+  document.getElementById("bar").style.width =
+    (index / currentQuestions.length * 100) + "%";
 }
 
 function next(){
-  const selected = [...document.querySelectorAll("input:checked")]
-                  .map(x => x.value);
-
-  const correct = current[index].c;
-
-  selected.forEach(x=>{
-    if(correct.includes(x)) score++;
+  const q = currentQuestions[index];
+  document.querySelectorAll("input:checked").forEach(i=>{
+    if(q.c.includes(i.value)) score++;
   });
-
   index++;
-
-  if(index >= current.length){
-    document.getElementById("test").style.display="none";
-    document.getElementById("result").style.display="block";
-    document.getElementById("scoreText").innerText =
-      `Získal/a si ${score} bodov z ${countMax()} možných`;
-  } else {
-    showQuestion();
-  }
+  showQuestion();
 }
 
-function countMax(){
-  let sum = 0;
-  current.forEach(q => sum += q.c.length);
-  return sum;
+function finish(){
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("score").innerText =
+    "Získané body: " + score;
 }
 </script>
-
 </body>
 </html>
