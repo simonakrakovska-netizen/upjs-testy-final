@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<div id="menu" class="box">
+  <h2>Vyber predmet</h2>
+  <button onclick="openSubject('bio')">🧬 Biológia</button>
+  <button onclick="openSubject('chem')">⚗️ Chémia</button>
+</div>
+
+<div id="themes" class="box" style="display:none;">
+  <h2 id="subjectTitle"></h2>
+  <div id="themeList"></div>
+  <button onclick="backToMenu()">⬅ Späť</button>
+</div>
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
@@ -651,6 +662,32 @@ document.getElementById("result").classList.remove("hidden");
 document.getElementById("score").innerText =
 `Správne odpovede: ${score} / ${questions.reduce((s,q)=>s+q.correct.length,0)}`;
 }
-</script>
+</scriptfunction openSubject(subject){
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("themes").style.display = "block";
+
+  const title = document.getElementById("subjectTitle");
+  const list = document.getElementById("themeList");
+  list.innerHTML = "";
+
+  if(subject === "bio"){
+    title.innerText = "Biológia";
+    list.innerHTML = `
+      <button onclick="startTest('bunka')">🧫 Štruktúra bunky</button>
+    `;
+  }
+
+  if(subject === "chem"){
+    title.innerText = "Chémia";
+    list.innerHTML = `
+      <button onclick="startTest('chemia')">⚗️ Základy chémie</button>
+    `;
+  }
+}
+
+function backToMenu(){
+  document.getElementById("themes").style.display = "none";
+  document.getElementById("menu").style.display = "block";
+}>
 </body>
 </html>
